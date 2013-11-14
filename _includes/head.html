@@ -62,3 +62,11 @@
 {% unless background contains 'http://' or background contains 'https://' %}{% capture background %}{{ site.url }}/images/{{ background }}{% endcapture %}{% endunless %}
 <style type="text/css">body {background-image:url({{ background }});}</style>
 {% endif %}
+
+<style>
+
+.feature div.entry-header div.header-title div.header-title-wrap h2 {
+	text-transform: none !important; /* I'm going to kill whoever uses text-transform once again. */
+}
+
+</style>
