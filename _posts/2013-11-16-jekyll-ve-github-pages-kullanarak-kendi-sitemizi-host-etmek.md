@@ -42,11 +42,34 @@ Neyse, konuyu fazla bölmeyelim. Jekyll'in çalışmak için bazı dependencyler
 
 ##Bölüm 2: Gerekli dependencylerin kurulması##
 
-Yakında.
+Bilgisayarınıza Ruby ve Ruby Gem'i kurup gerekli ayarlamaları yapın.
+
+Daha sonra
+
+{% highlight ruby %}
+gem install jekyll
+{% endhighlight %}
+
+yazarak Jekyll uygulamasını kurun.
+
+> Not: Kurulum esnasında alınan hatalardan burada bahsedeceğiz.
 
 ##Bölüm 3: Jekyll ile ilk sitemizi oluşturalım##
 
-Yakında.
+{% highlight ruby %}
+jekyll site_klasoru
+{% endhighlight %}
+
+yazarak Jekyll'in `site_klasoru` adlı klasörde oluşturulmasını sağlayın.
+
+Son olarak
+
+{% highlight ruby %}
+cd site_klasorum
+jekyll serve
+{% endhighlight %}
+
+komutlarını girerek Jekyll'i çalıştırın. Şimdi `http://localhost:4000` adresine girdiğimizde Jekyll bizi karşılıyor olacak.
 
 ##Bölüm 4: Github pages üzerinde sayfamızı oluşturalım##
 
