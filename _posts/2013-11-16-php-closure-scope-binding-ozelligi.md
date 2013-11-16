@@ -12,7 +12,7 @@ comments: true
 share: true
 ---
 
-PHP Closure Scope Binding özelliği.
+PHP'de `Closure` objelerinin scopelerini `bind` methodunu kullanarak değiştirebiliriz.
 
 {% highlight php %}
 <?php
@@ -25,7 +25,6 @@ class ClosureDispatcher
             $closure = Closure::bind($closure, $scope, $scope);
         
         return $closure();
-
     }
 }
 
@@ -38,7 +37,11 @@ $dispatcher = new ClosureDispatcher();
 $person     = new Person();
 
 $ret = $dispatcher->call(function () {
-        return $this->name;
+        return $this->name; // Aristona
 }, $person);
 
 {% endhighlight %}
+
+Kafa karıştırıcı bir konu gibi görünüyor ancak hiçte öyle değil!
+
+
