@@ -1,4 +1,4 @@
-title:            "Anıl'ın Paylaşımları"
+title:            "Anıl'ın Yazıları"
 description:      "Yararlı bilgilerin paylaşıldığı bir yazılımcı blogu"
 disqus_shortname: 
 #Your site's domain goes here. Leave localhost server or blank when working locally.
@@ -8,7 +8,7 @@ url:              "http://aristona.github.io"
 owner:
   name:           "Anıl ÜNAL"
   avatar:         avatar.jpg
-  bio:            "Özgeçmişim için lütfen CV'mi inceleyin. DRY ilkesini ihlal etmeyelim. :)"
+  bio:            "Özgeçmişim için lütfen CV'mi inceleyin."
   email:          iamaristona@windowslive.com
   # Social networking links used in footer. Update and remove as you like.
   twitter:        
@@ -37,7 +37,7 @@ links:
 - title: Özgeçmişim
   url: "http://ignyazilim.com/downloads/anilcv.pdf"
   external: true
-- title: İş İsteği
+- title: İş İstekleri
   url: "http://ignyazilim.com/iletisim?ref=aristona.github.io"
   external: true
 
@@ -45,7 +45,7 @@ links:
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 timezone:    Europe/Istanbul
 future:      true
-pygments:    false
+pygments:    true
 markdown:    kramdown
 
 # https://github.com/mojombo/jekyll/wiki/Permalinks
