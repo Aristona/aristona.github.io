@@ -26,7 +26,7 @@ Kendi basit ancak güçlü bir altyapıya sahip statik site oluşturucu. (Static
 
 Birçok insan sadece blog yazılarını paylaşmak için Wordpress gibi alternatifleri kullanıyor ancak bir süre sonra vaktinizi blog yazıları yazmaktan çok Wordpress'i yönetmekle geçirdiğinizi anlıyorsunuz. Yönetmeniz ve kurmanız gereken eklentiler, yönetmeniz gereken bir MySQL veritabanı, almak zorunda olduğunuz bir hosting hizmeti, Wordpress'i güncel tutmak için sık sık update yapma zorunluluğu, yapmanız gereken birçok ayar ve daha birçok şey.
 
-Jekyll ise kullanımı son derece basit bir uygulama. Veritabanı olmadığı için çokta performanslı. Jekyll kullanırken veritabanı yönetimi veya hosting (Github Pages sayesinde) gibi şeylerle uğraşmanız gerekmiyor. Yazılarınızı Markdown gibi bir formatta yazın, 'jekyll build' komutunu girin ve Jekyll size sitenizin çıktısını versin. Bu kadar basit.
+Jekyll ise kullanımı son derece basit bir uygulama. Veritabanı olmadığı için çokta performanslı. Jekyll kullanırken veritabanı yönetimi veya hosting (Github Pages sayesinde) gibi şeylerle uğraşmanız gerekmiyor. Yazılarınızı Markdown gibi bir formatta yazın, `jekyll build` komutunu girin ve Jekyll size sitenizin çıktısını versin. Bu kadar basit.
 
 **Github Pages nedir?**
 
