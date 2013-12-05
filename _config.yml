@@ -52,7 +52,7 @@ markdown:    redcarpet
 permalink:   /:categories/:title
 
 # Amount of post to show on home page
-paginate: 4
+paginate: 10
 
 redcarpet:
   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript"]
