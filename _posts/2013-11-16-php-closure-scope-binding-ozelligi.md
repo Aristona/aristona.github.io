@@ -14,7 +14,7 @@ share: true
 
 PHP'de `Closure` objelerinin scopelerini `bind` methodunu kullanarak değiştirebiliriz.
 
-{% highlight php %}
+```php
 <?php
 
 class ClosureDispatcher
@@ -40,7 +40,7 @@ $ret = $dispatcher->call(function () {
         return $this->name; // Aristona
 }, $person);
 
-{% endhighlight %}
+```
 
 Kafa karıştırıcı bir konu gibi görünüyor ancak hiçte öyle değil!
 
