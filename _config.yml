@@ -1,6 +1,6 @@
 title:            "Anıl'ın Yazıları"
 description:      "Yararlı bilgilerin paylaşıldığı bir yazılımcı blogu"
-disqus_shortname: 
+disqus_shortname: aristona
 #Your site's domain goes here. Leave localhost server or blank when working locally.
 url:              "http://aristona.github.io"
 
