@@ -8,8 +8,8 @@ url:              "http://aristona.github.io"
 owner:
   name:           "Anıl ÜNAL"
   avatar:         avatar.jpg
-  bio:            "Özgeçmişim için lütfen CV'mi inceleyin."
-  email:          iamaristona@windowslive.com
+  bio:            "Lütfen kişisel sitemi inceleyin."
+  email:          iamaristona@gmail.com
   # Social networking links used in footer. Update and remove as you like.
   twitter:        
   facebook:       "aristona"
@@ -34,11 +34,8 @@ bing_verify:
 # Links to include in top navigation
 # For external links add external: true
 links:
-- title: Özgeçmişim
-  url: "http://ignyazilim.com/downloads/anilcv.pdf"
-  external: true
 - title: İş İstekleri
-  url: "http://ignyazilim.com/iletisim?ref=aristona.github.io"
+  url: "http://anilunal.com/?page=contact"
   external: true
 
 
@@ -56,6 +53,13 @@ paginate: 10
 
 redcarpet:
   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "strikethrough", "superscript"]
+
+kramdown:
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  use_coderay: true
 
 include: [".htaccess"]
 exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", ".git"]
