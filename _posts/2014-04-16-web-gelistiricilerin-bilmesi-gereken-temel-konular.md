@@ -12,13 +12,323 @@ share: true
 
 Merhaba,
 
-Zamanım olmadığı için uzun zamandır bloguma yazı yazmıyordum. Bu yazımda web geliştiricilerinin bilmesi gereken temel konulardan bahsedeceğim.
+Zamanım olmadığı için uzun zamandır bloguma yazı yazmıyordum. Ancak neredeyse hergün sosyal platformlarda aynı hataları ve yanlış düşüncelerin olduğunu gördüğüm için bu yazıyı yazmaya karar verdim.
+
+Bu yazımda web geliştiricilerinin bilmesi gereken temel konulardan bahsedeceğim. Aslında bahsedeceğim şeyler çok üst düzey konular değil ama bilinmesi ve uyulması size büyük bir avantaj sağlayacak.
+
+Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum, bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. konularda bilmeniz gerekenleri anlatacağım.
+
+Hazırsanız başlayalım.
+
+> Not: Bu yazı açık kaynaklı olarak Github hesabım üzerinde yayınlanmaktadır. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa pull request atabilirsiniz.
+
+## Backend ##
+
+### Global scopeyi asla kirletmeyin. ###
+
+**Değişkenlerinizi global scope içerisinde tanımlamayın.**
+
+Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki verilere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkileyeceğinden emin olamazsınız. 
+
+Örneğin:
 
 ```php
 <?php
 
-echo "Test";
+    $veritabani = //pdo bağlantısı
 
 ```
 
+şeklinde global scope içerisinde bir değişken oluşturup buna bağlı kalırsanız, bir başkası istemeyerekte olsa
 
+```php
+
+    $veritabani = null;
+
+```
+
+yazarak uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `veritabani` değeri `NULL` olacağı için hiçbir veritabanı işlemi yapılamaz hale gelir.
+
+Bundan korunmanın için tanımlayacağınız şeyler `class scope` (sınıf scope) içerisinde tanımlansın. Sınıflarınız da `namespace` içerisinde tanımlansın.
+
+**Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.**
+
+Yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi sınıf scope içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde instantiate edilebilir ve içeriğine direkt müdahele edilebilir.
+
+Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanın.
+
+Örneğin abstract (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu extend etmesiyle çalışacak.
+
+```php
+<?php
+
+abstract class Veritabani
+{
+
+     public $veritabani;
+     private $info;
+
+     public function __construct()
+     {
+           $this->info = new stdClass();
+           $this->connect();
+     }
+
+     public function attempt()
+     {
+         //Veritabanına bağlanmayı dene
+     }
+
+     public function connect()
+     {
+          $this->attempt($this->getConnectionString());
+          $this->info()->isConnected = true;
+     }
+
+}
+
+```
+
+Dikkat ettiyseniz `info` değişkenini `private` olarak yazdım.
+
+```php
+<?php
+
+//Yukarıdaki sınıfa ek olarak
+
+class MySQL extends Database implements DatabaseConnectorInterface
+{
+
+     public $queryString;
+
+     public function __construct()
+     {
+          $this->queryString = //Mysql DB query string
+     }
+     
+     public function getConnectionString()
+     {
+          return $this->connectionString;
+     }
+}
+
+```
+
+Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `info` objesini değiştiremez, çünkü yetkisi yok. Neden? Çünkü `private` olarak tanımladık.
+
+Size bu konuyu daha dünyevi bir örnekle anlatmaya çalışayım. Mesela KDV hesaplayıcı bir sınıf yazıyorsunuz ve KDV oranını `0,18` olarak belirlediniz. Eğer siz bunu dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirdiğinde ne olur? 100 liralık ürünü alacak kullanıcıdan 300 lira vergi çekmiş olursunuz. Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.
+
+Ancak, bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örneğin ürünün KDV fiyatını hesaplattırmak için KDV Hesaplayıcı sınıfında KDV oranı kaç olarak belirlenmiş bunu öğrenmek isteyebilirsiniz. Burada `gettlers` devreye giriyor.
+
+```php
+class KDVCalculator 
+{
+
+     private $kdvRatio //0.18
+
+     public function getKdvRatio()
+     {
+         return $this->kdvRatio;
+     }
+  
+}
+```
+
+4. Javascript kullanıyorsanız tanımlamaları çoğu zaman `Javascript Object Literals` olarak yapın.
+
+Örneğin:
+
+```js
+
+//Javascript object literaller PHP'deki sınıflara benzer, ancak aynı şey değildir.
+var user = {
+  
+   name           : "Anıl",
+   age            : 25,
+   isAuthenticated: false,
+
+   isOld: function() {
+       return (this.age >= 30) true : false; 
+   }
+
+}
+```
+
+### Methodlarınızı ve sınıflarınızı küçük tutun. ###
+
+Altın kuralımız şu: "Bir methodda maksimum 10 satır, bir sınıfta maksimum 10 method, bir sınıfta maksimum 10 dependency (bağımlılık)."
+
+Nedir bu bağımlılık? Bağımlılık dediğimiz şey sınıfın kullandığı diğer sınıflar. (Yukarıdaki örnekte MySQL ve Veritabanı sınıflarının birbirine bağımlılığını görebilirsiniz.) Bağımlılıklar sınıf extensionu yapılarak, use kullanılarak veya constructor injection aracılığıyla eklenebilir.
+
+### mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
+
+Gelen verileri `mysql_real_escape_string()`'den geçirdiğiniz için güvenli olacağınızı sanıyorsanız yanılıyorsunuz. Sizi SQL Injection'dan koruyacak şey `prepared statements`'dir.
+
+Bu yüzden minimum `PDO` ve onun `prepared statements` özelliğini, tercihden bir `ORM` aracı kullanın.
+
+### Mümkün olduğunca Türkçe kullanmamaya çalışın. ###
+
+Bu sektörde tek temel ihtiyaç var, o da İngilizce. Kullandığımız programlama dillerindeki methodlar İngilizce, takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşuyor, takip edebileceğiniz bloglar ve websiteleri İngilizce, Github üzerindeki açık kaynaklı projeler İngilizce, onların dökümantasyonları İngilizce.
+
+Özellikle uygulama içerisindeki değişkenleri, sınıfları, methodları vb. Türkçe kullanmak kadar amatörce birşey yok. Zaten tam unicode desteği olmadığı için Türkçe karakterleri de kullanamıyorsunuz (PHP için geçerli) ve ortaya saçma sapan birşey çıkıyor.
+
+```php
+
+    class AssetLoader
+    {
+        private $dosyalar;
+
+        public function __construct()
+        {
+            $this->dosyalar = array();
+        }
+
+        public function style_ekle()
+        {
+             $stilDosyalari = Directory::get('*', 'css');
+             if( !empty($stilDosyalari) return $stilDosyalari;
+        }
+
+        public function css_ciktisi()
+        {
+            return array_walk($this->dosyalar, function($value, $key) {
+                return "<link href=\"assets/admin/css/{$value}.css'\" rel=\"stylesheet\">";
+            };
+        }
+
+```
+
+Bana kalırsa son derece çirkin ve amatörce duruyor. Türkçe desen Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey.
+
+Birde ileride bug çıktığını farzedelim, Stackoverflow'da sordunuz. Kimse sizin `asset yükleyici` değişken adınızdan birşey anlamayacak, açıklamak zorunda kalacaksınız. Muhtemelen kimse cevap vermeyecek.
+
+Mesela ben size `tillgångs laddare` desem ne anlayacaksınız? Google translate'ye göre İsveç dilinde `asset yükleyici` demekmiş. Böyle bir uygulamada çalışmak istermiydiniz?
+
+Hem sadece bununla kalmıyor. Türkçe karakterleri kullanmak son derece sakıncalı. SSH üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman siz de dönersiniz İngilizce'ye nede olsa. (Bu yazıyı Türkçe karakterler yüzünden `Jekyll`'e compile ettireceğim diye kaç takla attım, biliyor musunuz?)
+
+### Türkçe veya kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
+
+Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanlarında hepsi 2-3 aylık yazılımcıların kendi yazdığı yalan yanlış yazılar.
+
+Adam bir makale yazmış, sanırsın dünyayı değiştirecek. Scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir yazı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+
+Türkçe bloglardaki genel eksiklikler:
+
+1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor.
+2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor.
+3. Çeviriler genellikle yanlış oluyor.
+4. Üst düzey PHP diye yazdıkları makaleler aslında PHP'nin temel bilgileri.
+
+Eğitim setleri başlı başına bir facia. Birisi yazmış 2003'de wareze düşmüş, forumlarda eğitim seti diye satılmaya çalışılıyor.
+
+### Ya performanslı olmazsa? Ya çok include uygulamayı yavaşlatırsa? ###
+
+OOP kullanmak istemeyenlerin, frameworklere çok hantal çalışıyor diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa.`
+
+Kısa cevap: Hiçbirşey olmaz. Olsaydı ilk başta bana olurdu.
+
+Uzun cevap: Yakında yazarım.
+
+### Bazı durumlarda == yerine === kullanılmalı. ###
+
+`==`, `loose comparison` yaptığı için `0` ile `false`'yi, `1` ile `true`'yi eşit sayar. Ancak bazı durumlarda gücü elinize almanız gerekir. 
+
+Örneğin:
+
+```php
+
+    strpos('abcde', 'ab')
+
+```
+
+`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.
+
+Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksın.
+
+```php
+
+    if ( strpos('abcde', 'ab') == false)
+    {
+         return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
+    }
+
+```
+
+Yanlış. Doğrusu `===` kullanmak olmalıydı
+
+```php
+
+    if ( strpos('abcde', 'ab') === false)
+    {
+         return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
+    }
+
+```
+
+### Be consistent ###
+
+Yakında...
+
+### If içerisinde if kullanmaktansa return kullanın. ###
+
+Yakında...
+
+### MVC'yi, MVC gibi kullanın. ###
+
+Yakında...
+
+**echo'yu unutun**
+
+**PHP'yi template motoru olarak kullanıp can çekişmeyin.**
+
+## Frontend ##
+
+**CSS**
+
+**Sass**
+
+**Browser compatibility**
+
+**Tips&Tricks**
+
+**Ne kadar az, o kadar şık.**
+
+**Javascript**
+
+Yakında
+
+## Dev Environment ##
+
+**Grunt**
+
+**Tips & tricks**
+
+**Terminale ne kadar yakın, o kadar iyi**
+
+## Veritabanları ##
+
+**Neden utf8mb4_unicode_ci?**
+
+Yakında
+
+## Deployment ##
+
+**Capistrano**
+
+Yakında
+
+**FTP kullanmayın! (asla)!**
+
+Yakında
+
+## Versiyon kontrol ##
+
+**Sus ve git kullan**
+
+Yakında
+
+## Aklıma gelenler ##
+
+Yakında.
+
+> Not: Bu makale vakit buldukça güncellenecektir. Eklenmesini istediğiniz konuları issue oluşturarak bildirebilirsiniz.
