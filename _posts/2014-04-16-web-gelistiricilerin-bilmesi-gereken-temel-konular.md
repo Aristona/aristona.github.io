@@ -123,6 +123,7 @@ Mesela KDV hesaplayıcı bir sınıf yazıyorsunuz ve KDV oranını `0,18` olara
 Buna rağmen bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örneğin ürünün KDV fiyatını hesaplattırmak için KDV Hesaplayıcı sınıfında KDV oranı kaç olarak belirlenmiş bunu öğrenmek isteyebilirsiniz. Burada `gettlers` devreye giriyor.
 
 ```php
+
 class KDVCalculator 
 {
 
@@ -134,6 +135,7 @@ class KDVCalculator
      }
   
 }
+
 ```
 
 Bilmeyenler için, `gettlers` ve `settlers` aslında çok basit iki tanım. Gettler, alacağımız değişkeni bir fonksiyon üzerinden almak, settler ise değiştireceğimiz değişkenin değerini fonksiyon üzerinden değiştirmektir.
