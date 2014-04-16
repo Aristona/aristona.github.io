@@ -28,7 +28,7 @@ Hazırsanız başlayalım.
 
 **Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
-Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki verilere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkileyeceğinden emin olamazsınız. 
+Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki verilere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız. 
 
 Örneğin:
 
@@ -47,22 +47,22 @@ Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafı
 
 ```
 
-yazarak uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `veritabani` değeri `NULL` olacağı için hiçbir veritabanı işlemi yapılamaz hale gelir.
+yazarak uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir.
 
-Bundan korunmanın için tanımlayacağınız şeyler `class scope` (sınıf scope) içerisinde tanımlansın. Sınıflarınız da `namespace` içerisinde tanımlansın.
+Bundan korunmak için, tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında tanımlayın. Sınıflarınız da `namespace` altında tanımlansın.
 
 **Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.**
 
-Yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi sınıf scope içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde instantiate edilebilir ve içeriğine direkt müdahele edilebilir.
+Yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi sınıf scope içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde instantiate edilebilir (Türkçe'ye çevirebilen var mı?) ve buradan içeriğe direkt müdahele edilebilir.
 
-Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanın.
+Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabilirsiniz.
 
-Örneğin abstract (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu extend etmesiyle çalışacak.
+Örneğin `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu extend etmesiyle çalışacak.
 
 ```php
 <?php
 
-abstract class Veritabani
+abstract class Database
 {
 
      public $veritabani;
@@ -114,11 +114,13 @@ class MySQL extends Database implements DatabaseConnectorInterface
 
 ```
 
-Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `info` objesini değiştiremez, çünkü yetkisi yok. Neden? Çünkü `private` olarak tanımladık.
+Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `info` objesini değiştiremez, çünkü yetkisi yok. Neden? Çünkü değişken `private` olarak tanımladık ve sadece `Database` sınıfı scopesi içerisinden erişilebilir.
 
-Size bu konuyu daha dünyevi bir örnekle anlatmaya çalışayım. Mesela KDV hesaplayıcı bir sınıf yazıyorsunuz ve KDV oranını `0,18` olarak belirlediniz. Eğer siz bunu dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirdiğinde ne olur? 100 liralık ürünü alacak kullanıcıdan 300 lira vergi çekmiş olursunuz. Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.
+Size bu konuyu daha dünyevi bir örnekle anlatmaya çalışayım. 
 
-Ancak, bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örneğin ürünün KDV fiyatını hesaplattırmak için KDV Hesaplayıcı sınıfında KDV oranı kaç olarak belirlenmiş bunu öğrenmek isteyebilirsiniz. Burada `gettlers` devreye giriyor.
+Mesela KDV hesaplayıcı bir sınıf yazıyorsunuz ve KDV oranını `0,18` olarak belirlediniz. Eğer siz bunu dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirdiğinde ne olur? 100 liralık ürünü alacak kullanıcıdan 300 lira vergi çekmiş olursunuz. Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.
+
+Buna rağmen bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örneğin ürünün KDV fiyatını hesaplattırmak için KDV Hesaplayıcı sınıfında KDV oranı kaç olarak belirlenmiş bunu öğrenmek isteyebilirsiniz. Burada `gettlers` devreye giriyor.
 
 ```php
 class KDVCalculator 
@@ -134,9 +136,13 @@ class KDVCalculator
 }
 ```
 
-4. Javascript kullanıyorsanız tanımlamaları çoğu zaman `Javascript Object Literals` olarak yapın.
+Bilmeyenler için, `gettlers` ve `settlers` aslında çok basit iki tanım. Gettler, alacağımız değişkeni bir fonksiyon üzerinden almak, settler ise değiştireceğimiz değişkenin değerini fonksiyon üzerinden değiştirmektir.
 
-Örneğin:
+** Javascript kullanıyorsanız tanımlamaları çoğu zaman `Javascript Object Literals` olarak yapın. **
+
+`Javascript Object Literal`ler PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
+
+Aşağıdaki gibi bir javascript object literal tanımlayabiliriz.
 
 ```js
 
@@ -154,11 +160,38 @@ var user = {
 }
 ```
 
+Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullanabilirsiniz.
+
+> Not: `Javascript Object Literals` ile `Javascript Object Notation (JSON)` farklı şeylerdir. Karıştırmayın.
+
+`Javascript Object Literals` ile `JSON` farkı:
+
+1. Object literallerin keyleri stringdir, JSON'un attribute dir.
+
+```js
+
+Object Literal:      var user = { name: "Anıl" }
+JSON:                var user = { "name": "Anıl" } 
+```
+
+2. JSON'da fonksiyon tanımlanamaz. (yukarıdaki örnekte isOld() bir fonksiyondur)
+
 ### Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
-Altın kuralımız şu: "Bir methodda maksimum 10 satır, bir sınıfta maksimum 10 method, bir sınıfta maksimum 10 dependency (bağımlılık)."
+Altın kuralımız şu: 
 
-Nedir bu bağımlılık? Bağımlılık dediğimiz şey sınıfın kullandığı diğer sınıflar. (Yukarıdaki örnekte MySQL ve Veritabanı sınıflarının birbirine bağımlılığını görebilirsiniz.) Bağımlılıklar sınıf extensionu yapılarak, use kullanılarak veya constructor injection aracılığıyla eklenebilir.
+1. Bir methodda maksimum 10 satır
+2. Bir sınıfta maksimum 10 method
+3. Bir sınıfta maksimum 4 dependency (bağımlılık)
+4. Bir pakette/komponentte 15 sınıf.
+
+Nedir bu bağımlılık? 
+
+Bağımlılık dediğimiz şey, oluşturduğumuz sınıfın çalışabilmesi için kullandığı diğer sınıfların bütünü. Bağımlılıklar sınıf extensionu yapılarak, use kullanılarak veya constructor injection aracılığıyla eklenebilir.
+
+Kısacası, sizin `Admin` sınıfınız kullanıcıların avatarlarını resize etmek için `Resizer` sınıfını kullanıyorsa, o sınıfı bağlıdır.
+
+> Not: Bu bir kural değil, görüştür. Uymak zorunda değilsiniz ancak uymaya çalışırsanız 100kb'lık sınıflar içerisinde boğulmazsınız.
 
 ### mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
 
@@ -166,15 +199,23 @@ Gelen verileri `mysql_real_escape_string()`'den geçirdiğiniz için güvenli ol
 
 Bu yüzden minimum `PDO` ve onun `prepared statements` özelliğini, tercihden bir `ORM` aracı kullanın.
 
-### Mümkün olduğunca Türkçe kullanmamaya çalışın. ###
+> Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
+
+### Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin, vakit kaybı. ###
+
+> Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
+
+### Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
 Bu sektörde tek temel ihtiyaç var, o da İngilizce. Kullandığımız programlama dillerindeki methodlar İngilizce, takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşuyor, takip edebileceğiniz bloglar ve websiteleri İngilizce, Github üzerindeki açık kaynaklı projeler İngilizce, onların dökümantasyonları İngilizce.
 
-Özellikle uygulama içerisindeki değişkenleri, sınıfları, methodları vb. Türkçe kullanmak kadar amatörce birşey yok. Zaten tam unicode desteği olmadığı için Türkçe karakterleri de kullanamıyorsunuz (PHP için geçerli) ve ortaya saçma sapan birşey çıkıyor.
+Özellikle uygulama içerisindeki değişkenleri, sınıfları, methodları vb. Türkçe kullanmak son derece amatörce. Zaten PHP'de tam unicode desteği olmadığı için Türkçe karakterleri de kullanamıyorsunuz ve ortaya saçma sapan birşey çıkıyor.
+
+Misal:
 
 ```php
 
-    class AssetLoader
+    class AssetYukleyici
     {
         private $dosyalar;
 
@@ -202,34 +243,36 @@ Bana kalırsa son derece çirkin ve amatörce duruyor. Türkçe desen Türkçe d
 
 Birde ileride bug çıktığını farzedelim, Stackoverflow'da sordunuz. Kimse sizin `asset yükleyici` değişken adınızdan birşey anlamayacak, açıklamak zorunda kalacaksınız. Muhtemelen kimse cevap vermeyecek.
 
-Mesela ben size `tillgångs laddare` desem ne anlayacaksınız? Google translate'ye göre İsveç dilinde `asset yükleyici` demekmiş. Böyle bir uygulamada çalışmak istermiydiniz?
+Hem sadece bununla kalmıyor. Türkçe karakterleri kullanmak son derece sakıncalı. SSH üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. (Mesela şuan bile bu yazıyı Türkçe karakterler yüzünden `Jekyll`'e compile ettireceğim diye kaç takla attım, biliyor musunuz?)
 
-Hem sadece bununla kalmıyor. Türkçe karakterleri kullanmak son derece sakıncalı. SSH üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman siz de dönersiniz İngilizce'ye nede olsa. (Bu yazıyı Türkçe karakterler yüzünden `Jekyll`'e compile ettireceğim diye kaç takla attım, biliyor musunuz?)
+> Not: Tartıştığım yazılımcıların buna karşı argümanı Türk bir şirkette Türk yazılımcılarla ve bazen İngilizce bilmeyen yazılımcılarla çalıştığı bu yüzden Türkçe tercih ettikleriydi. Şanslıyım ki İngilizce bilmeyen yazılımcılarla çalışmak zorunda değilim.
 
 ### Türkçe veya kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
 
-Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanlarında hepsi 2-3 aylık yazılımcıların kendi yazdığı yalan yanlış yazılar.
+Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşuyor. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
 
-Adam bir makale yazmış, sanırsın dünyayı değiştirecek. Scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir yazı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+Adam bir makale yazmış, sanırsın dünyayı değiştirecek. Scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Çeviri olduğu terimlerin yanlış yazılmasından belli. Sonra bir yazı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
 
-Türkçe bloglardaki genel eksiklikler:
+Neredeyse hepsi böyle. Gözlemlediğim kadarıyla Türkçe bloglardaki genel eksiklikler:
 
-1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor.
-2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor.
-3. Çeviriler genellikle yanlış oluyor.
-4. Üst düzey PHP diye yazdıkları makaleler aslında PHP'nin temel bilgileri.
+1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen w3schools.com dahil)
+2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor, çok az kişi eleştiriyi kabullenebiliyor.
+3. Çevirilerde terimler genellikle yanlış çeviriliyor. Son derece alakasız sonuçlar çıkabiliyor.
+4. Üst düzey PHP diye yazdıkları makaleler aslında PHP'nin (ve programlama dillerinin) temel bilgileri.
 
-Eğitim setleri başlı başına bir facia. Birisi yazmış 2003'de wareze düşmüş, forumlarda eğitim seti diye satılmaya çalışılıyor.
+Lütfen kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın.
 
-### Ya performanslı olmazsa? Ya çok include uygulamayı yavaşlatırsa? ###
+> Not: Bu blogun da Türkçe olması aslında bir ironi. En azından ben yazdığım şeylerin arkasında duruyorum ve herşeyi açık kaynaklı olarak yazıyorum.
+
+### ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
 
 OOP kullanmak istemeyenlerin, frameworklere çok hantal çalışıyor diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa.`
 
 Kısa cevap: Hiçbirşey olmaz. Olsaydı ilk başta bana olurdu.
 
-Uzun cevap: Yakında yazarım.
+Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir vs.
 
-### Bazı durumlarda == yerine === kullanılmalı. ###
+### Kendinizi == yerine === kullanmaya alıştırın. ###
 
 `==`, `loose comparison` yaptığı için `0` ile `false`'yi, `1` ile `true`'yi eşit sayar. Ancak bazı durumlarda gücü elinize almanız gerekir. 
 
@@ -265,21 +308,27 @@ Yanlış. Doğrusu `===` kullanmak olmalıydı
 
 ```
 
-### Be consistent ###
+PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
+
+### DRY kuralını uyun. Kendinizi tekrar etmeyin. ###
 
 Yakında...
 
-### If içerisinde if kullanmaktansa return kullanın. ###
+### Daima tutarlı olun. ###
 
 Yakında...
 
-### MVC'yi, MVC gibi kullanın. ###
+### If içerisinde if içerisinde if son derece yanlış. ###
 
-Yakında...
+Yakında... (art of readable code)
+
+### MVC kullanıyorsanız, MVC gibi kullanın. ###
 
 **echo'yu unutun**
 
 **PHP'yi template motoru olarak kullanıp can çekişmeyin.**
+
+Yakında.
 
 ## Frontend ##
 
