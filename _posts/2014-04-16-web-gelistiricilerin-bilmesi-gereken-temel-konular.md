@@ -213,7 +213,7 @@ Bu sektörde tek temel ihtiyaç var, o da İngilizce. Kullandığımız programl
 
 Özellikle uygulama içerisindeki değişkenleri, sınıfları, methodları vb. Türkçe kullanmak son derece amatörce. Zaten PHP'de tam unicode desteği olmadığı için Türkçe karakterleri de kullanamıyorsunuz ve ortaya saçma sapan birşey çıkıyor.
 
-Misal:
+Örneğin:
 
 ```php
 
@@ -247,32 +247,32 @@ Birde ileride bug çıktığını farzedelim, Stackoverflow'da sordunuz. Kimse s
 
 Hem sadece bununla kalmıyor. Türkçe karakterleri kullanmak son derece sakıncalı. SSH üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. (Mesela şuan bile bu yazıyı Türkçe karakterler yüzünden `Jekyll`'e compile ettireceğim diye kaç takla attım, biliyor musunuz?)
 
-> Not: Tartıştığım yazılımcıların buna karşı argümanı Türk bir şirkette Türk yazılımcılarla ve bazen İngilizce bilmeyen yazılımcılarla çalıştığı bu yüzden Türkçe tercih ettikleriydi. Şanslıyım ki İngilizce bilmeyen yazılımcılarla çalışmak zorunda değilim.
+> Not: Tartıştığım yazılımcıların buna karşı argümanı Türk bir şirkette Türk yazılımcılarla ve bazen İngilizce bilmeyen yazılımcılarla çalıştığı bu yüzden Türkçe tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemlidir.
 
 ### Türkçe veya kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
 
 Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşuyor. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
 
-Adam bir makale yazmış, sanırsın dünyayı değiştirecek. Scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Çeviri olduğu terimlerin yanlış yazılmasından belli. Sonra bir yazı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+Bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorsun. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
 
 Neredeyse hepsi böyle. Gözlemlediğim kadarıyla Türkçe bloglardaki genel eksiklikler:
 
 1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen w3schools.com dahil)
 2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor, çok az kişi eleştiriyi kabullenebiliyor.
 3. Çevirilerde terimler genellikle yanlış çeviriliyor. Son derece alakasız sonuçlar çıkabiliyor.
-4. Üst düzey PHP diye yazdıkları makaleler aslında PHP'nin (ve programlama dillerinin) temel bilgileri.
+4. Üst düzey PHP diye yazdıkları makaleler aslında PHP'nin temel bilgileri.
 
-Lütfen kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın.
+Lütfen kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden ve doğru kitaplardan alın.
 
-> Not: Bu blogun da Türkçe olması aslında bir ironi. En azından ben yazdığım şeylerin arkasında duruyorum ve herşeyi açık kaynaklı olarak yazıyorum.
+> Not: Bu blog da Türkçe ve bunun bir ironi olduğunun farkındayım.
 
 ### ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
 
 OOP kullanmak istemeyenlerin, frameworklere çok hantal çalışıyor diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa.`
 
-Kısa cevap: Hiçbirşey olmaz. Olsaydı ilk başta bana olurdu.
+Kısa cevap: Hiçbirşey olmaz.
 
-Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir vs.
+Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır vs.
 
 ### Kendinizi == yerine === kullanmaya alıştırın. ###
 
@@ -312,13 +312,17 @@ Yanlış. Doğrusu `===` kullanmak olmalıydı
 
 PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
 
-### DRY kuralını uyun. Kendinizi tekrar etmeyin. ###
+### DRY kuralına uyun. Kendinizi tekrar etmeyin. ###
 
 Yakında...
 
 ### Daima tutarlı olun. ###
 
 Yakında...
+
+### Dependency Injection, DI Container ve Inversion of Control ###
+
+Kısaca...
 
 ### If içerisinde if içerisinde if son derece yanlış. ###
 
@@ -328,13 +332,13 @@ Yakında... (art of readable code)
 
 **echo'yu unutun**
 
-**PHP'yi template motoru olarak kullanıp can çekişmeyin.**
-
 Yakında.
 
 ## Frontend ##
 
 **CSS**
+
+// CSS Explosiondan korunmak
 
 **Sass**
 
