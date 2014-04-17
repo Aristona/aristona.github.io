@@ -626,13 +626,31 @@ Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi de silebilirs
 
 `DRY` bölümünde anlattığım konuya bir örnekte bu. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. Bilgisayarın yapması gereken şeyleri siz yapmayın.
 
+Oluşturduğunuz form submite tıkladığında form verilerini uygulamaya gönderiyor mu? Güzel, ama bunu `acceptance testi` yazarak test edin.
+
+Formdan veri gönderildiğinde, gelen istek doğru yere yönlendiriliyor mu? Güzel, ama bunu `unit testi` yazarak kontrol edin.
+
+Formdan gelen tc kimlik no verisini doğrulayan method doğru çıktıları veriyor mu? Güzel, ama bunu `fonksiyonel test` yazarak kontrol edin.
+
+Bunu yapmadığınız zaman projenin herhangi biryerinde değişiklik yapmaya korkar olursunuz. Proje ne kadar büyürse projeyi manuel test etmek o kadar zorlaşır ve hata oranı büyük ölçüde artar.
+
+Ayrıca, benim gibi projeden projeye atlayan biriyseniz, hangi projenin ne durumda olduğunu aklınızda tutamayacaksınız.
+
+Bu yüzden test yazın, kafanız rahat etsin.
+
+> Not: PHPUnit, Codeception, Selenium, Behat gibi araçları araştırın.
+
 ### Testlerinizi yazarken string kullanmamaya çalışın. ###
 
-// Yakında
+İster unit test yazıyor olun, ister acceptance, ne kadar az string kontrol ederseniz sizin için o kadar sağlıklı olur.
 
-### Headerler hakkında bilgi sahibi olun. ###
+Mesela acceptance testlerinde `<p>Anasayfa</p>` varmı diye kontrol etmektense header kodunun 200 OK olduğunu kontrol edin. Anasayfa yazısı değişebilir (Anasayfa yerine Font Awesome ile ev resmi koyabilirsiniz örneğin) ama header kodu değişmez.
 
-// Headeri 404 olmayan 404 sayfası, 404 sayfası değildir.
+### HTTP Response kodlarını öğrenmeye ve kullanmaya çalışın. ###
+
+HTTP Response kodları önemlidir. Örneğin, headeri 404 olmayan bir 404 sayfası, gerçek bir 404 sayfası değildir. Google gibi arama motorları bu sayfayı 404 olarak saymazlar çünkü bu sayfanın aslında 404 ID'sine sahip kullanıcının profili olup olmadığını bilemezler.
+
+Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_codes adresinden ulaşabilirsiniz.
 
 ### MVC kullanıyorsanız, MVC gibi kullanın. ###
 
@@ -656,6 +674,8 @@ Yakında.
 
 **Sass**
 
+// Örnek bir sass dosyası
+
 **Browser compatibility**
 
 // Browserstack, caniuse, shim/modernizer vs
@@ -664,9 +684,9 @@ Yakında.
 
 // Opacity, alpha, js prefixleri, reuseable css, SVG, 3D animasyonlar
 
-**Ne kadar az, o kadar şık.**
-
 **Javascript**
+
+// Alert kullanmayın, lütfeeeeen!
 
 // Yakında
 
