@@ -33,19 +33,13 @@ Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafı
 Örneğin:
 
 ```php
-
-<?php
-
-    $veritabani = //pdo bağlantısı
-
+$veritabani = //pdo bağlantısı
 ```
 
 şeklinde global scope içerisinde bir değişken oluşturup buna bağlı kalırsanız, bir başkası istemeyerekte olsa
 
 ```php
-
-    $veritabani = null;
-
+$veritabani = null;
 ```
 
 yazarak uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir.
@@ -61,40 +55,36 @@ Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Enc
 Örneğin `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu extend etmesiyle çalışacak.
 
 ```php
-
 <?php
 
 abstract class Database
 {
 
-     public $veritabani;
-     private $info;
+    public $veritabani;
+    private $info;
 
-     public function __construct()
-     {
-           $this->info = new stdClass();
-           $this->connect();
-     }
+    public function __construct()
+    {
+        $this->info = new stdClass();
+        $this->connect();
+    }
 
-     public function attempt()
-     {
-         //Veritabanına bağlanmayı dene
-     }
+    public function attempt()
+    {
+        //Veritabanına bağlanmayı dene
+    }
 
-     public function connect()
-     {
-          $this->attempt($this->getConnectionString());
-          $this->info()->isConnected = true;
-     }
-
+    public function connect()
+    {
+        $this->attempt($this->getConnectionString());
+        $this->info()->isConnected = true;
+    }
 }
-
 ```
 
 Dikkat ettiyseniz `info` değişkenini `private` olarak yazdım.
 
 ```php
-
 <?php
 
 //Yukarıdaki sınıfa ek olarak
@@ -102,17 +92,17 @@ Dikkat ettiyseniz `info` değişkenini `private` olarak yazdım.
 class MySQL extends Database implements DatabaseConnectorInterface
 {
 
-     public $queryString;
+    public $queryString;
 
-     public function __construct()
-     {
-          $this->queryString = //Mysql DB query string
-     }
+    public function __construct()
+    {
+        $this->queryString = //Mysql DB query string
+    }
      
-     public function getConnectionString()
-     {
-          return $this->connectionString;
-     }
+    public function getConnectionString()
+    {
+        return $this->connectionString;
+    }
 }
 
 ```
@@ -126,19 +116,18 @@ Mesela KDV hesaplayıcı bir sınıf yazıyorsunuz ve KDV oranını `0,18` olara
 Buna rağmen bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örneğin ürünün KDV fiyatını hesaplattırmak için KDV Hesaplayıcı sınıfında KDV oranı kaç olarak belirlenmiş bunu öğrenmek isteyebilirsiniz. Burada `gettlers` devreye giriyor.
 
 ```php
+<?php
 
 class KDVCalculator 
 {
 
-     private $kdvRatio //0.18
+    private $kdvRatio //0.18
 
-     public function getKdvRatio()
-     {
-         return $this->kdvRatio;
-     }
-  
+    public function getKdvRatio()
+    {
+        return $this->kdvRatio;
+    }
 }
-
 ```
 
 Bilmeyenler için, `gettlers` ve `settlers` aslında çok basit iki tanım. Gettler, alacağımız değişkeni bir fonksiyon üzerinden almak, settler ise değiştireceğimiz değişkenin değerini fonksiyon üzerinden değiştirmektir.
@@ -174,7 +163,6 @@ Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullan
 1. Object literallerin keyleri stringdir, JSON'un attribute dir.
 
 ```js
-
 Object Literal:      var user = { name: "Anıl" }
 JSON:                var user = { "name": "Anıl" } 
 ```
@@ -219,29 +207,30 @@ Bu sektörde tek temel ihtiyaç var, o da İngilizce. Kullandığımız programl
 Örneğin:
 
 ```php
+<?php
+    
+class AssetYukleyici
+{
+    private $dosyalar;
 
-    class AssetYukleyici
+    public function __construct()
     {
-        private $dosyalar;
+        $this->dosyalar = array();
+    }
 
-        public function __construct()
-        {
-            $this->dosyalar = array();
-        }
+    public function style_ekle()
+    {
+        $stilDosyalari = Directory::get('*', 'css');
+        if( !empty($stilDosyalari) return $stilDosyalari;
+    }
 
-        public function style_ekle()
-        {
-             $stilDosyalari = Directory::get('*', 'css');
-             if( !empty($stilDosyalari) return $stilDosyalari;
-        }
-
-        public function css_ciktisi()
-        {
-            return array_walk($this->dosyalar, function($value, $key) {
-                return "<link href=\"assets/admin/css/{$value}.css'\" rel=\"stylesheet\">";
-            };
-        }
-
+    public function css_ciktisi()
+    {
+        return array_walk($this->dosyalar, function($value, $key) {
+            return "<link href=\"assets/admin/css/{$value}.css'\" rel=\"stylesheet\">";
+            });
+        );
+    }
 ```
 
 Bana kalırsa son derece çirkin ve amatörce duruyor. Türkçe desen Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey.
@@ -284,9 +273,9 @@ Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability 
 Örneğin:
 
 ```php
+<?php
 
-    strpos('abcde', 'ab')
-
+    strpos('abcde', 'ab');
 ```
 
 `strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.
@@ -294,23 +283,19 @@ Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability 
 Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksın.
 
 ```php
+<?php
 
     if ( strpos('abcde', 'ab') == false)
-    {
-         return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
-    }
-
+        return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
 ```
 
 Yanlış. Doğrusu `===` kullanmak olmalıydı
 
 ```php
+<?php
 
     if ( strpos('abcde', 'ab') === false)
-    {
          return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
-    }
-
 ```
 
 PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
