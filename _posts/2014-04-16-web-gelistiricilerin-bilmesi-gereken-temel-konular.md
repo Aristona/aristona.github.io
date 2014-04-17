@@ -33,13 +33,15 @@ Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafı
 Örneğin:
 
 ```php
-$veritabani = //pdo bağlantısı
+<?php
+	$veritabani = //pdo bağlantısı
 ```
 
 şeklinde global scope içerisinde bir değişken oluşturup buna bağlı kalırsanız, bir başkası istemeyerekte olsa
 
 ```php
-$veritabani = null;
+<?php
+	$veritabani = null;
 ```
 
 yazarak uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir.
@@ -160,14 +162,16 @@ Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullan
 
 `Javascript Object Literals` ile `JSON` farkı:
 
-1. Object literallerin keyleri stringdir, JSON'un attribute dir.
+a. Object literallerin keyleri stringdir, JSON'un attribute dir.
 
 ```js
-Object Literal:      var user = { name: "Anıl" }
-JSON:                var user = { "name": "Anıl" } 
+var user = { name: "Anıl" } //Object literal
+var user = { "name": "Anıl" }  //Object notation
 ```
 
-2. JSON'da fonksiyon tanımlanamaz. (yukarıdaki örnekte isOld() bir fonksiyondur)
+b. JSON'da method tanımlanamaz. Yukarıdaki örnekte `isOld()` bir methoddur.
+
+c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
 
 ### Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
@@ -180,17 +184,48 @@ Altın kuralımız şu:
 
 Nedir bu bağımlılık? 
 
-Bağımlılık dediğimiz şey, oluşturduğumuz sınıfın çalışabilmesi için kullandığı diğer sınıfların bütünü. Bağımlılıklar sınıf extensionu yapılarak, use kullanılarak veya constructor injection aracılığıyla eklenebilir.
+Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için kullandığı diğer sınıfların bütünüdür. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya scope içerisinde sınıflar `instantiate edilerek` eklenebilir.
 
-Kısacası, sizin `Admin` sınıfınız kullanıcıların avatarlarını resize etmek için `Resizer` sınıfını kullanıyorsa, o sınıfı bağlıdır.
+Örneğin:
 
-> Not: Bu bir kural değil, görüştür. Uymak zorunda değilsiniz ancak uymaya çalışırsanız 100kb'lık sınıflar içerisinde boğulmazsınız.
+```php
+<?php namespace Controllers;
+
+use Baska\Bir\Uzaydaki\ImageSinifi as Image;
+
+class HomeController
+{
+    private $database, $imageResizer, $logger;
+
+    /* 
+    | Constructor enjeksiyonu
+    | Ayrıca bu bağımlılık enjeksiyonudur ve bunu bilmek
+    | unit testler yazmak için mecburdur.
+    */ 
+    public function __construct(DatabaseInterface $database) //bağımlılık
+    {
+        $this->database = $database;
+        $this->imageResizer = new Image; //bağımlılık
+        $this->logger = new \Logger; //bağımlılık
+    }
+
+```
+
+Burada, `HomeController` sınıfı, 3 şeye bağlıdır.
+
+1. `DatabaseInterface` interfacesine sadık kalmış herhangi bir sınıfa.
+2. `Image` sınıfına.
+3. `Logger` sınıfına.
+
+Eğer bu sayı 4'ün üzerine çıkarsa, o zaman sınıfınız gereğinden fazla iş yapmış olur. Hem yönetmek zorlaşır, hem de SOLID ilkelerinden biri olan Single Responsibility Principle (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
+
+> Not: Maksimum 4 bağımlılık bir kural değil, görüştür. Uymak zorunda değilsiniz ancak uymaya çalışırsanız 100kb'lık sınıflar içerisinde boğulmazsınız.
 
 ### mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
 
-Gelen verileri `mysql_real_escape_string()`'den geçirdiğiniz için güvenli olacağınızı sanıyorsanız yanılıyorsunuz. Sizi SQL Injection'dan koruyacak şey `prepared statements`'dir.
+Gelen inputu `mysql_real_escape_string()` ile süzerek SQL Injection'dan korunduğunuzu sanıyorsanız yanılıyorsunuz. Bu klasik bir yanlıştır.
 
-Bu yüzden minimum `PDO` ve onun `prepared statements` özelliğini, tercihden bir `ORM` aracı kullanın.
+Süzmeyle hiç uğraşmadan `prepared statements` özelliğini kullanın. Prepared statements `Mysqli` ve `PDO`'da bulunabilir, ancak benim tavsiyem bir `ORM` aracı kullanmanızdır.
 
 > Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
 
@@ -274,7 +309,6 @@ Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability 
 
 ```php
 <?php
-
     strpos('abcde', 'ab');
 ```
 
@@ -284,7 +318,6 @@ Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olar
 
 ```php
 <?php
-
     if ( strpos('abcde', 'ab') == false)
         return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
 ```
@@ -293,12 +326,24 @@ Yanlış. Doğrusu `===` kullanmak olmalıydı
 
 ```php
 <?php
-
     if ( strpos('abcde', 'ab') === false)
          return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
 ```
 
 PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
+
+Özellikle `boolean` verileri karşılaştırırken mutlaka strict comparison operatörünü kullanın.
+
+`Boolean` verileri şunlardır: 
+
+1. Sayı olan 0 ve 1
+2. Float olan 0.0 ve 1.0
+3. Boolean olan true ve false
+4. Boş string veya string olan 0 ("0")
+5. null
+6. Boş array (boş array false, dolu array true)
+7. Object (daima true)
+8. Resources (daima true, http://www.php.net/manual/en/resource.php)
 
 ### DRY kuralına uyun. Kendinizi tekrar etmeyin. ###
 
