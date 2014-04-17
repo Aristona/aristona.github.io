@@ -143,9 +143,9 @@ class KDVCalculator
 
 Bilmeyenler için, `gettlers` ve `settlers` aslında çok basit iki tanım. Gettler, alacağımız değişkeni bir fonksiyon üzerinden almak, settler ise değiştireceğimiz değişkenin değerini fonksiyon üzerinden değiştirmektir.
 
-** Javascript kullanıyorsanız tanımlamaları çoğu zaman `Javascript Object Literals` olarak yapın. **
+**Javascript kullanıyorsanız tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın.**
 
-`Javascript Object Literal`ler PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
+Javascript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
 
 Aşağıdaki gibi bir javascript object literal tanımlayabiliriz.
 
