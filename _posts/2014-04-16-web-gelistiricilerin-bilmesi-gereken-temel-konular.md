@@ -33,6 +33,7 @@ Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafı
 Örneğin:
 
 ```php
+
 <?php
 
     $veritabani = //pdo bağlantısı
@@ -60,6 +61,7 @@ Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Enc
 Örneğin `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu extend etmesiyle çalışacak.
 
 ```php
+
 <?php
 
 abstract class Database
@@ -92,6 +94,7 @@ abstract class Database
 Dikkat ettiyseniz `info` değişkenini `private` olarak yazdım.
 
 ```php
+
 <?php
 
 //Yukarıdaki sınıfa ek olarak
