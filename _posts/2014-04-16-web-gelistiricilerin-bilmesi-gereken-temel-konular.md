@@ -28,7 +28,7 @@ Hazırsanız başlayalım.
 
 **Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
-Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki verilere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız. 
+Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki verilere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
 Örneğin:
 
@@ -377,7 +377,7 @@ Uzun terminal komutları zor mu geliyor? Alias oluşturun.
 
 Özellikle genç olan arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına var. Daha `akıllı çalış`. Daima daha fazlasını öğren. İyi olmak kadar hızlı olmakta önemli.
 
-> Not: Geliştirme ortamında yapabileceklerinzden iyileştirmelerden Geliştirme Ortamı bölümünde bahsedeceğim.
+> Not: Geliştirme ortamında yapabileceğiniz iyileştirmelerden Geliştirme Ortamı bölümünde bahsedeceğim.
 
 ### Daima tutarlı olun. ###
 
@@ -438,10 +438,8 @@ class Deneme
      }
 }
 
-//Uzaklarda biryerlerde
-
-<?php
-    new Deneme(new Mailer);
+// Sınıf scopesi dışında, uzaklarda biryerlerde
+new Deneme(new Mailer);
 
 ```
 
@@ -470,7 +468,7 @@ Daha sonra `Mailer` sınıfımızın bu interfaceye uymasını sağlayalım.
 ```php
 <?php
 
-class Mailer implements ImageInterface
+class Mailer implements MailerInterface
 {
     public function mail()
     {
@@ -491,7 +489,7 @@ class Mailer implements ImageInterface
 }
 ```
 
-Son olarak, `Mailer` sınıfı yerine, `ImageInterface` interfacesini enjekte edelim.
+Son olarak, `Mailer` sınıfı yerine, `MailerInterface` interfacesini enjekte edelim.
 
 ```php
 <?php
@@ -514,11 +512,11 @@ class Deneme
 
 class Deneme
 {
-     private $imageResizer;
+     private $mailer;
 
-     public function __construct(ImageInterface $image)
+     public function __construct(MailerInterface $mailer)
      {
-         $this->imageResizer = $image;
+         $this->mailer = $mailer;
      }
 }
 ```
