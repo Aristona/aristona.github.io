@@ -227,11 +227,11 @@ Gelen inputu `mysql_real_escape_string()` ile süzerek SQL Injection'dan korundu
 
 Süzmeyle hiç uğraşmadan `prepared statements` özelliğini kullanın. Prepared statements `Mysqli` ve `PDO`'da bulunabilir, ancak benim tavsiyem bir `ORM` aracı kullanmanızdır.
 
-> Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
+// Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
 
 ### Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin, vakit kaybı. ###
 
-> Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
+// Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
 
 ### Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
@@ -351,15 +351,260 @@ Yakında...
 
 ### Daima tutarlı olun. ###
 
-Yakında...
+Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları _ kullanarak ayırıyorsanız, böyle devam edin. Yaptığınız herşey tutarlı olsun. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın.
 
-### Dependency Injection, DI Container ve Inversion of Control ###
+Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`?
 
-Kısaca...
+Neden bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Neden bir standart yok?
 
-### If içerisinde if içerisinde if son derece yanlış. ###
+Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine çevirir. PHP'de bu ne tahmin edin bakalım?
 
-Yakında... (art of readable code)
+`str_reverse? streverse? strrev? revstr? reverse?`
+
+Kazanan `strrev`.
+
+Siz bunu asla yapmayın. TAB kullanmayı bırakıp 4 space kullanmaya başlamaya karar verdiyseniz, ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin.
+
+> Not: Sırf bu yüzden PHP'in yediği lafları hayal edemezsiniz, ancak PHP ekibininde yapabileceği fazla birşey yok çünkü geliştirilmiş onca uygulamayı bozmak istemiyorlar.
+
+> Not 2: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
+
+### Dependency Injection, Dependency Injection Container ve Inversion of Control ###
+
+Bunların ne olduğunu bilmek artık her geliştirici için şart olduğu için ne olduklarını yazma ihtiyacı hissediyorum.
+
+`Dependency Injection` (Bağımlılık Enjeksiyonu), James Shore'ın dediği gibi: "5 centlik konsept için 25 dolarlık terim kullanılması."
+
+Bağımlılık Enjeksiyonu mantık olarak son derece basit. Hatta, şuana kadar verdiğim örneklerde birkaç defa kullandım. Kuralımız basit. Oluşturduğunuz sınıflarda `new` kullanmayacaksınız, kullanmamız gereken bağımlılık sınıfları bizim sınıfımıza verilecek.
+
+Örneğin:
+
+```php
+<?php
+
+class Deneme
+{
+     private $mailer;
+
+     public function __construct()
+     {
+         $this->mailer = new Mailer;
+     }
+}
+```
+
+bunu yapmak büyük bir hata. Böyle yaptığımız zaman unit testlerimizi yapmak çok zor, hatta imkansız duruma gelir. Bunun yerine dependency injection kullanmalıyız.
+
+```php
+<?php
+
+class Deneme
+{
+     private $mailer;
+
+     public function __construct(Mailer $mailer)
+     {
+         $this->mailer = $mailer;
+     }
+}
+
+//Uzaklarda biryerlerde
+
+<?php
+    new Deneme(new Mailer);
+
+```
+
+Dependency Injection bu kadar basit. Sınıfımız kendisi `Mailer` sınıfını oluşturmaktansa, `constructor injection` (Enjeksiyonu constructor üzerinden eklemek) aracılığıyla `Mailer` sınıfına sahip oluyor.
+
+Ancak, bu yazdığımız kod `SOLID İlkeleri`'ni ihlal ediyor çünkü sınıfı direkt olarak enjekte etmiş oluyoruz. (L) Liskov's Substitution Principle kuralı der ki; sınıflar, başka sınıflar yerine abstractionlara bağımlı olmalı.
+
+Bu PHP'de şu anlama geliyor. `Mailer` sınıfı bir interfaceyi implement etmeli, ve bu interfaceye uyan herhangi bir sınıf `Deneme` sınıfında çalışabilir olmalıdır.
+
+Bir örnekle açıklayalım. Öncelikle interfacemizi oluşturalım ve hangi methodların bulunması gerekiyor bunları belirtelim.
+
+```php
+<?php
+
+interface MailerInterface {
+    public function mail();
+    public function attachFile();
+    public function setSender();
+    public function setTo();
+}
+
+```
+
+Daha sonra `Mailer` sınıfımızın bu interfaceye uymasını sağlayalım.
+
+```php
+<?php
+
+class Mailer implements ImageInterface
+{
+    public function mail()
+    {
+        // mail fonksiyonu
+    }
+    public function attachFile()
+    {
+        // attachFile fonksiyonu
+    }
+    public function setSender()
+    {
+        // setSender fonksiyonu
+    }
+    public function setTo($to)
+    {
+        // setTo fonksiyonu
+    }
+}
+```
+
+Son olarak, `Mailer` sınıfı yerine, `ImageInterface` interfacesini enjekte edelim.
+
+```php
+<?php
+
+class Deneme
+{
+     private $mailer;
+
+     public function __construct(MailerInterface $mailer)
+     {
+         $this->mailer = $mailer;
+     }
+}
+```
+
+Şuan `Deneme` sınıfımız `Mailer` sınıfı yerine, `MailerInterface` interfacesine uyan herhangi bir sınıfı kabul edecek.
+
+```php
+<?php
+
+class Deneme
+{
+     private $imageResizer;
+
+     public function __construct(ImageInterface $image)
+     {
+         $this->imageResizer = $image;
+     }
+}
+```
+
+Bu olayı dünyevi bir örnekle anlatalım. Aracınızla gidiyorsunuz ve benzininiz bitmek üzere. Benzinliğe girip benzin almak için bir benzinliğe uğradınız.
+
+1. Eğer benzinliğe (sınıf) bağlı olsaydınız, Türkiye'deki tek benzinciden benzin alabilirdiniz.
+2. Benzin yerine mezot doldurulmadığından emin olamazdınız. Aracınızı çalıştırdığınızda neden motordan garip sesler geliyor diye düşünürdünüz.
+
+Interfacelere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin almamıza yardımcı olur. Çünkü eminiz benzin pompası bizim aracımızın benzin deposuna uygun. Pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (interface)
+
+Şimdi yukarıda verdiğimiz örneği yazılımsal bir örnekle anlatalım.
+
+Mail göndermek için `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` kullanabiliriz. Interfacemize uyduğu sürece istediğimiz sınıfı kullanabiliriz.
+
+**Houston, bir sorunumuz var....**
+
+Sorunumuz şu. Interface'ler sınıflar gibi instantiate edilemezler. (Yani `new` kullanarak onları çalıştıramayız.)
+
+Peki bu durumda ne olacak?
+
+`Dependency Injection Konteynerleri` bu durumda bizim yardımımıza koşuyor. Bu konteynerler, interfaceleri gördüklerinde belirttiğimiz sınıfı oluşturup bizim yerimize döndürecekler.
+
+// Yakında burayı anlatacağım, anlaşılabilir şekilde örnekler yazmam lazım.
+
+> Not: Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı değil. Detaylı bilgiye sahip olmak isteyen arkadaşlar Google üzerinde araştırma yapabilir.
+
+### Gerekmedikçe else, uzun if blokları ve köşeli parantez kullanmayın. ###
+
+Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz. Bunun için bir örnek verelim. 
+
+Bir değişkenin array olup olmadığını anlamak istediğiniz bir fonksiyon yazıyorsunuz. (Aslında bu örnek is_array ile yapılabilir ancak ben burada soruna değinmek istediğim için fonksiyon oluşturarak anlatacağım.)
+
+Bu fonksiyon aşağıdaki şekilde yazılabilir.
+
+```php
+<?php
+
+    function isArray($input)
+    {
+        if(is_array($input)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+```
+
+Ama `return` kullanmak fonksiyonu zaten durduracağı için `else` kullanmaya gerek kalmadan şu şekilde yazılabilir.
+
+```php
+<?php
+
+    function isArray($input)
+    {
+        if(is_array($input)
+        {
+            return true;
+        }
+  
+        return false;
+    }
+```
+
+If bloğu içerisindeki ilk satır daima if bloğu içerisinde sayılacağı için, köşeli parantezleri de silebiliriz.
+
+```php
+<?php
+
+    function isArray($input)
+    {
+        if(is_array($input)
+            return true;
+  
+        return false;
+    }
+```
+
+Bunu biraz daha geliştirip, ternary yapısını da kullanabiliriz.
+
+```php
+<?php
+
+    function isArray($input)
+    {
+        return is_array($input) ? true : false;
+    }
+```
+
+Çok daha kısa, okunaklı ve şık duruyor.
+
+Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi de silebilirsiniz.
+
+```php
+<?php
+
+    function isArray($input)
+    {
+        return is_array($input) ?: false;
+    }
+```
+
+### Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
+
+// Neden yanlış, yakında
+
+### Unit testlerinizi yazarken string kullanmamaya çalışın. ###
+
+// Neden yanlış, yakında
+
+### Headerler hakkında bilgi sahibi olun. ###
+
+// Headeri 404 olmayan 404 sayfası, 404 sayfası değildir.
 
 ### MVC kullanıyorsanız, MVC gibi kullanın. ###
 
@@ -373,50 +618,70 @@ Yakında.
 
 // CSS Explosiondan korunmak
 
+**Semantic HTML yazmak**
+
+// Divider kullananlar falan var ya, hepsi yanlış
+
 **Sass**
 
 **Browser compatibility**
 
+// Browserstack, caniuse, shim/modernizer vs
+
 **Tips&Tricks**
+
+// Opacity, alpha, js prefixleri, reuseable css, SVG, 3D animasyonlar
 
 **Ne kadar az, o kadar şık.**
 
 **Javascript**
 
-Yakında
+// Yakında
 
 ## Dev Environment ##
 
 **Grunt**
 
-**Tips & tricks**
+// Ayak işlerini yaptıralım
+
+// Kendi modülümüzü yazalım
+
+**Kullanabileceğiniz araçlar**
+
+// Yakında
+
+**Kullanmamanız gereken şeyler**
+
+// DW
+
+**Gözlerinizi koruyun**
+
+// Yakında
 
 **Terminale ne kadar yakın, o kadar iyi**
+
+// Farenizi değil, klavyenizi hızlandırın
 
 ## Veritabanları ##
 
 **Neden utf8mb4_unicode_ci?**
 
-Yakında
+// Yakında
 
 ## Deployment ##
 
 **Capistrano**
 
-Yakında
+// Yakında
 
-**FTP kullanmayın! (asla)!**
+**FTP kullanmayın!**
 
-Yakında
+// Sebepleri ve alternatif kullanımları
 
 ## Versiyon kontrol ##
 
 **Sus ve git kullan**
 
-Yakında
-
-## Aklıma gelenler ##
-
-Yakında.
+// Kaçışın yok
 
 > Not: Bu makale vakit buldukça güncellenecektir. Eklenmesini istediğiniz konuları issue oluşturarak bildirebilirsiniz.
