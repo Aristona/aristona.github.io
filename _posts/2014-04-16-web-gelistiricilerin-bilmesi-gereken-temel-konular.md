@@ -345,9 +345,39 @@ PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (==
 7. Object (daima true)
 8. Resources (daima true, http://www.php.net/manual/en/resource.php)
 
-### DRY kuralına uyun. Kendinizi tekrar etmeyin. ###
+### DRY kuralına uyun ve akıllı çalışın. ###
 
-Yakında...
+`DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz.
+
+Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o işlem için fonksiyon oluşturuyorsa DRY için bir adım atmış olur. Üst düzey bir yazılımcı her projesinde kullanabileceği bir komponent yazmış ve bunu package managerlar tarafından yönetiyorsa DRY için bir adım atmış olur.
+
+// Salt PHP ve L4 konusunda DRY örnekleri gelecek buraya.
+
+`DRY`ın sonu yoktur ve sadece programlama dilleriyle ilgili değildir. Proje geliştirirken sık sık yaptığınız işlemleri bilgisayara yaptırmakta bu kural için atılmış adımlar olacaktır.
+
+Örneğin, veritabanı yedeği mi alınacak? Veritabanı yönetici paneline gir, veritabanını seç, tabloları seç, exporta tıkla, yol olarak bir path belirle, çıktıyı oluştur, o klasöre gir, çıktıyı zip içerisine koy, sonra ismini "x dbsi yedeği" yap... Bu tür işlemlerle kaybettiğiniz zamanı hesaplayın ve o kaybolan zaman içerisinde kaç tane proje geliştirebileceğinizi düşünün.
+
+Bunun yerine:
+
+    grunt backup:veritabani
+
+yazdığınızda bu işlemlerin sizin yerinize yapılması daha hoş olmaz mı?
+
+Veya:
+
+    grunt backup:veritabani --push
+
+yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz?
+
+Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın. 
+
+Her seferinde public function yazmak zor mu geliyor? Kullandığınız IDE içerisinde Snippet oluşturun. (ya da daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
+
+Uzun terminal komutları zor mu geliyor? Alias oluşturun.
+
+Özellikle genç olan arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına var. Daha `akıllı çalış`. Daima daha fazlasını öğren. İyi olmak kadar hızlı olmakta önemli.
+
+> Not: Geliştirme ortamında yapabileceklerinzden iyileştirmelerden Geliştirme Ortamı bölümünde bahsedeceğim.
 
 ### Daima tutarlı olun. ###
 
@@ -596,11 +626,11 @@ Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi de silebilirs
 
 ### Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
-// Neden yanlış, yakında
+`DRY` bölümünde anlattığım konuya bir örnekte bu. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. Bilgisayarın yapması gereken şeyleri siz yapmayın.
 
-### Unit testlerinizi yazarken string kullanmamaya çalışın. ###
+### Testlerinizi yazarken string kullanmamaya çalışın. ###
 
-// Neden yanlış, yakında
+// Yakında
 
 ### Headerler hakkında bilgi sahibi olun. ###
 
@@ -609,6 +639,10 @@ Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi de silebilirs
 ### MVC kullanıyorsanız, MVC gibi kullanın. ###
 
 **echo'yu unutun**
+
+Yakında.
+
+**Viewlar, Controllerdan gelen mümkün olan en az bilgiyle çalışmalıdır.**
 
 Yakında.
 
@@ -685,3 +719,4 @@ Yakında.
 // Kaçışın yok
 
 > Not: Bu makale vakit buldukça güncellenecektir. Eklenmesini istediğiniz konuları issue oluşturarak bildirebilirsiniz.
+
