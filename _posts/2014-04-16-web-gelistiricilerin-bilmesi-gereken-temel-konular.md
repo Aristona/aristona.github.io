@@ -1,4 +1,4 @@
-st---
+---
 layout: post
 title: "Web geliştiricilerin bilmesi gereken temel konular"
 description: "Web geliştiricilerin bilmesi gereken temel konular"
