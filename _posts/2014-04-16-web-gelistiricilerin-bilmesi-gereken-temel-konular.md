@@ -736,13 +736,13 @@ Bu hatayı malesef devasa kurumlar bile yapmakta. 2011 yılında `sahibinden.com
 
 Sadece bu değil, dünya çapında birçok web sitesi bu tür basit dikkatsizliklerin kurbanı olabiliyor ve oldu da.
 
+Bu yüzden, `<?php` dışında hiçbir açılış tagını kullanmayın.
+
 ### Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
 
 Yanlışlıkla sunucu, ftp, veritabanı veya API bilgilerinizin olduğu dosyaları Github'a yüklemeyin. Gizli kalması gereken dosyaları `.gitignore` kullanarak gizleyin.
 
-Commit logları kaldığı için daha sonra silseniz bile başkaları tarafından görünebiliyorlar.
-
-Dikkatli olun.
+Commit logları kaldığı için daha sonra silseniz bile başkaları tarafından görünebiliyorlar. Dikkatli ve uyanık olun.
 
 ### Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
 
@@ -754,11 +754,23 @@ https://github.com/search?q=exec+sudo+%24_GET&type=Code
 
 Sorunu anlamayanlar varsa anlatmaya çalışayım. Buradaki scriptlerin bazıları, gelen `GET` isteğini kontrol etmeden direkt olarak linux adminin yetkisiyle çalıştırıyorlar. Yani birisi "Hey linux, bana sunucunun şifresini verir misin?" diye sorabilir veya "Hey linux, kendine format atar mısın?" tarzındaki komutları çalıştırabilir.
 
-Iyy... düşünmesi bile korkutucu. Bunlardan olmayın.
+Bazıları session onları korur diye düşünebilir, ama session spoofing, session hijacking gibi saldırılara maruz kalabilirsin veya cookilerin çalınabilir. Bu durumda ne yapacaksın? Session beni korur demek nasıl olsa kimse beni hacklemez diye SQL Injection açığı bırakmakla aynı şeydir.
+
+Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritabanı sorgusuna sokmayın.
 
 ### Ekrana bastırılacak verileri daima filtreleyin. ###
 
-Kullanıcıdan gelen verileri (veritabanına eklenmiş olanlar dahil) ekrana bastırırken daima filtreleyin.
+Kullanıcıdan gelen verileri (veritabanına eklenmiş olanlar dahil) ekrana bastırırken daima filtreleyin. Bu filtreleme sizi XSS saldırılarından korur.
+
+Örneğin:
+
+```js
+<script>alert("Selam");</script>
+```
+
+yazdığım zaman bu input veritabanına girecektir. Daha sonra bu veri ekrana bastırılacaktır ve eğer javascript tarayıcıda açıksa, çalışacaktır.
+
+Bu yüzden ekrana bastırma esnasında filtreden geçirilerek zararsız hale gelmesi gerekmektedir.
 
 ### Composer kullanın. ###
 
