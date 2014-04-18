@@ -724,7 +724,7 @@ Açıkcası bu özelliğin PHP'ye neden eklendiğini anlamış biri değilim. Ö
 
 PHP kullanırken `?>` kullanarak açılan tagları kapatmanıza gerek yok. Kapattığınız takdirde `?>` tagından sonra yeni satır veya boşluk gibi karakterler kalabiliyor. Bu karakterler PHP tarafından `output` (çıktı) olarak algılandığı için `Headers already sent` hatası, sessionların oluşturulamaması, header kodlarının değiştirilememesi gibi hatalara sebep oluyor.
 
-Ben hiçbirşeyi gözden kaçırmam demeyin, kaçabiliyor. 
+Ben hiçbirşeyi gözden kaçırmam demeyin, kaçabiliyor. 
 
 > Not: Kaçabiliyordan sonra birtane whitespace kaçtı mesela. Farkettin mi?
 
