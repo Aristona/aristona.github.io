@@ -842,9 +842,11 @@ Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır.
 
 ## Versiyon kontrol ##
 
-**Sus ve git kullan**
+**Sus ve git kullan.**
 
 // Kaçışın yok
+
+**Commit mesajlarınız açıklayıcı olsun.**
 
 ## Hosting ve sunucu ##
 
