@@ -1,4 +1,4 @@
----
+st---
 layout: post
 title: "Web geliştiricilerin bilmesi gereken temel konular"
 description: "Web geliştiricilerin bilmesi gereken temel konular"
@@ -611,7 +611,7 @@ Bunu biraz daha geliştirip, ternary yapısını da kullanabiliriz.
 
 Çok daha kısa, okunaklı ve şık duruyor.
 
-Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi de silebilirsiniz.
+Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi bile silebilirsiniz.
 
 ```php
 <?php
@@ -654,65 +654,175 @@ Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_c
 
 ### MVC kullanıyorsanız, MVC gibi kullanın. ###
 
-**echo'yu unutun**
+**Controller içerisinde echo'yu unutun**
 
-Yakında.
+`Controller` içerisinde asla `echo` veya `print` gibi fonksiyonları kullanmayın. Çıktıyı ekrana bastıracak katman daima `View` katmanıdır.
+
+Örnek olarak aşağıdaki scripti ele alabiliriz.
+
+```php
+<?php
+
+class Controller
+{
+  
+    public function test()
+    {
+        $test = "Birşey";
+
+        echo $test; //yanlış
+        print $test; //yanlış
+
+        return $view->bind('test', $test); //doğru
+        return $view->render('birsey.php', array('test' => $test)); //doğru
+        return $test; //doğru, dönen veri mutlaka view katmanına ulaşacaksa.
+    }
+}
+```
 
 **Viewlar, Controllerdan gelen mümkün olan en az bilgiyle çalışmalıdır.**
 
-Yakında.
+Bazen `Controller` sınıfları `View`'e gereğinden fazla veri gönderir ve bu sıkıntı çıkarabilir.
+
+Örneğin, veritabanındaki tablolara göre navigasyon menüsünün linklerini hazırlamakla yükümlü bir `Controller methodu`, View'e mümkün olan en az veriyi göndermelidir.
+
+Örneğin, linki oluştururken kullandığımız site adresi gibi bilgiler, View'de bulunmalı, Controller sadece linkin değişen kısmını göndermelidir.
+
+### Çıkan notice ve warningler birer bugdur ve düzeltilmesi gerekir. ###
+
+PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar bazen görmezden gelinebilir. Bunlar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING`'dir. (Hepsine http://php.net/manual/en/errorfunc.constants.php adresinden bakabilirsiniz.)
+
+1. `E_DEPRECATED` kullanılan bir özelliğin ileride PHP'den kaldırılacağını belirtir. (örneğin `mysql` ile başlayan fonksiyonlar)
+
+2. `E_STRICT` yazılan scriptin hatalı olabileceğini ve sıkı kurallara uyulmasını gerektiğini belirtir.
+
+3. `E_WARNING` çok tehlikeli olabilecek hataların bırakıldığını belirtir.
+
+4. `E_NOTICE` warning kadar olmasa da, düzeltilmesi gereken hataları belirtir.
+
+Bu yüzden geliştirme ortamınızda hata raporlamanın açık durumda olması ve hertürlü hata seviyesindeki sorunları çözüyor olmanız sizin için bir avantajdır.
+
+### Hataları analiz etmek için backtrace kullanın. ###
+
+Uygulamanızda bir hata aldınız, ancak neden böyle bir hata aldığınızı bilmiyorsanız PHP'in `backtrace` (geri sarma) özelliğini kullanabilirsiniz.
+
+PHP, siz istemedikçe hatalar hakkında stack trace bilgisi vermez. Sadece `X dosyasının 55. satırında hata oluştu` der.
+
+Stack trace hakkında bilgi sahibi olmak için:
+
+1. Whoops adlı paketi (http://filp.github.io/whoops/) uygulamanızda kullanabilirsiniz. (önerilen)
+
+2. `debug_backtrace()` fonksiyonunu kullanarak stack traceyi kendiniz takip edebilirsiniz.
+
+### @ kullanmayın. ###
+
+`@`, PHP'de muhtemel hataların ekrana yansımaması için onları sessizleştirir. Siz istediğiniz hataları sessizleştirin, susturun, onlar oluşmaya devam edecektir.
+
+Açıkcası bu özelliğin PHP'ye neden eklendiğini anlamış biri değilim. Ölümcül hatalar, warningler, noticeler, exceptionlar, trigger_error ve bunların fonksiyonları ile php.ini konfigürasyonları derken zaten yeterince kafa karışıklığı oluşuyor. Birde bunları susturacak (hepsini değil) özellikler var. Neden diye soramıyorum... çünkü PHP kullanıyoruz, bunlara alıştık. ¯\_(ツ)_/¯
+
+### ?> kullanmayın. ###
+
+PHP kullanırken `?>` kullanarak açılan tagları kapatmanıza gerek yok. Kapattığınız takdirde `?>` tagından sonra yeni satır veya boşluk gibi karakterler kalabiliyor. Bu karakterler PHP tarafından `output` (çıktı) olarak algılandığı için `Headers already sent` hatası, sessionların oluşturulamaması, header kodlarının değiştirilememesi gibi hatalara sebep oluyor.
+
+Ben hiçbirşeyi gözden kaçırmam demeyin, kaçabiliyor. 
+
+> Not: Kaçabiliyordan sonra birtane whitespace kaçtı mesela. Farkettin mi?
+
+### Short tags kullanmayın. ###
+
+Bazı yazılımcılar `<?php` yerine `<?` kullanıyor. Bu son derece yanlış. Short tag kullanacaksanız `short_open_tag` mutlaka açık konumda olmalı. Kapalı olursa ne olur? Hiç. Kaynak kodlarınız kabak gibi tarayıcıya çıkar.
+
+Bu hatayı malesef devasa kurumlar bile yapmakta. 2011 yılında `sahibinden.com`'u geliştiren bir yazılımcı `<?php` yerine `a?php` (<'in bir üstündeki tuş) yazdı diye `sahibinden.com`'un tüm kaynak dosyasını tarayıcıda gösterdi ve bu bilgiler arasında duyduğum kadarıyla veritabanı şifresinden ve FTP bilgileri bile vardı.
+
+Sadece bu değil, dünya çapında birçok web sitesi bu tür basit dikkatsizliklerin kurbanı olabiliyor ve oldu da.
+
+### Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
+
+Yanlışlıkla sunucu, ftp, veritabanı veya API bilgilerinizin olduğu dosyaları Github'a yüklemeyin. Gizli kalması gereken dosyaları `.gitignore` kullanarak gizleyin.
+
+Commit logları kaldığı için daha sonra silseniz bile başkaları tarafından görünebiliyorlar.
+
+Dikkatli olun.
+
+### Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
+
+Aşağıda mükemmel yazılımcıların... (*öhüöhü*) açık kaynaklı projeleri... (*öhüöhü*) Kusura bakmayın, biraz kötü oldum. Bu kadar kötü kod görünce bünyem kaldırmıyor. 
+
+Durumun vehametini size tek bir linkle göstereceğim.
+
+https://github.com/search?q=exec+sudo+%24_GET&type=Code
+
+Sorunu anlamayanlar varsa anlatmaya çalışayım. Buradaki scriptlerin bazıları, gelen `GET` isteğini kontrol etmeden direkt olarak linux adminin yetkisiyle çalıştırıyorlar. Yani birisi "Hey linux, bana sunucunun şifresini verir misin?" diye sorabilir veya "Hey linux, kendine format atar mısın?" tarzındaki komutları çalıştırabilir.
+
+Iyy... düşünmesi bile korkutucu. Bunlardan olmayın.
+
+### Ekrana bastırılacak verileri daima filtreleyin. ###
+
+Kullanıcıdan gelen verileri (veritabanına eklenmiş olanlar dahil) ekrana bastırırken daima filtreleyin.
+
+### Composer kullanın. ###
+
+// Yakında
 
 ## Frontend ##
 
-**CSS**
+**--- CSS ---**
 
-// CSS Explosiondan korunmak
+**CSS Explosiona maruz kalmayın.**
 
-**Semantic HTML yazmak**
+**Precompiler kullanın.**
 
-// Divider kullananlar falan var ya, hepsi yanlış
+**Semantic HTML yazın.**
 
-**Sass**
+**Ayraçları HTML ile yazmayın.**
 
-// Örnek bir sass dosyası
+**Duplicate HTML yazmayın.**
 
-**Browser compatibility**
+**Linkleri doğru şekilde yazın.**
+
+Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır.
+
+Örneğin `http://www.anilunal.com` hatalıyken, doğru olan `http://anilunal.com/`'dur.
+
+**Tarayıcı uyumluluğunu test edin.**
 
 // Browserstack, caniuse, shim/modernizer vs
 
-**Tips&Tricks**
+**Fazla opacity ve alpha kullanmayın.**
 
-// Opacity, alpha, js prefixleri, reuseable css, SVG, 3D animasyonlar
+**ID seçicilerini gerekmedikçe kullanmayın.**
 
-**Javascript**
+**--- Javascript ---**
 
-// Alert kullanmayın, lütfeeeeen!
+**Debug için alert kullanmayın, lütfen!**
 
-// Yakında
+**Hoisting hakkında bilgi sahibi olun.**
 
-## Dev Environment ##
+**Tanımlamaları lambda altında yapın.**
 
-**Grunt**
+**Selector kullandığınız zaman onu önbellekleyin.**
 
-// Ayak işlerini yaptıralım
+## Geliştirici Ortamı ##
 
-// Kendi modülümüzü yazalım
+**--- Grunt ---**
 
-**Kullanabileceğiniz araçlar**
+**Ayak işlerini yaptıralım.**
 
-// Yakında
+**Kendi modülümüzü yazalım.**
 
-**Kullanmamanız gereken şeyler**
+**Kullanabileceğiniz diğer araçlar.**
+
+**Kullanmamanız gereken araçlar.**
 
 // DW
 
-**Gözlerinizi koruyun**
+**Gözlerinizi koruyun.**
 
 // Yakında
 
-**Terminale ne kadar yakın, o kadar iyi**
+**Terminale ne kadar yakın, o kadar iyi.**
 
-// Farenizi değil, klavyenizi hızlandırın
+**Farenizi değil, klavyenizi hızlandırın.**
 
 ## Veritabanları ##
 
@@ -736,5 +846,10 @@ Yakında.
 
 // Kaçışın yok
 
-> Not: Bu makale vakit buldukça güncellenecektir. Eklenmesini istediğiniz konuları issue oluşturarak bildirebilirsiniz.
+## Hosting ve sunucu ##
 
+**Neden PaaS?**
+
+**Shared hostingler artık öldü.**
+
+> Not: Bu makale vakit buldukça güncellenecektir. Eklenmesini istediğiniz konuları issue oluşturarak bildirebilirsiniz.
