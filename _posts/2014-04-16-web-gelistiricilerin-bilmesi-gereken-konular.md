@@ -151,7 +151,6 @@ class MySQL extends Database implements DatabaseConnectorInterface
         return $this->isConnected(); //Doğru, fonksiyon üzerinden erişebiliyoruz
     }
 }
-
 ```
 
 Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `isConnected` değişkenini değiştiremez çünkü yetkisi yok. Neden? Değişkeni `private` olarak tanımladığımız için sadece `Database sınıfı scopesi` içerisinden erişilebilir. Ancak biz şuan `MySQL sınıfı scopesi` içerisindeyiz.
@@ -202,9 +201,9 @@ Gördüğünüz gibi `settler` bir fonksiyon üzerinden gizli olan `kdvRatio` de
 
 > Biliyor musunuz?
 
-`C#` dilinde gettler ve settler methodlar kolayca oluşturulabilmektedir.
+`Csharp` dilinde gettler ve settler methodlar kolayca oluşturulabilmektedir.
 
-```cs
+```php
 public class Database
 {
     public string info { get; set; } //gettler ve settler oluşturuldu
@@ -215,7 +214,7 @@ public class Database
 
 `Ruby` dilinde gettler ve settler oluşturmak çok basittir.
 
-```rb
+```php
 class Database
     attr_accessor :info //gettler ve settler oluşturuldu
 end
@@ -260,7 +259,6 @@ class HomeController
         $this->imageResizer = new Image; //bağımlılık
         $this->logger = new \Logger; //bağımlılık
     }
-
 ```
 
 Burada, `HomeController` sınıfı, 3 şeye bağlıdır.
