@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Web geliştiricilerin bilmesi gereken temel konular"
-description: "Web geliştiricilerin bilmesi gereken temel konular"
+title: "Web geliştiricilerin bilmesi gereken konular"
+description: "Web geliştiricilerin bilmesi gereken konular"
 modified: 2014-04-16
 tags: [PHP]
 image:
@@ -12,49 +12,75 @@ share: true
 
 Merhaba,
 
-Zamanım olmadığı için uzun zamandır bloguma yazı yazmıyordum. Ancak neredeyse hergün sosyal platformlarda aynı hataları ve yanlış düşüncelerin olduğunu gördüğüm için bu yazıyı yazmaya karar verdim.
+Uzun zamandır bloguma yazı yazmıyordum, ancak neredeyse hergün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm için bu yazıyı yazmaya karar verdim.
 
-Bu yazımda web geliştiricilerinin bilmesi gereken temel konulardan bahsedeceğim. Aslında bahsedeceğim şeyler çok üst düzey konular değil ama bilinmesi ve uyulması size büyük bir avantaj sağlayacak.
+Bu yazımda web geliştiricilerin bilmesi gereken konulardan bahsedeceğim. Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayacak.
 
-Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum, bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. konularda bilmeniz gerekenleri anlatacağım.
+Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum. Bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. gibi konularda bilmeniz gerekenleri anlatmaya çalışacağım. Bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir.
 
-Hazırsanız başlayalım.
+Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır. (Bağış yapmak isteyen arkadaşlar isterlerse yapabilirler.)
 
-> Not: Bu yazı açık kaynaklı olarak Github hesabım üzerinde yayınlanmaktadır. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa pull request atabilirsiniz.
+Bu yazı açık kaynaklı olarak Github hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu için daima güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konular varsa bu konuları da `issue` oluşturarak belirtebilirsiniz. Kaynak [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır.
 
-## Backend ##
+## Backend (Arka yüz) ##
+
+Bu bölümde backend için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek yazılım mimarisiyle ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
 
 ### Global scopeyi asla kirletmeyin. ###
 
-**Değişkenlerinizi global scope içerisinde tanımlamayın.**
+***a. Değişkenlerinizi global scope içerisinde tanımlamayın.***
 
-Global scope içerisinde tanımladığınız şeyler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki verilere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
+`Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki değişkenlere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
-Örneğin:
+Öncelikle, PHP'de `scope`'un ne olduğundan kısaca bahsedelim.
 
 ```php
 <?php
-	$veritabani = //pdo bağlantısı
+	$global = "Global scope içerisindeki değişken";
+
+    function ()
+    {
+         $fonksiyon = "Fonksiyon scope içerisindeki değişken";
+         echo $fonksiyon; // Çıktı: Fonksiyon scope içerisindeki değişken
+    }
+
+    echo $global; // Çıktı: Global scope içerisindeki değişken
+    echo $fonksiyon; // Çıktı: Hiçbirşey
 ```
 
-şeklinde global scope içerisinde bir değişken oluşturup buna bağlı kalırsanız, bir başkası istemeyerekte olsa
+Yukarıdaki örnekte `$global` değişkeni `global scope` içerisinde tanımlanmıştır ve uygulamanın heryerinden erişilebilir olur. Buna karşın `$fonksiyon` değişkeni `fonksiyon scope` içerisinde tanımlanmıştır ve sadece o fonksiyon içerisinden erişilebilir olur.
+
+Şimdi değişkenleri global olarak tanımlamak neden yanlıştır bunu inceleyelim.
+
+Örneğin, bir `$veritabani` değişkeninde mysql bağlantısını tuttuğumuzu farzedelim.
+
+```php
+<?php
+	$veritabani = //bir mysql bağlantısı;
+```
+
+Bu global scope içerisinde tanımlanmış bir değişken olduğu için, bir başkası:
 
 ```php
 <?php
 	$veritabani = null;
 ```
 
-yazarak uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir.
+yazdığında uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `$veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir.
 
-Bundan korunmak için, tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında tanımlayın. Sınıflarınız da `namespace` altında tanımlansın.
+Bundan korunmak için, tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında tanımlayın. Sınıflarınız da `namespace` altında tanımlanmış olsun.
 
-**Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.**
+***b. Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.***
 
-Yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi sınıf scope içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde instantiate edilebilir (Türkçe'ye çevirebilen var mı?) ve buradan içeriğe direkt müdahele edilebilir.
+`Class scope` (sınıf scope) içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar, bu yüzden yukarıdaki örnek tek başına yeterli olmaz. 
 
-Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabilirsiniz.
+Siz herşeyi sınıf scope içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde instantiate edilebilir (Türkçe'si `başlatılabilir` gibi birşey olmalı?) ve buradan içeriğe direkt müdahele edilebilir.
 
-Örneğin `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu extend etmesiyle çalışacak.
+Bunu önlemek için `OOP`in (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabilirsiniz.
+
+Kapsülleme son derece basit bir mantıkla çalışır. PHP'de bildiğiniz gibi `public`, `private` ve `protected` keywordleri ile bir değişkenin veya fonksiyonun dışarıdan erişilip erişilemeyeceğini belirtebilirsiniz. Kapsülleme yapmak için, erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` ile tanımladıktan sonra, class içerisinde `public` bir fonksiyon tanımlayıp bu fonksiyon üzerinden değişkeni döndürebilirsiniz.
+
+Bunu hemen bir örnekle anlatalım. Örneğin `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu `extend` etmesiyle çalışacak.
 
 ```php
 <?php
@@ -62,13 +88,13 @@ Bunu önlemek için `OOP` (Nesne Yönelimli Programlama) temellerinden olan `Enc
 abstract class Database
 {
 
-    public $veritabani;
-    private $info;
+    public $info;
+    private $isConnected;
 
     public function __construct()
     {
-        $this->info = new stdClass();
-        $this->connect();
+        $this->info = "Son derece gizli bilgi.";
+        $this->isConnected = false;
     }
 
     public function attempt()
@@ -78,18 +104,31 @@ abstract class Database
 
     public function connect()
     {
-        $this->attempt($this->getConnectionString());
-        $this->info()->isConnected = true;
+        if( $this->attempt($this->getConnectionString()) );
+        {
+            $this->info = "Veritabanına bağlandık!";
+            $this->isConnected = true;
+            return true;
+        }
+
+        $this->info "Veritabanına bağlanamadık.";
+        $this->isConnected = false;
+        return false;
+    }
+
+    public function isConnected()
+    {
+        return $this->isConnected;
     }
 }
 ```
 
-Dikkat ettiyseniz `info` değişkenini `private` olarak yazdım.
+Dikkat ettiyseniz `info` değişkeni `public` olarak, `isConnected` değişkeni `private` olarak yazıldı.
+
+Şimdi, bir `MySQL` sınıfı veritabanı sınıfımızı extend etsin ve onu başlatsın.
 
 ```php
 <?php
-
-//Yukarıdaki sınıfa ek olarak
 
 class MySQL extends Database implements DatabaseConnectorInterface
 {
@@ -98,24 +137,32 @@ class MySQL extends Database implements DatabaseConnectorInterface
 
     public function __construct()
     {
-        $this->queryString = //Mysql DB query string
+        $this->queryString = "Mysql DB query string";
     }
      
     public function getConnectionString()
     {
         return $this->connectionString;
     }
+
+    public function getInfo()
+    {
+        return $this->isConnected; // Hata, erişim yasak.
+        return $this->isConnected(); //Doğru, fonksiyon üzerinden erişebiliyoruz
+    }
 }
 
 ```
 
-Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `info` objesini değiştiremez, çünkü yetkisi yok. Neden? Çünkü değişken `private` olarak tanımladık ve sadece `Database` sınıfı scopesi içerisinden erişilebilir.
+Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `isConnected` değişkenini değiştiremez çünkü yetkisi yok. Neden? Değişkeni `private` olarak tanımladığımız için sadece `Database sınıfı scopesi` içerisinden erişilebilir. Ancak biz şuan `MySQL sınıfı scopesi` içerisindeyiz.
 
-Size bu konuyu daha dünyevi bir örnekle anlatmaya çalışayım. 
+Ancak, `public` olarak bir `isConnected()` methodu yazmıştık ve bu method içerisinde `info` değerini döndürmüştük. `MySQL` sınıfı bu methoda erişebilecek mi? Evet. Database sınıfının kendi scopesi içerisindeki `isConnected` değişkenine erişim hakkı var mı? Evet. O zaman bu şekilde gizli değişkenlere dışarıdan erişim verebiliyoruz ancak onları değiştirme hakkı tanımıyoruz. Bunun adına kapsülleme deniyor ve Nesne Yönelimli Programlama'nın 4 temel prensiplerinden biridir.
 
-Mesela KDV hesaplayıcı bir sınıf yazıyorsunuz ve KDV oranını `0,18` olarak belirlediniz. Eğer siz bunu dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirdiğinde ne olur? 100 liralık ürünü alacak kullanıcıdan 300 lira vergi çekmiş olursunuz. Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.
+Şuana kadar kafanız karışmış olabilir ancak bu konuyu size bir dünyevi örnekle anlattığım zaman herşey kafanızda şekillenecek. 
 
-Buna rağmen bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örneğin ürünün KDV fiyatını hesaplattırmak için KDV Hesaplayıcı sınıfında KDV oranı kaç olarak belirlenmiş bunu öğrenmek isteyebilirsiniz. Burada `gettlers` devreye giriyor.
+Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz ve KDV oranını `0.18` olarak belirlediniz. Eğer siz bunu dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? 100 liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
+
+Buna rağmen, bazı durumlarda `KDV oranı` bilgisine erişmeniz gerekebilir. Belki başka bir yazılımcı ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyor ve bu değişkene erişmesi lazım. Burada biraz önce bahsettiğimiz `public fonksiyon` mantığı giriyor. Bu tür fonksiyonlara `gettler fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkeni döndürmekten ibarettir.
 
 ```php
 <?php
@@ -123,55 +170,60 @@ Buna rağmen bazı durumlarda KDV oranı bilgisine erişmeniz gerekebilir. Örne
 class KDVCalculator 
 {
 
-    private $kdvRatio //0.18
+    private $kdvRatio = 0.18;
 
-    public function getKdvRatio()
+    public function getKdvRatio() // bir gettler örneği
     {
         return $this->kdvRatio;
     }
 }
 ```
 
-Bilmeyenler için, `gettlers` ve `settlers` aslında çok basit iki tanım. Gettler, alacağımız değişkeni bir fonksiyon üzerinden almak, settler ise değiştireceğimiz değişkenin değerini fonksiyon üzerinden değiştirmektir.
+`settler fonksiyonlar` ise, `gettler fonksiyonların` tam tersi mantıkla çalışır. Onlar, gelen değeri değişkenin değeri olarak atarlar.
 
-**Javascript kullanıyorsanız tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın.**
+Bir örnekle gösterelim:
 
-Javascript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
+```php
+<?php
 
-Aşağıdaki gibi bir javascript object literal tanımlayabiliriz.
+class KDVCalculator 
+{
 
-```js
+    private $kdvRatio = 0.18;
 
-//Javascript object literaller PHP'deki sınıflara benzer, ancak aynı şey değildir.
-var user = {
-  
-   name           : "Anıl",
-   age            : 25,
-   isAuthenticated: false,
-
-   isOld: function() {
-       return (this.age >= 30) true : false; 
-   }
-
+    public function setKdvRatio($input) // bir settler örneği
+    {
+        return $this->kdvRatio = $input;
+    }
 }
 ```
 
-Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullanabilirsiniz.
+Gördüğünüz gibi `settler` bir fonksiyon üzerinden gizli olan `kdvRatio` değişkeninin değeri güncellenebiliyor.
 
-> Not: `Javascript Object Literals` ile `Javascript Object Notation (JSON)` farklı şeylerdir. Karıştırmayın.
+> Biliyor musunuz?
 
-`Javascript Object Literals` ile `JSON` farkı:
+`C#` dilinde gettler ve settler methodlar kolayca oluşturulabilmektedir.
 
-a. Object literallerin keyleri stringdir, JSON'un attribute dir.
-
-```js
-var user = { name: "Anıl" } //Object literal
-var user = { "name": "Anıl" }  //Object notation
+```cs
+public class Database
+{
+    public string info { get; set; } //gettler ve settler oluşturuldu
+}
 ```
 
-b. JSON'da method tanımlanamaz. Yukarıdaki örnekte `isOld()` bir methoddur.
+> Biliyor musunuz?
 
-c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
+`Ruby` dilinde gettler ve settler oluşturmak çok basittir.
+
+```ruby
+class Database
+    attr_accessor :info //gettler ve settler oluşturuldu
+end
+```
+
+> Biliyor musunuz?
+
+PHP'de eğer `gettler` ve `settler` methodlar bulunamazsa, PHP'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girer.
 
 ### Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
@@ -776,6 +828,10 @@ Bu yüzden ekrana bastırma esnasında filtreden geçirilerek zararsız hale gel
 
 // Yakında
 
+### Statik fonksiyon kullanmayın. ###
+
+// Yakında
+
 ## Frontend ##
 
 **--- CSS ---**
@@ -805,6 +861,45 @@ Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır.
 **ID seçicilerini gerekmedikçe kullanmayın.**
 
 **--- Javascript ---**
+
+**Javascript kullanıyorsanız tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın.**
+
+Javascript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
+
+Aşağıdaki gibi bir javascript object literal tanımlayabiliriz.
+
+```js
+
+//Javascript object literaller PHP'deki sınıflara benzer, ancak aynı şey değildir.
+var user = {
+  
+   name           : "Anıl",
+   age            : 25,
+   isAuthenticated: false,
+
+   isOld: function() {
+       return (this.age >= 30) true : false; 
+   }
+
+}
+```
+
+Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullanabilirsiniz.
+
+> Not: `Javascript Object Literals` ile `Javascript Object Notation (JSON)` farklı şeylerdir. Karıştırmayın.
+
+`Javascript Object Literals` ile `JSON` farkı:
+
+a. Object literallerin keyleri stringdir, JSON'un attribute dir.
+
+```js
+var user = { name: "Anıl" } //Object literal
+var user = { "name": "Anıl" }  //Object notation
+```
+
+b. JSON'da method tanımlanamaz. Yukarıdaki örnekte `isOld()` bir methoddur.
+
+c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
 
 **Debug için alert kullanmayın, lütfen!**
 
