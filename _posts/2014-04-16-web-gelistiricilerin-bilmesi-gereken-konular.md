@@ -214,7 +214,7 @@ public class Database
 
 `Ruby` dilinde gettler ve settler oluşturmak çok basittir.
 
-```php
+```ruby
 class Database
     attr_accessor :info //gettler ve settler oluşturuldu
 end
