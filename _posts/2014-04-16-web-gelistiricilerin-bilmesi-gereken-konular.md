@@ -28,7 +28,7 @@ Bu bölümde backend için kullanacağımız ana programlama dili `PHP` olmakla 
 
 ### Global scopeyi asla kirletmeyin. ###
 
-***a. Değişkenlerinizi global scope içerisinde tanımlamayın.***
+**a. Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
 `Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki değişkenlere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
@@ -70,7 +70,7 @@ yazdığında uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kal
 
 Bundan korunmak için, tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında tanımlayın. Sınıflarınız da `namespace` altında tanımlanmış olsun.
 
-***b. Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.***
+**b. Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.**
 
 `Class scope` (sınıf scope) içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar, bu yüzden yukarıdaki örnek tek başına yeterli olmaz. 
 
