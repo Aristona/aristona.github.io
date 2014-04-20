@@ -974,7 +974,7 @@ class Controller
         $view->bind('link', $link);
 
         // doğru
-        $link = $_POST['id];
+        $link = $_POST['id'];
         $view->bind('link', $link); // aristona.github.io adresi, View katmanında tutulmalıydı
     }
 }
