@@ -226,16 +226,16 @@ PHP'de eğer `gettler` ve `settler` methodlar bulunamazsa, PHP'nin `sihirli meth
 
 ### Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
-Altın kuralımız şu: 
+Bu konu farklı yazılımcılara göre farklılık göstermekle beraber, altın kuralımız şuna benzer: 
 
 1. Bir methodda maksimum 10 satır
 2. Bir sınıfta maksimum 10 method
 3. Bir sınıfta maksimum 4 dependency (bağımlılık)
-4. Bir pakette/komponentte 15 sınıf.
+4. Bir pakette/komponentte maksimum 15 sınıf.
 
-Nedir bu bağımlılık? 
+Peki nedir bu bağımlılık? 
 
-Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için kullandığı diğer sınıfların bütünüdür. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya scope içerisinde sınıflar `instantiate edilerek` eklenebilir.
+Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan farklı sınıfların toplamıdır. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya sınıf scope içerisinde bağımlılık sınıflarının `instantiate` edilmesiyle eklenebilir.
 
 Örneğin:
 
@@ -261,35 +261,67 @@ class HomeController
     }
 ```
 
-Burada, `HomeController` sınıfı, 3 şeye bağlıdır.
+Burada, `HomeController` sınıfının 3 bağımlılığı bulunmaktadır.
 
 1. `DatabaseInterface` interfacesine sadık kalmış herhangi bir sınıfa.
 2. `Image` sınıfına.
-3. `Logger` sınıfına.
+3. Global `uzaydaki` (namespace) `Logger` sınıfına.
 
-Eğer bu sayı 4'ün üzerine çıkarsa, o zaman sınıfınız gereğinden fazla iş yapmış olur. Hem yönetmek zorlaşır, hem de SOLID ilkelerinden biri olan Single Responsibility Principle (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
+Eğer bu sayı 4'ün üzerine çıkarsa, o zaman sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de SOLID ilkelerinin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
 
-> Not: Maksimum 4 bağımlılık bir kural değil, görüştür. Uymak zorunda değilsiniz ancak uymaya çalışırsanız 100kb'lık sınıflar içerisinde boğulmazsınız.
+> Not: Maksimum 4 bağımlılık bir kural değil, görüştür. Uymak zorunda olmadığınız gibi, uyarsanız size birçok avantaj sağlayacağı aşikardır.
 
 ### mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
 
-Gelen inputu `mysql_real_escape_string()` ile süzerek SQL Injection'dan korunduğunuzu sanıyorsanız yanılıyorsunuz. Bu klasik bir yanlıştır.
+Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek SQL Injection'dan korunduğunu sanıyor. Bu klasik bir yanlıştır ve sizi temel düzeydeki SQL Injection hatalarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında sizi koruyamaz.
 
-Süzmeyle hiç uğraşmadan `prepared statements` özelliğini kullanın. Prepared statements `Mysqli` ve `PDO`'da bulunabilir, ancak benim tavsiyem bir `ORM` aracı kullanmanızdır.
+SQL Injection'dan korunmak için `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir, ancak benim kişisel tavsiyem bir `ORM` aracının kullanılması yönündedir.
 
 // Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
 
-### Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin, vakit kaybı. ###
+### Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
+
+Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay bir şekilde kırılabilir.
 
 // Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
 
+### Input escape edilir, output filtrelenir. ###
+
+Yapılan başka bir klasik yanlışta XSS koruması sağlamak için kullanıcıdan gelen verilerin `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi fonksiyonlardan geçirilip veritabanına eklenmesidir.
+
+Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanına eklenmesi önemlidir. Yukarıdaki fonksiyonlar, veritabanındaki veriler ekrana yansıyacağı zaman kullanılmalıdır. Bunun birçok sebebi bulunmaktadır.
+
+**a. Verilerin bozulmadan saklanmasını sağlarsınız.**
+
+Kullanıcının gönderdiği veri ham haliyle saklanacağı için orjinal içeriğe daima ulaşma şansınız olur.
+
+**b. Potansiyel uzunluk hatalarının önüne geçmiş olursunuz.**
+
+Bir ` ` karakteri geldiğinde, bu `&nbsp;` veya  `&#160;` haline döndürülebilir. Bu kelimeler 6 harften oluşmaktadır ve veritabanına gireceği zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
+
+**c. Zararlı kod bir şekilde veritabanına sızmışsa, çıktı esnasında bu temizlenir.**
+
+Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazıldığı zaman (bir şekilde), çıktı esnasında bunu temiziyorsanız bu sorun olmaktan çıkar. Ancak filtreleme işlemini veritabanına girmeden yapıyorsanız, zararlı kod orada kalmaya ve çalışmaya devam edecektir.
+
+### Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
+
+Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. 
+
+`TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
+
+Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak sizin yararınızadır.
+
+Ayrıca, veritabanındaki hücre tipleri hakkında bilgi sahibi olmanız sizin için büyük avantaj sağlayacaktır.
+
 ### Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
-Bu sektörde tek temel ihtiyaç var, o da İngilizce. Kullandığımız programlama dillerindeki methodlar İngilizce, takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşuyor, takip edebileceğiniz bloglar ve websiteleri İngilizce, Github üzerindeki açık kaynaklı projeler İngilizce, onların dökümantasyonları İngilizce.
+İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir. 
 
-Özellikle uygulama içerisindeki değişkenleri, sınıfları, methodları vb. Türkçe kullanmak son derece amatörce. Zaten PHP'de tam unicode desteği olmadığı için Türkçe karakterleri de kullanamıyorsunuz ve ortaya saçma sapan birşey çıkıyor.
+İngilizce yazılım dünyasında hemen hemen heryerde karşınıza çıkacaktır. Örneğin, ullandığımız programlama dillerindeki methodlar İngilizce'dir. Takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşmaktadır. Takip edebileceğiniz bloglar ve websiteleri İngilizce'dir. Github üzerindeki açık kaynaklı projeler İngilizce olarak dökümanta edilmiştir. Projelerin kaynak kodları İngilizce'dir.
 
-Örneğin:
+Özellikle Github ve açık kaynaklı projeler içerisinde, İngilizce kullanmayan, değişkenlerin ve sınıfların yazılımcının kendi anadilinde tanımlandığı projeler, ne kadar iyi olurlarsa olsunlar asla kullanılmayacaklardır, asla destek görmeyeceklerdir ve asla yeterince popüler olamayacaklardır. Bu durum sizin `amatör` olduğunuz algısı yaratır.
+
+Buna Türkçe kullanmakta dahildir ve aşağıdaki örnek sınıf Türkçe olarak geliştirilmeye çalışılmıştır.
 
 ```php
 <?php
@@ -318,38 +350,66 @@ class AssetYukleyici
     }
 ```
 
-Bana kalırsa son derece çirkin ve amatörce duruyor. Türkçe desen Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey.
+Bu sınıf son derece çirkin ve amatörce duruyor. Türkçe desen tam olarak Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey. Zira PHP unicode desteklemediği için Türkçe karakterleri de kullanamıyoruz, bu yüzden ortaya Türkçe karakterlerin kullanılmadığı bir garip Türkçe çıkıyor.
 
-Birde ileride bug çıktığını farzedelim, Stackoverflow'da sordunuz. Kimse sizin `asset yükleyici` değişken adınızdan birşey anlamayacak, açıklamak zorunda kalacaksınız. Muhtemelen kimse cevap vermeyecek.
+Sorun sadece bununla kalmıyor. İleri de bir sorun çıktığını farzedelim ve siz saatlerce uğraşmanıza rağmen bunu çözemiyorsunuz. Monitörü kırmak istiyorsunuz ancak bunun sorunu çözmeyeceğinin farkındasınız.
 
-Hem sadece bununla kalmıyor. Türkçe karakterleri kullanmak son derece sakıncalı. SSH üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. (Mesela şuan bile bu yazıyı Türkçe karakterler yüzünden `Jekyll`'e compile ettireceğim diye kaç takla attım, biliyor musunuz?)
+Bu durumda, eğer İngilizce kullandıysanız `Stackoverflow` ve kullandığınız dilin `irc kanalları` veya forumlarında sorununuzu kolayca dile getirebilirsiniz. Türkçe kullanırsanız kod parçacıklarını koyarken bunları İngilizce'ye çevirmeniz gerekecek aksi takdirde büyük çoğunluğu İngilizce konuşan insanlar sizin ne yapmak istediğinizi anlayamayacaktır.
 
-> Not: Tartıştığım yazılımcıların buna karşı argümanı Türk bir şirkette Türk yazılımcılarla ve bazen İngilizce bilmeyen yazılımcılarla çalıştığı bu yüzden Türkçe tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemlidir.
+Türkçe karakterleri kullanmak ayrıca son derece sakıncalıdır. `SSH` üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. 
 
-### Türkçe veya kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
+Bu yazıyı yazarken bile Türkçe karakterler yüzünden birçok sıkıntı çektim ve neredeyse yarım günümü bu hataları çözmek için harcadım.
 
-Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşuyor. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
+> Not: Tartıştığım yazılımcıların karşı argümanı bazen İngilizce bilmeyen yazılımcılarla çalıştıkları, bu yüzden Türkçe kullanmayı tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemli olabilir.
 
-Bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorsun. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+### Kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
 
-Neredeyse hepsi böyle. Gözlemlediğim kadarıyla Türkçe bloglardaki genel eksiklikler:
+Kötü eğitim yarardan sağlamaktan çok zarar verir. Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
 
-1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen w3schools.com dahil)
+Bazen `Google aramalarında` en üstte çıkıyorlar ve ister istemez sitelerine girmek zorunda kalıyorsun. Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara göz gezdiririm. (Bilmiyorum siz de böylemisiniz.) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöplükten fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorsun. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+
+Abartısız birçoğu böyle. Hatta PHP geliştiricilerin blogları en kötüleri. PHP bloglarının kötü olmasının sebepleri arasında:
+
+1. PHP ile birşeyler yapabilmenin çok kolay olması bu yüzden amatör yazılımcılar tarafından sıkça tercih edilmesi,
+2. WordPress ve Joomla gibi son derece ilkel yöntemlerle geliştirilen projelerin son derece popüler olması,
+3. Birkaç yıl öncesine kadar Github ve Composer'in olmayışı bu yüzden zbilyon tane sınıf ve kod örneklerinin internette dolaşması gibi sebepler sıralabilir.
+
+Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksek. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
+
+Bunların dışında, bir de Türkçe bloglarda göze çarpan genel eksikliklerden bahsedeyim.
+
+1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler.)
 2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor, çok az kişi eleştiriyi kabullenebiliyor.
-3. Çevirilerde terimler genellikle yanlış çeviriliyor. Son derece alakasız sonuçlar çıkabiliyor.
-4. Üst düzey PHP diye yazdıkları makaleler aslında PHP'nin temel bilgileri.
+3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor.
+4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. (Ben bunun bir marketing stratejisi olduğunu düşünüyorum.)
 
-Lütfen kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden ve doğru kitaplardan alın.
+Bu yüzden, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden ve doğru kitaplardan alın. Bir eğitim setindeki videoları izliyorsanız, o eğitim setini kim yazmış? Ne zaman yazmış? PHP'in hangi sürümü kullanılmış? Yorumları nasıl? gibi konuları araştırın, yoksa bunlar size hiçbirşey kazandırmaz.
 
-> Not: Bu blog da Türkçe ve bunun bir ironi olduğunun farkındayım.
+> Not: Bu yazdıklarım genellikle Türkçe blog yazanlar için. İngilizce makeleler nispeten daha iyi durumda.
 
 ### ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
 
-OOP kullanmak istemeyenlerin, frameworklere çok hantal çalışıyor diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa.`
+`OOP` kullanmak istemeyenlerin, frameworklere "Çok hantal çalışıyor." diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa?`
 
 Kısa cevap: Hiçbirşey olmaz.
 
 Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır vs.
+
+### Kaptan gemiyi terk etmişse, o gemide kalmanın fazla bir anlamı yok. ###
+
+Son birkaç yılda açık kaynak adına son derece büyük adımlar atıldı. Artık neredeyse her türlü açık kaynaklı proje `Github` üzerinden yayınlanmakta. Ancak bu son derece avantajlı olmasına rağmen, bazen dezavantajları da olabiliyor.
+
+Dezavantajlarından biri, `PHP`'in çok fazla açık kaynaklı projeye sahip olması. Bir `Mail` sınıfı arıyorsunuz ve karşınıza binlerce `Github repository`si çıkıyor.
+
+Bir diğer dezavantajı da, insanlar haklı olarak en çok gelecek vaadeden projelere yönelmesi. Bazen bir projeyi geliştiren yazılımcı, tekerleği tekrar icat etmektense, farklı bir yazılımcının projesinin daha iyi konumda olduğunu düşünüyor ve o projeye destek olmaya başlıyor. Kendi projesini ise geliştirmeyi bırakıyor veya başka birinin devralmasını istiyor. (Devredilen projelerden çoğu zaman hayır çıkmıyor.)
+
+Buna örnek olarak `Code Igniter` framework projesi gösterilebilir. Bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `Code Igniter` projesininden sorumlu olan `EllisLab` firması, projeyi devralacak birini arıyor. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
+
+Geminin kaptanı atladıysa, mürettebatı atladıysa, filikalar indirildiyse ve yolcuların birçoğu tahliye edilmeye başlandıysa, o gemide kalmanın mantıklı olduğunu savunamazsınız.
+
+Bu durum sadece `Code Igniter` projesiyle ilgili değil. Hertürlü açık kaynaklı ileride bu tür sorunlarla karşılaşılabilir. Bu yüzden, projenizde o günün şartlarındaki en popüler ve en gelecek vaadeden frameworkleri, komponentleri, sınıfları ve kütüphaneleri kullanmaya çalışın.
+
+Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
 
 ### Kendinizi == yerine === kullanmaya alıştırın. ###
 
@@ -421,17 +481,19 @@ yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edil
 
 Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın. 
 
-Her seferinde public function yazmak zor mu geliyor? Kullandığınız IDE içerisinde Snippet oluşturun. (ya da daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
+Her seferinde `public function` yazmak zor mu geliyor? Kullandığınız IDE içerisinde `Snippet` oluşturun. (ya da daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
 
-Uzun terminal komutları zor mu geliyor? Alias oluşturun.
+Uzun terminal komutlarını zor mu geliyor? `Alias` oluşturun, hatta gerekiyorsa bunları script haline getirin.
 
-Özellikle genç olan arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına var. Daha `akıllı çalış`. Daima daha fazlasını öğren. İyi olmak kadar hızlı olmakta önemli.
+Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına varabilirsin. 
 
-> Not: Geliştirme ortamında yapabileceğiniz iyileştirmelerden Geliştirme Ortamı bölümünde bahsedeceğim.
+Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kaybetme. İyi olmak kadar hızlı olmakta önemli.
+
+> Not: Geliştirici ortamında yapabileceğiniz iyileştirmelerden `Geliştirici Ortamı` bölümünde bahsedilecektir.
 
 ### Daima tutarlı olun. ###
 
-Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları _ kullanarak ayırıyorsanız, böyle devam edin. Yaptığınız herşey tutarlı olsun. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın.
+Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları `_` kullanarak ayırıyorsanız, `_` kullanarak devam edin. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın. Yaptığınız herşey tutarlı olsun.
 
 Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`?
 
@@ -441,21 +503,23 @@ Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine
 
 `str_reverse? streverse? strrev? revstr? reverse?`
 
-Kazanan `strrev`.
+Hepsi de olabilir, ama doğrusu `strrev`.
 
-Siz bunu asla yapmayın. TAB kullanmayı bırakıp 4 space kullanmaya başlamaya karar verdiyseniz, ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin.
+Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, `ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin!` Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın.
 
-> Not: Sırf bu yüzden PHP'in yediği lafları hayal edemezsiniz, ancak PHP ekibininde yapabileceği fazla birşey yok çünkü geliştirilmiş onca uygulamayı bozmak istemiyorlar.
+> Not: Bu yüzden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta.
 
-> Not 2: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
+> Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
 
 ### Dependency Injection, Dependency Injection Container ve Inversion of Control ###
 
-Bunların ne olduğunu bilmek artık her geliştirici için şart olduğu için ne olduklarını yazma ihtiyacı hissediyorum.
+Bunların ne olduğunu bilmek artık her `PHP` geliştirici için şart olduğu için ne olduklarını yazma ihtiyacı hissediyorum.
 
-`Dependency Injection` (Bağımlılık Enjeksiyonu), James Shore'ın dediği gibi: "5 centlik konsept için 25 dolarlık terim kullanılması."
+`Dependency Injection` (Bağımlılık Enjeksiyonu), `James Shore`'ın dediği gibi: "5 centlik konsept için 25 dolarlık terim kullanılması."
 
-Bağımlılık Enjeksiyonu mantık olarak son derece basit. Hatta, şuana kadar verdiğim örneklerde birkaç defa kullandım. Kuralımız basit. Oluşturduğunuz sınıflarda `new` kullanmayacaksınız, kullanmamız gereken bağımlılık sınıfları bizim sınıfımıza verilecek.
+Buna katılmakla beraber, ben de `bağımlılık enjeksiyonu`'nun mantık olarak son derece basit olduğunu düşünüyorum. Hatta, şuana kadar verdiğim örneklerde birkaç defa kullandığım oldu. 
+
+Kuralımız son derece basit. Oluşturduğunuz sınıflarda `new` kullanmayacağız, kullanmamız gereken `bağımlılık sınıfları` bizim sınıfımıza dışarıda oluşturulup verilecek.
 
 Örneğin:
 
@@ -473,7 +537,9 @@ class Deneme
 }
 ```
 
-bunu yapmak büyük bir hata. Böyle yaptığımız zaman unit testlerimizi yapmak çok zor, hatta imkansız duruma gelir. Bunun yerine dependency injection kullanmalıyız.
+Burada `dependency injection` kullanmadık ve büyük bir hata. Böyle yaptığımız zaman `Deneme` sınıfı `Mailer` sınıfıyla `tightly coupled` (Sıkı Sıkıya Bağlanmış) olur ve `unit testlerimizi` yazmak çok zor, hatta imkansız bir hale gelir. Ayrıca `Decoupling` (Bağlaşımı koparma) ilkesinden uzaklaşmış oluruz.
+
+Bunun yerine `Dependency Injection` kullanıp, bağımlılıkları dışarıdan enjekte etmeliyiz. Aşağıda bunun nasıl yaptıldığını görebilirsiniz:
 
 ```php
 <?php
@@ -493,13 +559,15 @@ new Deneme(new Mailer);
 
 ```
 
-Dependency Injection bu kadar basit. Sınıfımız kendisi `Mailer` sınıfını oluşturmaktansa, `constructor injection` (Enjeksiyonu constructor üzerinden eklemek) aracılığıyla `Mailer` sınıfına sahip oluyor.
+`Dependency Injection` işte bu kadar basit! Sınıfımız kendisi `Mailer` sınıfını oluşturmaktansa, `constructor injection` (Enjeksiyonu constructor üzerinden eklemek) aracılığıyla `Mailer` sınıfına sahip oluyor.
 
-Ancak, bu yazdığımız kod `SOLID İlkeleri`'ni ihlal ediyor çünkü sınıfı direkt olarak enjekte etmiş oluyoruz. (L) Liskov's Substitution Principle kuralı der ki; sınıflar, başka sınıflar yerine abstractionlara bağımlı olmalı.
+Böylece, sınıfımız `Mailer` sınıfına sıkı sıkıya bağlı olmaktan çıkıyor ve test edilebilirliğimiz muazzam düzeyde artıyor.
 
-Bu PHP'de şu anlama geliyor. `Mailer` sınıfı bir interfaceyi implement etmeli, ve bu interfaceye uyan herhangi bir sınıf `Deneme` sınıfında çalışabilir olmalıdır.
+Yukarıdaki örnek doğru olmasına karşın, biraz eksik ve hatalıdır. Bu yazdığımız script `SOLID İlkeleri`'ni ihlal ediyor. Neden? Çünkü biz `sınıfı` direkt olarak enjekte etmiş oluyoruz. Ancak `Liskov's Substitution Principle` (Liskov'un İkame Kuralı) bize diyor ki; `Sınıflar, başka sınıflar yerine abstractionlara (soyutlamalara) bağlı olmalıdır.`
 
-Bir örnekle açıklayalım. Öncelikle interfacemizi oluşturalım ve hangi methodların bulunması gerekiyor bunları belirtelim.
+Bu ne demek? Bu `PHP`'de şu anlama geliyor. `Mailer` sınıfı bir `Interface`'yi implement etmeli, ve bu interfaceye uyan herhangi bir sınıf `Deneme` sınıfı içerisinde çalışabilir olmalıdır.
+
+Bu konuyu bir örnekle açıklayalım. Öncelikle interfacemizi oluşturalım ve sınıfımızda hangi methodların bulunması gerekiyor bunları belirtelim.
 
 ```php
 <?php
@@ -557,8 +625,36 @@ class Deneme
 
 Şuan `Deneme` sınıfımız `Mailer` sınıfı yerine, `MailerInterface` interfacesine uyan herhangi bir sınıfı kabul edecek.
 
+Anlamadınız mı? Sorun değil, bu durumu hemen dünyevi bir örnekle anlatalım. Aracınızla uzun bir yola gittiğinizi farzedelim ve benzininiz bitmek üzere. Benzin almak için bir benzinliğe uğruyorsunuz.
+
+1. Eğer benzinliğe (sınıf) bağlı olsaydınız, Türkiye'deki tek benzinciden benzin alabilirdiniz.
+2. Benzin yerine mezot doldurulmadığından emin olamazdınız. (Aracınızı çalıştırdığınızda neden motordan garip sesler geliyor diye düşünürdünüz.)
+
+`Interface`lere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin alabiliyor olmamızı sağlar. Çünkü, biz eminiz ki benzin pompası bizim aracımızın benzin deposuna uygun. Biz eminiz ki, pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (interface)
+
+Şimdi yukarıda verdiğimiz örneği yazılımsal bir örnekle anlatalım.
+
+Mail göndermek için `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` kullanabiliriz. Interfacemize uyduğu sürece istediğimiz sınıfı kullanabiliriz, çünkü artık bir sınıfa bağımlı değiliz. Belki çalıştığımız işyeri artık maillerin `Mandrill API`'si kullanılarak gönderilmesini istedi. Tüm mail gönderme sistemini baştan mı yazacağız? Hayır. İmplementasyonu değiştirip yolumuza devam edeceğiz.
+
+Artık, herhangi bir `Mailer` sınıfını uygulamamızda kullanabiliriz.
+
 ```php
 <?php
+
+class SwiftMailer implements MailerInterface
+{
+
+}
+
+class MandrillMailer implements MailerInterface
+{
+
+}
+
+class AWSMailer implements MailerInterface
+{
+
+}
 
 class Deneme
 {
@@ -569,34 +665,44 @@ class Deneme
          $this->mailer = $mailer;
      }
 }
+
+$mailer = new Mailer(new SwiftMailer); // çalışır
+$mailer = new Mailer(new MandrillMailer); // çalışır
+$mailer = new Mailer(new AWSMailer); // çalışır
+$mailer = new Mailer(new BenzinPompasi); // çalışmaz!!
 ```
 
-Bu olayı dünyevi bir örnekle anlatalım. Aracınızla gidiyorsunuz ve benzininiz bitmek üzere. Benzinliğe girip benzin almak için bir benzinliğe uğradınız.
+Artık işyerindeki patronunuz `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edersiniz. İleride tekrar `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e geçebilirsiniz. `BenzinPompası`'nı kullanalım derse istifa dilekçenizi verebilirsiniz. :)
 
-1. Eğer benzinliğe (sınıf) bağlı olsaydınız, Türkiye'deki tek benzinciden benzin alabilirdiniz.
-2. Benzin yerine mezot doldurulmadığından emin olamazdınız. Aracınızı çalıştırdığınızda neden motordan garip sesler geliyor diye düşünürdünüz.
+** Dependency Injection konteynerleri **
 
-Interfacelere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin almamıza yardımcı olur. Çünkü eminiz benzin pompası bizim aracımızın benzin deposuna uygun. Pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (interface)
+`DI Containers` (DI Konteynerleri), Dependency Injection konusunda bize yardımcı olan konteyner sınıflardır. Hangi sınıfın nereye bağımlı olduğuna, nereye enjekte edileceğine çoğu zaman bu konteyner sınıflar karar verir ve bize yardımcı olur.
 
-Şimdi yukarıda verdiğimiz örneği yazılımsal bir örnekle anlatalım.
+Interface kullanırken, şöyle bir sorunla karşı karşıya kalabiliriz. Interfaceler, sınıflar gibi instantiate edilemezler. (Yani `new` kullanarak onları çalıştıramayız.)
 
-Mail göndermek için `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` kullanabiliriz. Interfacemize uyduğu sürece istediğimiz sınıfı kullanabiliriz.
+Bu yukarıdaki örnekte fazla bir problem teşkil etmiyor, ancak 100 tane `Deneme ` sınıfınızın olduğunu varsayalım. Hepsine tek tek `new Mandrill`, `new Maindrill`, `new Mandrill` mi diyeceğiz? Hayır. Daha önce ne anlatmıştık? `DRY kuralına uyacağız, ve kendimizi tekrar etmeyeceğiz.`
 
-**Houston, bir sorunumuz var....**
+Şimdi, çok basit bir algoritma geliştirip Dependency Injection konteynerimizi oluşturacağız. Bu konteyner, MailerInterface ibaresini gördüğü zaman, hangi sınıfın çalıştırılması gerektiğine karar verecek ve o sınıfı enjekte edecek.
 
-Sorunumuz şu. Interface'ler sınıflar gibi instantiate edilemezler. (Yani `new` kullanarak onları çalıştıramayız.)
+Örneğin, biz konteyner sınıfında `Mandrill`'i seçerse, konteyner sınıfı `MailerInterface` gördüğü yere `MandrillMailer` sınıfını gönderecek. Eğer `SwiftMailer`'i seçersek, `MailerInterface` gördüğü yere `SwiftMailer` sınıfını gönderecek.
 
-Peki bu durumda ne olacak?
+```php
+<?php
 
-`Dependency Injection Konteynerleri` bu durumda bizim yardımımıza koşuyor. Bu konteynerler, interfaceleri gördüklerinde belirttiğimiz sınıfı oluşturup bizim yerimize döndürecekler.
+    $container = new DependencyInjectionContainer;
 
-// Yakında burayı anlatacağım, anlaşılabilir şekilde örnekler yazmam lazım.
+    $container->bind('MailerInterface', function() {
+        return new MandrillMailer; //Artık burayı değiştirmemiz yeterli olacak.
+    });
+```
+
+// Bu örneğin konteyner sınıfı yazılacak ve örnek geliştirilecek
 
 > Not: Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı değil. Detaylı bilgiye sahip olmak isteyen arkadaşlar Google üzerinde araştırma yapabilir.
 
-### Gerekmedikçe else, uzun if blokları ve köşeli parantez kullanmayın. ###
+### Gerekmedikçe else ve uzun if blokları kullanmayın. Dima köşeli parantez kullanın. ###
 
-Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz. Bunun için bir örnek verelim. 
+Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz.
 
 Bir değişkenin array olup olmadığını anlamak istediğiniz bir fonksiyon yazıyorsunuz. (Aslında bu örnek is_array ile yapılabilir ancak ben burada soruna değinmek istediğim için fonksiyon oluşturarak anlatacağım.)
 
@@ -659,8 +765,6 @@ Bunu biraz daha geliştirip, ternary yapısını da kullanabiliriz.
     }
 ```
 
-Çok daha kısa, okunaklı ve şık duruyor.
-
 Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi bile silebilirsiniz.
 
 ```php
@@ -671,6 +775,84 @@ Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi bile silebili
         return is_array($input) ?: false;
     }
 ```
+
+hatta, is_array() fonksiyonu true veya false döndüreceği için, ondan dönen değeri siz de direkt olarak döndürebilirsiniz.
+
+```php
+<?php
+
+    function isArray($input)
+    {
+        return is_array($input);
+    }
+```
+
+Ancak, herşeyi kısa yazmak her zaman doğru değildir. Köşeli parantezleri kaldırmak, farkında olmadan birçok hatanın çıkmasına sebep olabilir.
+
+Yanlışlıkla, if bloğu sonrasına 2. bir satır eklenirse, 2. satır daima çalışacağı için scriptimiz yanlış çalışacaktır.
+
+```php
+<?php
+
+    function test()
+    {
+        if(birşey)
+          return "Merhaba";
+          return "Hata";
+        else
+          return "Else";
+    }
+```
+
+Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `birsey` şartı sağlanıyorsa, sadece `return "Merhaba";` çalışacak ve uygulama Merhaba değerini döndürecektir. Her türlü durumda `return "Hata";` çalışacaktır, ancak köşeli parantez kullanılsaydı bu sorun oluşmayacaktı.
+
+```php
+<?php
+
+    function test()
+    {
+        if(birşey)
+        {
+            return "Merhaba";
+            return "Hata";
+        }
+        else
+        {
+            return "Else";
+        }
+    }
+```
+
+Bu durumda, `return "Hata";` asla ve hiçbir koşulda çalışmayacaktı.
+
+Bu neden mi önemli? Apple'ın SSL'de çıkardığı meşhur `goto fail;` hatasının sebebi son derece komik.
+
+```c
+    err = true; // ilk başta err true oluyor
+    hashOut.data = hashes + SSL_MD5_DIGEST_LEN;
+    hashOut.length = SSL_SHA1_DIGEST_LEN;
+    if ((err = SSLFreeBuffer(&hashCtx)) != 0)
+        goto fail;
+    if ((err = ReadyHash(&SSLHashSHA1, &hashCtx)) != 0)
+        goto fail;
+    if ((err = SSLHashSHA1.update(&hashCtx, &clientRandom)) != 0)
+        goto fail;
+    if ((err = SSLHashSHA1.update(&hashCtx, &serverRandom)) != 0)
+        goto fail;
+    if ((err = SSLHashSHA1.update(&hashCtx, &signedParams)) != 0)
+        goto fail;
+        goto fail;  // Bu aslında burada olmamalıydı
+    if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
+        goto fail;
+
+    fail: return err;
+```
+
+Sorunu gördünüz mü? `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)` hiçbir zaman erişilemiyor çünkü bir üstte 2 tane `goto fail;` yazılı. 2. `goto fail;` daima çalışacağı için script `fail`'e düşüyor ancak burada hatanın dönmesi yerine `true` değeri dönüyor. En alttaki if kontrolü çalışmadığı için bu bölüm üzerinden bir exploit ortaya çıkmış oluyor.
+
+Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son derece komik olmakla beraber, sadece düzgün şekilde köşeli parantez kullanılsaydı kendiliğinden çözülmüş olacaktı.
+
+Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden bizim yapmamız gereken, köşeli parantezleri doğru kullanmak ve ne yaptığımızı kontrol etmek.
 
 ### Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
