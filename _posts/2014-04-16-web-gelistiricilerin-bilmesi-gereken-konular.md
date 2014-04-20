@@ -674,7 +674,7 @@ $mailer = new Mailer(new BenzinPompasi); // çalışmaz!!
 
 Artık işyerindeki patronunuz `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edersiniz. İleride tekrar `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e geçebilirsiniz. `BenzinPompası`'nı kullanalım derse istifa dilekçenizi verebilirsiniz. :)
 
-** Dependency Injection konteynerleri **
+**Dependency Injection konteynerleri**
 
 `DI Containers` (DI Konteynerleri), Dependency Injection konusunda bize yardımcı olan konteyner sınıflardır. Hangi sınıfın nereye bağımlı olduğuna, nereye enjekte edileceğine çoğu zaman bu konteyner sınıflar karar verir ve bize yardımcı olur.
 
