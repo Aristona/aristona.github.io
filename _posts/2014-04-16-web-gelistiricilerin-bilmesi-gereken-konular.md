@@ -14,25 +14,25 @@ Merhaba,
 
 Uzun zamandır bloguma yazı yazmıyordum, ancak neredeyse hergün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm için bu yazıyı yazmaya karar verdim.
 
-Bu yazımda web geliştiricilerin bilmesi gereken konulardan bahsedeceğim. Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayacak.
+Bu yazımda web geliştiricilerin bilmesi gereken konulardan bahsedeceğim. Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum. Bu yüzden  geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. gibi konularda bilmeniz gerekenleri anlatmaya çalışacağım. Bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir.
 
-Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum. Bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. gibi konularda bilmeniz gerekenleri anlatmaya çalışacağım. Bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir.
+Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayabilir.
 
-Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır. (Bağış yapmak isteyen arkadaşlar isterlerse yapabilirler.)
+Bu yazı açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu kolayca güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konular varsa bu konuları da `issue` oluşturarak belirtebilirsiniz. Kaynak [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır.
 
-Bu yazı açık kaynaklı olarak Github hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu için daima güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konular varsa bu konuları da `issue` oluşturarak belirtebilirsiniz. Kaynak [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır.
+> Not: Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır. (Bağış yapmak isteyen arkadaşlar isterlerse yapabilirler.)
 
-## Backend (Arka yüz) ##
+# Backend (Arka yüz) #
 
-Bu bölümde backend için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek yazılım mimarisiyle ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
+Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak yazılım mimarileriyle ilgili olduğu için diğer programlama dillerinde de kullanılabilirler.
 
-### Global scopeyi asla kirletmeyin. ###
+### 1. Global scopeyi asla kirletmeyin. ###
 
 **a. Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
-`Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın her tarafından erişebilir olur. Global scope içerisindeki değişkenlere ne kadar bağımlı olursanız uygulamanın biryerinde hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınızda, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
+`Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın heryerinden erişebilir olurlar. `Global scope` içerisindeki değişkenlere ne kadar bağımlı olursanız, uygulamanın farklı bir noktasında hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullanıyorsanız, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
-Öncelikle, PHP'de `scope`'un ne olduğundan kısaca bahsedelim.
+İsterseniz başlamadan önce `scope` kavramının ne olduğundan ve `PHP`'de nasıl kullanıldıklarından kısaca bahsedelim.
 
 ```php
 <?php
@@ -48,39 +48,37 @@ Bu bölümde backend için kullanacağımız ana programlama dili `PHP` olmakla 
     echo $fonksiyon; // Çıktı: Hiçbirşey
 ```
 
-Yukarıdaki örnekte `$global` değişkeni `global scope` içerisinde tanımlanmıştır ve uygulamanın heryerinden erişilebilir olur. Buna karşın `$fonksiyon` değişkeni `fonksiyon scope` içerisinde tanımlanmıştır ve sadece o fonksiyon içerisinden erişilebilir olur.
+Yukarıdaki örnekte `$global` değişkeni `global scope` içerisinde tanımlanmıştır. Bu yüzden uygulamanın heryerinden erişilebilir olur. Buna karşın, `$fonksiyon` değişkeni `fonksiyon scope` içerisinde tanımlanmıştır ve sadece o fonksiyon içerisinden erişilebilir olur.
 
-Şimdi değişkenleri global olarak tanımlamak neden yanlıştır bunu inceleyelim.
+Şimdi bunu öğrendiğimize göre, değişkenlerin `global` olarak tanımlanması neden yanlıştır bunu inceleyelim.
 
-Örneğin, bir `$veritabani` değişkeninde mysql bağlantısını tuttuğumuzu farzedelim.
+Bir `$veritabani` değişkeninde `MySQL` bağlantısını tuttuğumuzu farzedelim.
 
 ```php
 <?php
 	$veritabani = //bir mysql bağlantısı;
 ```
 
-Bu global scope içerisinde tanımlanmış bir değişken olduğu için, bir başkası:
+Gördüğünüz gibi, `$veritabani` değişkeni `global scope` içerisinde `global` olarak tanımlanmıştır. Ancak, uygulamanın herhangi bir yerinde:
 
 ```php
 <?php
 	$veritabani = null;
 ```
 
-yazdığında uygulamanızı runtime esnasında bozabilir. Uygulamanın geri kalanında `$veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir.
+yazıldığı zaman, artık `$veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir. Bu durumda uygulamanız `runtime esnasında` bozulacaktır.
 
-Bundan korunmak için, tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında tanımlayın. Sınıflarınız da `namespace` altında tanımlanmış olsun.
+Bu tür hatalardan korunmak için tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında, sınıflarınızı da `namespace` (isim uzayları) altında tanımlayın.
 
-**b. Kapsüllenecek şeyleri kapsülleyin, açıkta bırakmayın.**
+**b. Encapsulation (Kapsülleme) yapın, gizli değişkenlere erişimi kesin.**
 
-`Class scope` (sınıf scope) içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar, bu yüzden yukarıdaki örnek tek başına yeterli olmaz. 
+`Class scope` (sınıf scope) içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar. Bu yüzden yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi `class scope` içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde `instantiate edilebilir` (çalıştırılabilir) ve buradan değişkenlere erişilebilir.
 
-Siz herşeyi sınıf scope içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde instantiate edilebilir (Türkçe'si `başlatılabilir` gibi birşey olmalı?) ve buradan içeriğe direkt müdahele edilebilir.
+Bunu önlemek için, `OOP`in (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabiliriz.
 
-Bunu önlemek için `OOP`in (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabilirsiniz.
+Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` prefixlerini kullanarak değişkenlerin veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliriz. Kapsülleme yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` prefixlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz.
 
-Kapsülleme son derece basit bir mantıkla çalışır. PHP'de bildiğiniz gibi `public`, `private` ve `protected` keywordleri ile bir değişkenin veya fonksiyonun dışarıdan erişilip erişilemeyeceğini belirtebilirsiniz. Kapsülleme yapmak için, erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` ile tanımladıktan sonra, class içerisinde `public` bir fonksiyon tanımlayıp bu fonksiyon üzerinden değişkeni döndürebilirsiniz.
-
-Bunu hemen bir örnekle anlatalım. Örneğin `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu `extend` etmesiyle çalışacak.
+Bunu hemen bir örnekle anlatalım. Örneğin, `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu `extend` etmesiyle çalışacak.
 
 ```php
 <?php
@@ -123,9 +121,9 @@ abstract class Database
 }
 ```
 
-Dikkat ettiyseniz `info` değişkeni `public` olarak, `isConnected` değişkeni `private` olarak yazıldı.
+Dikkat ettiyseniz `$info` değişkeni `public` olarak, `$isConnected` değişkeni ise `private` olarak yazıldı. Yani, `$isConnected` erişilemez hale getirildi.
 
-Şimdi, bir `MySQL` sınıfı veritabanı sınıfımızı extend etsin ve onu başlatsın.
+Şimdi, bir `MySQL` sınıfı oluşturalım. Bu sınıf `Database` sınıfımızı extend ederek başlatıyor olsun.
 
 ```php
 <?php
@@ -153,55 +151,85 @@ class MySQL extends Database implements DatabaseConnectorInterface
 }
 ```
 
-Şuan `MySQL` sınıfı, `Veritabanı` sınıfındaki `isConnected` değişkenini değiştiremez çünkü yetkisi yok. Neden? Değişkeni `private` olarak tanımladığımız için sadece `Database sınıfı scopesi` içerisinden erişilebilir. Ancak biz şuan `MySQL sınıfı scopesi` içerisindeyiz.
+Şuan `MySQL` sınıfı, `Database` sınıfındaki `$isConnected` değişkenine erişemeyecektir, çünkü değişken `private` olarak tanımlandığı için sadece `Database sınıfı scopesi` içerisinden erişilebilir olacaktır. Biz şuan `MySQL sınıfı scopesi` içerisine olduğumuza göre bu değişkene erişme hakkımız bulunmamaktadır.
 
-Ancak, `public` olarak bir `isConnected()` methodu yazmıştık ve bu method içerisinde `info` değerini döndürmüştük. `MySQL` sınıfı bu methoda erişebilecek mi? Evet. Database sınıfının kendi scopesi içerisindeki `isConnected` değişkenine erişim hakkı var mı? Evet. O zaman bu şekilde gizli değişkenlere dışarıdan erişim verebiliyoruz ancak onları değiştirme hakkı tanımıyoruz. Bunun adına kapsülleme deniyor ve Nesne Yönelimli Programlama'nın 4 temel prensiplerinden biridir.
+Ancak, `public` olarak bir `isConnected()` methodu yazmıştık ve bu method içerisinde `$info` değişkeninin değerini döndürmüştük. Prefix olarak `public` kullanıldığı için `MySQL` sınıfı, `Database` sınıfındaki `isConnected()` methoduna erişebilecektir.
 
-Şuana kadar kafanız karışmış olabilir ancak bu konuyu size bir dünyevi örnekle anlattığım zaman herşey kafanızda şekillenecek. 
+Bu durumda;
+ 
+1. `MySQL` sınıfı `isConnected()` methoduna erişebilecek mi? Evet. 
+2. `isConnected()` methodunun kendi sınıfı içerisindeki `$isConnected` değişkenine erişim hakkı var mı? Evet. 
 
-Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz ve KDV oranını `0.18` olarak belirlediniz. Eğer siz bunu dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? 100 liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
+Bu durumda, `MySQL` sınıfı, `Database` sınıfındaki `public` fonksiyon üzerinden gizli `$isConnected` değişkenine ulaşabilecektir. Bunun adına `encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel prensiplerinden biridir.
 
-Buna rağmen, bazı durumlarda `KDV oranı` bilgisine erişmeniz gerekebilir. Belki başka bir yazılımcı ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyor ve bu değişkene erişmesi lazım. Burada biraz önce bahsettiğimiz `public fonksiyon` mantığı giriyor. Bu tür fonksiyonlara `gettler fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkeni döndürmekten ibarettir.
+Şimdi, bu durumu size daha dünyevi bir örnekle anlatayım. Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz. `$kdvOrani` adında bir değişken belirlediniz ve değer olarak `0.18` float değerini verdiniz. Eğer siz `$kdvOrani` değişkenini dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? `100` liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
+
+Ancak, `MySQL` örnediğinde anlattığım gibi bazı durumlarda `$kdvOrani` değişkenine erişmeniz gerekebilir. Belki bir ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyorsunuz. Kim bilir? Bu durumda biraz önce bahsettiğimiz `public fonksiyon`  üzerinden gizli değişkenlere mantığı giriyor. Bu fonksiyonlara `gettler fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkenin değerini döndürmekten ibarettir.
 
 ```php
 <?php
 
-class KDVCalculator 
+class KDVHesaplayici 
 {
 
-    private $kdvRatio = 0.18;
+    private $kdvOrani = 0.18;
 
-    public function getKdvRatio() // bir gettler örneği
+    public function getKdvOrani() // bir gettler örneği
     {
-        return $this->kdvRatio;
+        $this->kdvOrani; // 0.18 dönüyor
     }
 }
 ```
 
-`settler fonksiyonlar` ise, `gettler fonksiyonların` tam tersi mantıkla çalışır. Onlar, gelen değeri değişkenin değeri olarak atarlar.
+Bir de bunun tam tersi olan `settler fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirirler.
 
 Bir örnekle gösterelim:
 
 ```php
 <?php
 
-class KDVCalculator 
+class KDVHesaplayici 
 {
 
-    private $kdvRatio = 0.18;
+    private $kdvOrani = 0.18;
 
-    public function setKdvRatio($input) // bir settler örneği
+    public function getKdvOrani() // bir gettler örneği
     {
-        return $this->kdvRatio = $input;
+        return $this->kdvOrani;
+    }
+
+    public function setKdvOrani($input) // bir settler örneği
+    {
+        $this->kdvOrani = $input;
     }
 }
+
+$kdv = new KDVHesaplayici;
+$kdv->setKdvOrani(3);
+$kdv->getKdvOrani(); // 3.00
 ```
 
-Gördüğünüz gibi `settler` bir fonksiyon üzerinden gizli olan `kdvRatio` değişkeninin değeri güncellenebiliyor.
+`Settler` fonksiyonların iyi yanı, kendi içlerinde bir kontrol mekanizması kurabilmeleridir. Mesela `setKdvOrani()` fonksiyonu içerisinde vergi oranının `0.20`'den fazla olamayacağını kontrol ettirebilirsiniz.
+
+```php
+<?php
+
+    public function setKdvOrani($input) // bir settler örneği
+    {
+        if( (float) $input > 0.20)
+        {
+           return false;
+        }
+
+        $this->kdvOrani = $input;
+    }
+```
+
+Artık dışarıdan müdahele edilerek bozulamayacak bir sınıf yapısına sahibiz.
 
 > Biliyor musunuz?
 
-`Csharp` dilinde gettler ve settler methodlar kolayca oluşturulabilmektedir.
+`Csharp` dilinde `gettler` ve `settler` methodlar kolayca oluşturulabilmektedir.
 
 ```php
 public class Database
@@ -212,7 +240,7 @@ public class Database
 
 > Biliyor musunuz?
 
-`Ruby` dilinde gettler ve settler oluşturmak çok basittir.
+`Ruby` dilinde `gettler` ve `settler` oluşturmak çok basittir.
 
 ```php
 class Database
@@ -220,24 +248,26 @@ class Database
 end
 ```
 
-> Biliyor musunuz?
+`attr_accessor`, `info` değişkeninin gettler ve settler fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım yok ve gettler ile settler fonksiyonlarımızı elle yazmak zorundayız.
 
-PHP'de eğer `gettler` ve `settler` methodlar bulunamazsa, PHP'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girer.
+`PHP`'de eğer `gettler` ve `settler` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girer.
 
-### Methodlarınızı ve sınıflarınızı küçük tutun. ###
+> Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlardır. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlardır.
 
-Bu konu farklı yazılımcılara göre farklılık göstermekle beraber, altın kuralımız şuna benzer: 
+### 2. Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
-1. Bir methodda maksimum 10 satır
-2. Bir sınıfta maksimum 10 method
-3. Bir sınıfta maksimum 4 dependency (bağımlılık)
-4. Bir pakette/komponentte maksimum 15 sınıf.
+Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, genel kanı aşağıdaki altın kurala uymanın bize avantaj sağlayacağıdır. 
 
-Peki nedir bu bağımlılık? 
+1. Bir methodda maksimum `10 satır kod` bulunmalıdır.
+2. Bir sınıfta maksimum `10 method` bulunmalıdır.
+3. Bir sınıfta maksimum `4 dependency` (bağımlılık) bulunmalıdır.
+4. Bir pakette/komponentte maksimum `15 sınıf` bulunmalıdır.
 
-Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan farklı sınıfların toplamıdır. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya sınıf scope içerisinde bağımlılık sınıflarının `instantiate` edilmesiyle eklenebilir.
+Peki, nedir bu bağımlılık?
 
-Örneğin:
+Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan diğer sınıfların toplamıdır. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya sınıf scope içerisinde bağımlılık sınıflarının `instantiate` edilmesiyle eklenebilir.
+
+Aşağıdaki örneği ele alalım.
 
 ```php
 <?php namespace Controllers;
@@ -261,59 +291,120 @@ class HomeController
     }
 ```
 
-Burada, `HomeController` sınıfının 3 bağımlılığı bulunmaktadır.
+Burada, `HomeController` sınıfının 3 `bağımlılığı` bulunmaktadır.
 
-1. `DatabaseInterface` interfacesine sadık kalmış herhangi bir sınıfa.
-2. `Image` sınıfına.
-3. Global `uzaydaki` (namespace) `Logger` sınıfına.
+1. `DatabaseInterface` interfacesine sadık kalmış herhangi bir sınıfa bağımlıdır.
+2. `Image` sınıfına bağımlıdır.
+3. Global `uzaydaki` (namespace) `Logger` sınıfına bağımlıdır.
 
-Eğer bu sayı 4'ün üzerine çıkarsa, o zaman sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de SOLID ilkelerinin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
+Eğer bu sayı `4`'ün üzerine çıkarsa sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de `SOLID ilkeleri`nin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
 
-> Not: Maksimum 4 bağımlılık bir kural değil, görüştür. Uymak zorunda olmadığınız gibi, uyarsanız size birçok avantaj sağlayacağı aşikardır.
+`Tek Amaç İlkesi`'ne uymak için, sınıflarımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız.
 
-### mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
+> Not: Buradaki sayılar bir kural değil, bir görüştür. Sayılarda ufak oynamalar olabileceği gibi, çok büyük oynamalar Tek Amaç İlkesi'nden çıktığınız anlamına gelebilir.
 
-Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek SQL Injection'dan korunduğunu sanıyor. Bu klasik bir yanlıştır ve sizi temel düzeydeki SQL Injection hatalarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında sizi koruyamaz.
+### 3. Kendinizi == yerine === kullanmaya alıştırın. ###
 
-SQL Injection'dan korunmak için `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir, ancak benim kişisel tavsiyem bir `ORM` aracının kullanılması yönündedir.
+`==`, `loose comparison` yaptığı için `0` ile `false`'yi, `1` ile `true`'yi eşit sayar. Ancak bazı durumlarda gücü elinize almanız gerekir. 
 
-// Not: Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
+Örneğin:
 
-### Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
+```php
+<?php
+    strpos('abcde', 'ab');
+```
 
-Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay bir şekilde kırılabilir.
+`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.
+
+Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksın.
+
+```php
+<?php
+    if ( strpos('abcde', 'ab') == false)
+        return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
+```
+
+Yanlış. Doğrusu `===` kullanmak olmalıydı
+
+```php
+<?php
+    if ( strpos('abcde', 'ab') === false)
+         return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
+```
+
+PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
+
+Özellikle `boolean` verileri karşılaştırırken mutlaka strict comparison operatörünü kullanın.
+
+`Boolean` verileri şunlardır: 
+
+1. Sayı olan 0 ve 1
+2. Float olan 0.0 ve 1.0
+3. Boolean olan true ve false
+4. Boş string veya string olan 0 ("0")
+5. null
+6. Boş array (boş array false, dolu array true)
+7. Object (daima true)
+8. Resources (daima true, http://www.php.net/manual/en/resource.php)
+
+### 4. mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
+
+Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek `SQL Injection` saldırılarından korunduğunu sanmaktadır. Bu klasik bir yanlıştır ve sizi anca temel düzeydeki `SQL Injection` saldırılarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında bu fonksiyon hiçbir işe yaramaz ve sizi koruyamaz.
+
+`SQL Injection`'dan korunmak, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
+
+```php
+<?php
+
+    $sth = $dbh->prepare('SELECT isim, renk, kalori_degeri
+    FROM meyveler
+    WHERE kalori_degeri < ? AND renk = ?');
+
+    $sth->execute(array($_POST['kalori_degeri'], 'Kırmızı'));
+```
+
+Korkmadan `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bindledik. Artık `PDO driver`i, sorguyu oluşturacak ve enjeksiyonların tamamını bizim yerimize önleyecektir.
+
+### 5. ORM araçları hakkında bilgi sahibi olun. ###
+
+// Yakında.
+
+### 6. Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
+
+Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir.
 
 // Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
 
-### Input escape edilir, output filtrelenir. ###
+### 7. Input escape edilir, output filtrelenir. ###
 
-Yapılan başka bir klasik yanlışta XSS koruması sağlamak için kullanıcıdan gelen verilerin `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi fonksiyonlardan geçirilip veritabanına eklenmesidir.
+Çok popüler bir yanlışta `XSS` koruması sağlamak için kullanıcıdan gelen verilerin `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi fonksiyonlardan geçirilip veritabanına eklenmesidir. Bu yanlıştır.
 
-Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanına eklenmesi önemlidir. Yukarıdaki fonksiyonlar, veritabanındaki veriler ekrana yansıyacağı zaman kullanılmalıdır. Bunun birçok sebebi bulunmaktadır.
+Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` veritabanında bir zarara yol açmayacağı için veritabanında tutulmasının bir sakıncası yoktur. Ancak, `XSS` verileri ekrana basılırken mutlaka filtrelenmesi gerekmektedir. Bu yüzden filtreleme işi ekrana bastırırken yapılmalıdır. Bunun birçok sebebi bulunmakta olup, başlıca sebeplerini şöyle sıralayabiliriz:
 
-**a. Verilerin bozulmadan saklanmasını sağlarsınız.**
+**a. Verilerin bozulmadan saklanmasını sağlanmalıdır.**
 
-Kullanıcının gönderdiği veri ham haliyle saklanacağı için orjinal içeriğe daima ulaşma şansınız olur.
+Kullanıcının gönderdiği veri ham haliyle veritabanında saklanmalıdır, bu yüzden orjinal içeriğe daima ulaşma şansınız olur.
 
 **b. Potansiyel uzunluk hatalarının önüne geçmiş olursunuz.**
 
-Bir ` ` karakteri geldiğinde, bu `&nbsp;` veya  `&#160;` haline döndürülebilir. Bu kelimeler 6 harften oluşmaktadır ve veritabanına gireceği zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
+Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bu kelimeler `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk kontrolü yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
 
 **c. Zararlı kod bir şekilde veritabanına sızmışsa, çıktı esnasında bu temizlenir.**
 
-Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazıldığı zaman (bir şekilde), çıktı esnasında bunu temiziyorsanız bu sorun olmaktan çıkar. Ancak filtreleme işlemini veritabanına girmeden yapıyorsanız, zararlı kod orada kalmaya ve çalışmaya devam edecektir.
+Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazsanız bile, ekrana bastırma esnasında filtreleme yapacağınız için bu sorun olmaktan çıkar. Ancak, filtreleme işlemini veritabanına girmeden önce yapmış olsaydınız, zararlı kod orada kalmaya ve çalışmaya devam edecekti.
 
-### Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
+Bu yüzden, altın kuralımız:
 
-Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. 
+1. İstek geldiğinde veritabanına eklemeden önce `SQL Injection`'dan koru.
+2. Veritabanındaki verileri ekrana bastırırken daima temizleyerek bastır.
 
-`TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
+### 8. Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
+
+Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. `TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
 
 Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak sizin yararınızadır.
 
-Ayrıca, veritabanındaki hücre tipleri hakkında bilgi sahibi olmanız sizin için büyük avantaj sağlayacaktır.
-
-### Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
+### 9. Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
 İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir. 
 
@@ -362,24 +453,24 @@ Bu yazıyı yazarken bile Türkçe karakterler yüzünden birçok sıkıntı çe
 
 > Not: Tartıştığım yazılımcıların karşı argümanı bazen İngilizce bilmeyen yazılımcılarla çalıştıkları, bu yüzden Türkçe kullanmayı tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemli olabilir.
 
-### Kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
+### 10. Kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
 
 Kötü eğitim yarardan sağlamaktan çok zarar verir. Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
 
-Bazen `Google aramalarında` en üstte çıkıyorlar ve ister istemez sitelerine girmek zorunda kalıyorsun. Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara göz gezdiririm. (Bilmiyorum siz de böylemisiniz.) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöplükten fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorsun. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+Bu tür bloglar bazen `Google aramalarında` en üstte çıkmaktalar ve ister istemez sitelerine girmek zorunda kalabilmektesiniz. Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara göz gezdiririm. (Bilmiyorum siz de böylemisiniz.) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöplükten fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorum. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
 
-Abartısız birçoğu böyle. Hatta PHP geliştiricilerin blogları en kötüleri. PHP bloglarının kötü olmasının sebepleri arasında:
+Hatta PHP geliştiricilerin blogları en kötüleri. PHP bloglarının kötü olmasının sebepleri bana göre;
 
 1. PHP ile birşeyler yapabilmenin çok kolay olması bu yüzden amatör yazılımcılar tarafından sıkça tercih edilmesi,
 2. WordPress ve Joomla gibi son derece ilkel yöntemlerle geliştirilen projelerin son derece popüler olması,
 3. Birkaç yıl öncesine kadar Github ve Composer'in olmayışı bu yüzden zbilyon tane sınıf ve kod örneklerinin internette dolaşması gibi sebepler sıralabilir.
 
-Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksek. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
+Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksektir. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
 
-Bunların dışında, bir de Türkçe bloglarda göze çarpan genel eksikliklerden bahsedeyim.
+Bunların dışında, bir de Türkçe bloglarda göze çarpan genel eksikliklerden bahsetmek istiyorum;
 
-1. Açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler.)
-2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor, çok az kişi eleştiriyi kabullenebiliyor.
+1. Öncelikle açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler.)
+2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor. Çok az kişi eleştiriyi kabullenebiliyor.
 3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor.
 4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. (Ben bunun bir marketing stratejisi olduğunu düşünüyorum.)
 
@@ -387,7 +478,7 @@ Bu yüzden, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmay�
 
 > Not: Bu yazdıklarım genellikle Türkçe blog yazanlar için. İngilizce makeleler nispeten daha iyi durumda.
 
-### ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
+### 11. ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
 
 `OOP` kullanmak istemeyenlerin, frameworklere "Çok hantal çalışıyor." diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa?`
 
@@ -395,7 +486,7 @@ Kısa cevap: Hiçbirşey olmaz.
 
 Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır vs.
 
-### Kaptan gemiyi terk etmişse, o gemide kalmanın fazla bir anlamı yok. ###
+### 12. Kaptan gemiyi terk etmişse, o gemide kalmanın fazla bir anlamı yok. ###
 
 Son birkaç yılda açık kaynak adına son derece büyük adımlar atıldı. Artık neredeyse her türlü açık kaynaklı proje `Github` üzerinden yayınlanmakta. Ancak bu son derece avantajlı olmasına rağmen, bazen dezavantajları da olabiliyor.
 
@@ -411,51 +502,7 @@ Bu durum sadece `Code Igniter` projesiyle ilgili değil. Hertürlü açık kayna
 
 Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
 
-### Kendinizi == yerine === kullanmaya alıştırın. ###
-
-`==`, `loose comparison` yaptığı için `0` ile `false`'yi, `1` ile `true`'yi eşit sayar. Ancak bazı durumlarda gücü elinize almanız gerekir. 
-
-Örneğin:
-
-```php
-<?php
-    strpos('abcde', 'ab');
-```
-
-`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.
-
-Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksın.
-
-```php
-<?php
-    if ( strpos('abcde', 'ab') == false)
-        return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
-```
-
-Yanlış. Doğrusu `===` kullanmak olmalıydı
-
-```php
-<?php
-    if ( strpos('abcde', 'ab') === false)
-         return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
-```
-
-PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
-
-Özellikle `boolean` verileri karşılaştırırken mutlaka strict comparison operatörünü kullanın.
-
-`Boolean` verileri şunlardır: 
-
-1. Sayı olan 0 ve 1
-2. Float olan 0.0 ve 1.0
-3. Boolean olan true ve false
-4. Boş string veya string olan 0 ("0")
-5. null
-6. Boş array (boş array false, dolu array true)
-7. Object (daima true)
-8. Resources (daima true, http://www.php.net/manual/en/resource.php)
-
-### DRY kuralına uyun ve akıllı çalışın. ###
+### 13. DRY kuralına uyun ve akıllı çalışın. ###
 
 `DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz.
 
@@ -491,7 +538,7 @@ Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kayb
 
 > Not: Geliştirici ortamında yapabileceğiniz iyileştirmelerden `Geliştirici Ortamı` bölümünde bahsedilecektir.
 
-### Daima tutarlı olun. ###
+### 14. Daima tutarlı olun. ###
 
 Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları `_` kullanarak ayırıyorsanız, `_` kullanarak devam edin. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın. Yaptığınız herşey tutarlı olsun.
 
@@ -511,7 +558,7 @@ Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 bo�
 
 > Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
 
-### Dependency Injection, Dependency Injection Container ve Inversion of Control ###
+### 15. ÖNEMLİ: Dependency Injection, Dependency Injection Container ve Inversion of Control nedir öğrenin.###
 
 Bunların ne olduğunu bilmek artık her `PHP` geliştirici için şart olduğu için ne olduklarını yazma ihtiyacı hissediyorum.
 
@@ -700,7 +747,7 @@ Bu yukarıdaki örnekte fazla bir problem teşkil etmiyor, ancak 100 tane `Denem
 
 > Not: Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı değil. Detaylı bilgiye sahip olmak isteyen arkadaşlar Google üzerinde araştırma yapabilir.
 
-### Gerekmedikçe else ve uzun if blokları kullanmayın. Dima köşeli parantez kullanın. ###
+### 16. Gerekmedikçe else ve uzun if blokları kullanmayın. Dima köşeli parantez kullanın. ###
 
 Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz.
 
@@ -852,11 +899,11 @@ Sorunu gördünüz mü? `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
 
 Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son derece komik olmakla beraber, sadece düzgün şekilde köşeli parantez kullanılsaydı kendiliğinden çözülmüş olacaktı.
 
-Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden bizim yapmamız gereken, köşeli parantezleri doğru kullanmak ve ne yaptığımızı kontrol etmek.
+Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden bizim yapmamız gereken, köşeli parantezleri doğru kullanmak.
 
-### Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
+### 17. Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
-`DRY` bölümünde anlattığım konuya bir örnekte bu. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. Bilgisayarın yapması gereken şeyleri siz yapmayın.
+`DRY` bölümünde anlattığım konuya bir örnekte bu konudur. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. Bilgisayarın yapması gereken şeyleri siz yapıyorsunuz.
 
 Oluşturduğunuz form submite tıkladığında form verilerini uygulamaya gönderiyor mu? Güzel, ama bunu `acceptance testi` yazarak test edin.
 
@@ -864,29 +911,27 @@ Formdan veri gönderildiğinde, gelen istek doğru yere yönlendiriliyor mu? Gü
 
 Formdan gelen tc kimlik no verisini doğrulayan method doğru çıktıları veriyor mu? Güzel, ama bunu `fonksiyonel test` yazarak kontrol edin.
 
-Bunu yapmadığınız zaman projenin herhangi biryerinde değişiklik yapmaya korkar olursunuz. Proje ne kadar büyürse projeyi manuel test etmek o kadar zorlaşır ve hata oranı büyük ölçüde artar.
+Bunu yapmadığınız zaman projenin herhangi biryerinde değişiklik yapmaya korkar olursunuz. Proje ne kadar büyürse projeyi manuel test etmek o kadar zorlaşır ve hata oranı büyük ölçüde artar. Benim gibi projeden projeye atlayan biriyseniz, hangi projenin ne durumda olduğunu aklınızda tutamazsınız. 
 
-Ayrıca, benim gibi projeden projeye atlayan biriyseniz, hangi projenin ne durumda olduğunu aklınızda tutamayacaksınız.
+Bu yüzden kendinizi test yazmaya alıştırın. `F5`'e ne zaman basmanız gerekiyorsa parmağınızı geri çekin ve test yazın.
 
-Bu yüzden test yazın, kafanız rahat etsin.
+> Not: PHPUnit, Codeception, Selenium, Behat gibi araçları araştırabilirsiniz.
 
-> Not: PHPUnit, Codeception, Selenium, Behat gibi araçları araştırın.
-
-### Testlerinizi yazarken string kullanmamaya çalışın. ###
+### 18. Testlerinizi yazarken string kullanmamaya çalışın. ###
 
 İster unit test yazıyor olun, ister acceptance, ne kadar az string kontrol ederseniz sizin için o kadar sağlıklı olur.
 
 Mesela acceptance testlerinde `<p>Anasayfa</p>` varmı diye kontrol etmektense header kodunun 200 OK olduğunu kontrol edin. Anasayfa yazısı değişebilir (Anasayfa yerine Font Awesome ile ev resmi koyabilirsiniz örneğin) ama header kodu değişmez.
 
-### HTTP Response kodlarını öğrenmeye ve kullanmaya çalışın. ###
+### 19. HTTP Response kodlarını öğrenmeye ve kullanmaya çalışın. ###
 
 HTTP Response kodları önemlidir. Örneğin, headeri 404 olmayan bir 404 sayfası, gerçek bir 404 sayfası değildir. Google gibi arama motorları bu sayfayı 404 olarak saymazlar çünkü bu sayfanın aslında 404 ID'sine sahip kullanıcının profili olup olmadığını bilemezler.
 
 Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_codes adresinden ulaşabilirsiniz.
 
-### MVC kullanıyorsanız, MVC gibi kullanın. ###
+### 20. MVC kullanıyorsanız, MVC gibi kullanın. ###
 
-**Controller içerisinde echo'yu unutun**
+**a. Controller içerisinde echo'yu unutun.**
 
 `Controller` içerisinde asla `echo` veya `print` gibi fonksiyonları kullanmayın. Çıktıyı ekrana bastıracak katman daima `View` katmanıdır.
 
@@ -912,15 +957,30 @@ class Controller
 }
 ```
 
-**Viewlar, Controllerdan gelen mümkün olan en az bilgiyle çalışmalıdır.**
+**b. Viewlar, Controllerdan gelen mümkün olan en az bilgiyle çalışmalıdır.**
 
-Bazen `Controller` sınıfları `View`'e gereğinden fazla veri gönderir ve bu sıkıntı çıkarabilir.
+Bazen `Controller` sınıfları `View`'e gereğinden fazla veri gönderir ve bu sıkıntı çıkarabilir. Genel olarak bir `Controller`, `View` katmanına mümkün olan en az veriyi göndermelidir.
 
-Örneğin, veritabanındaki tablolara göre navigasyon menüsünün linklerini hazırlamakla yükümlü bir `Controller methodu`, View'e mümkün olan en az veriyi göndermelidir.
+```php
+<?php
 
-Örneğin, linki oluştururken kullandığımız site adresi gibi bilgiler, View'de bulunmalı, Controller sadece linkin değişen kısmını göndermelidir.
+class Controller
+{
+  
+    public function test()
+    {
+        // yanlış
+        $link = "http://aristona.github.io/" . $_POST['id];
+        $view->bind('link', $link);
 
-### Çıkan notice ve warningler birer bugdur ve düzeltilmesi gerekir. ###
+        // doğru
+        $link = $_POST['id];
+        $view->bind('link', $link); // aristona.github.io adresi, View katmanında tutulmalıydı
+    }
+}
+```
+
+### 21. Çıkan notice ve warningler birer bugdur ve düzeltilmesi gerekir. ###
 
 PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar bazen görmezden gelinebilir. Bunlar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING`'dir. (Hepsine http://php.net/manual/en/errorfunc.constants.php adresinden bakabilirsiniz.)
 
@@ -934,7 +994,7 @@ PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar b
 
 Bu yüzden geliştirme ortamınızda hata raporlamanın açık durumda olması ve hertürlü hata seviyesindeki sorunları çözüyor olmanız sizin için bir avantajdır.
 
-### Hataları analiz etmek için backtrace kullanın. ###
+### 22. Hataları analiz etmek için backtrace kullanın. ###
 
 Uygulamanızda bir hata aldınız, ancak neden böyle bir hata aldığınızı bilmiyorsanız PHP'in `backtrace` (geri sarma) özelliğini kullanabilirsiniz.
 
@@ -946,13 +1006,13 @@ Stack trace hakkında bilgi sahibi olmak için:
 
 2. `debug_backtrace()` fonksiyonunu kullanarak stack traceyi kendiniz takip edebilirsiniz.
 
-### @ kullanmayın. ###
+### 23. @ kullanmayın. ###
 
 `@`, PHP'de muhtemel hataların ekrana yansımaması için onları sessizleştirir. Siz istediğiniz hataları sessizleştirin, susturun, onlar oluşmaya devam edecektir.
 
 Açıkcası bu özelliğin PHP'ye neden eklendiğini anlamış biri değilim. Ölümcül hatalar, warningler, noticeler, exceptionlar, trigger_error ve bunların fonksiyonları ile php.ini konfigürasyonları derken zaten yeterince kafa karışıklığı oluşuyor. Birde bunları susturacak (hepsini değil) özellikler var. Neden diye soramıyorum... çünkü PHP kullanıyoruz, bunlara alıştık. ¯\_(ツ)_/¯
 
-### ?> kullanmayın. ###
+### 24. ?> kullanmayın. ###
 
 PHP kullanırken `?>` kullanarak açılan tagları kapatmanıza gerek yok. Kapattığınız takdirde `?>` tagından sonra yeni satır veya boşluk gibi karakterler kalabiliyor. Bu karakterler PHP tarafından `output` (çıktı) olarak algılandığı için `Headers already sent` hatası, sessionların oluşturulamaması, header kodlarının değiştirilememesi gibi hatalara sebep oluyor.
 
@@ -960,7 +1020,7 @@ Ben hiçbirşeyi gözden kaçırmam demeyin, kaçabiliyor. 
 
 > Not: Kaçabiliyordan sonra birtane whitespace kaçtı mesela. Farkettin mi?
 
-### Short tags kullanmayın. ###
+### 25. Short tags kullanmayın. ###
 
 Bazı yazılımcılar `<?php` yerine `<?` kullanıyor. Bu son derece yanlış. Short tag kullanacaksanız `short_open_tag` mutlaka açık konumda olmalı. Kapalı olursa ne olur? Hiç. Kaynak kodlarınız kabak gibi tarayıcıya çıkar.
 
@@ -970,13 +1030,13 @@ Sadece bu değil, dünya çapında birçok web sitesi bu tür basit dikkatsizlik
 
 Bu yüzden, `<?php` dışında hiçbir açılış tagını kullanmayın.
 
-### Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
+### 26. Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
 
 Yanlışlıkla sunucu, ftp, veritabanı veya API bilgilerinizin olduğu dosyaları Github'a yüklemeyin. Gizli kalması gereken dosyaları `.gitignore` kullanarak gizleyin.
 
 Commit logları kaldığı için daha sonra silseniz bile başkaları tarafından görünebiliyorlar. Dikkatli ve uyanık olun.
 
-### Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
+### 27. Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
 
 Aşağıda mükemmel yazılımcıların... (*öhüöhü*) açık kaynaklı projeleri... (*öhüöhü*) Kusura bakmayın, biraz kötü oldum. Bu kadar kötü kod görünce bünyem kaldırmıyor. 
 
@@ -990,25 +1050,11 @@ Bazıları session onları korur diye düşünebilir, ama session spoofing, sess
 
 Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritabanı sorgusuna sokmayın.
 
-### Ekrana bastırılacak verileri daima filtreleyin. ###
-
-Kullanıcıdan gelen verileri (veritabanına eklenmiş olanlar dahil) ekrana bastırırken daima filtreleyin. Bu filtreleme sizi XSS saldırılarından korur.
-
-Örneğin:
-
-```js
-<script>alert("Selam");</script>
-```
-
-yazdığım zaman bu input veritabanına girecektir. Daha sonra bu veri ekrana bastırılacaktır ve eğer javascript tarayıcıda açıksa, çalışacaktır.
-
-Bu yüzden ekrana bastırma esnasında filtreden geçirilerek zararsız hale gelmesi gerekmektedir.
-
-### Composer kullanın. ###
+### 28. Composer kullanın. ###
 
 // Yakında
 
-### Statik fonksiyon kullanmayın. ###
+### 29. Statik fonksiyon kullanmayın. ###
 
 // Yakında
 
