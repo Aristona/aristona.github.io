@@ -827,7 +827,7 @@ Bu durumda, `return "Hata";` asla ve hiçbir koşulda çalışmayacaktı.
 
 Bu neden mi önemli? Apple'ın SSL'de çıkardığı meşhur `goto fail;` hatasının sebebi son derece komik.
 
-```php
+```c
     err = true; // ilk başta err true oluyor
     hashOut.data = hashes + SSL_MD5_DIGEST_LEN;
     hashOut.length = SSL_SHA1_DIGEST_LEN;
