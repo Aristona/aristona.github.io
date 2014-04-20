@@ -672,7 +672,7 @@ $mailer = new Mailer(new AWSMailer); // çalışır
 $mailer = new Mailer(new BenzinPompasi); // çalışmaz!!
 ```
 
-Artık işyerindeki patronunuz `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edersiniz. İleride tekrar `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e geçebilirsiniz. `BenzinPompası`'nı kullanalım derse istifa dilekçenizi verebilirsiniz. :)
+Artık işyerindeki patronunuz `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edersiniz. İleride tekrar `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e geçebilirsiniz.
 
 **Dependency Injection konteynerleri**
 
@@ -827,7 +827,7 @@ Bu durumda, `return "Hata";` asla ve hiçbir koşulda çalışmayacaktı.
 
 Bu neden mi önemli? Apple'ın SSL'de çıkardığı meşhur `goto fail;` hatasının sebebi son derece komik.
 
-```c
+```php
     err = true; // ilk başta err true oluyor
     hashOut.data = hashes + SSL_MD5_DIGEST_LEN;
     hashOut.length = SSL_SHA1_DIGEST_LEN;
