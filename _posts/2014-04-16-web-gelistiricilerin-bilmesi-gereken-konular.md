@@ -1203,7 +1203,7 @@ Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritaba
 # Frontend #
 ---
 
-## CSS ##
+## CSS ve HTML ##
 
 ### CSS Explosiona maruz kalmayın. ###
 
@@ -1215,9 +1215,23 @@ Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritaba
 
 ### Semantic HTML yazın. ###
 
+// Neki bu semantic?
+
 ### Ayraçları HTML ile yazmayın. ###
 
+// CSS pseudo selectorlere bir giriş
+
 ### Duplicate HTML yazmayın. ###
+
+// Kendinizden nefret ettirmenin yolları
+
+### Inline stil ve inline javascriptten kaçının. ###
+
+// Yakında
+
+### YAZILARINIZI BÜYÜK HARFLE yazmayın! ###
+
+// text-transform: uppercase;
 
 ### Linkleri doğru şekilde yazın. ###
 
@@ -1237,9 +1251,13 @@ Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır.
 
 // Sebep
 
+### CSS selectorlerinizi kısa tutun. ###
+
+// Yeah
+
 ## Javascript ##
 
-### Javascript kullanıyorsanız tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın. ###
+### Tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın. ###
 
 Javascript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
 
@@ -1286,11 +1304,11 @@ c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullan�
 
 // Nedir?
 
-### Tanımlamaları lambda altında yapın. ###
+### Lambda kullanın. ###
 
 // jQuery örneklerinden
 
-### Bir selector kullandığınız zaman onu önbellekleyin. ###
+### Bir selector kullandığınız zaman onu önbellekte tutun. ###
 
 // Sebep?
 
