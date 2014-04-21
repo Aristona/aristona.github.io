@@ -22,11 +22,13 @@ Bu yazı, [https://github.com/Aristona/aristona.github.io]() üzerindeki `reposi
 
 > Not: Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır.
 
+---
 # Backend (Arka yüz) #
+---
 
 Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilirler.
 
-### 1. Global scopeyi asla kirletmeyin. ###
+### - Global scopeyi asla kirletmeyin. ###
 
 **a. Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
@@ -256,7 +258,7 @@ Bilmeniz gereken bir başka konu ise, `PHP`'de eğer `gettler` ve `settler` meth
 
 > Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlardır. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlardır.
 
-### 2. Methodlarınızı ve sınıflarınızı küçük tutun. ###
+### - Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
 Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, genel kanı aşağıdaki altın kurala uymanın bize avantaj sağlayacağı yönündedir. 
 
@@ -317,7 +319,7 @@ Burada `Kayıt` sınıfının amacı, kullanıcıyı başarılı bir şekilde ve
 
 > Not: Bu maddenin bir kural değil, bir görüş olduğunu hatırlatmalıyım. Sayılarda ufak oynamalar olabileceği gibi, çok büyük oynamalar Tek Amaç İlkesi'nden çıktığınız anlamına gelebilir.
 
-### 3. Kendinizi == yerine === kullanmaya alıştırın. ###
+### - Kendinizi == yerine === kullanmaya alıştırın. ###
 
 `==`, `loose comparison` yaptığı için sayı olan `0` ile `false`'ı, sayı olan `1` ile `true`'yu eşit sayar. `Loose comparison` PHP'nin doğasında olmasına rağmen, bazı durumlarda gücü elimize almamız gerekebilir. 
 
@@ -363,333 +365,7 @@ Ben biraz disiplinli çalışmayı sevdiğim için daima `strict comparison` (==
 
 Bu durum, `Javascript` gibi diller için de geçerlidir.
 
-### 4. mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
-
-Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek `SQL Injection` saldırılarından korunduğunu sanmaktadır. Bu klasik bir yanlıştır ve sizi anca temel düzeydeki `SQL Injection` saldırılarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında bu fonksiyon hiçbir işe yaramaz ve sizi koruyamaz.
-
-`SQL Injection`'dan korunmak için, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
-
-```php
-<?php
-
-    $sth = $dbh->prepare('SELECT isim, renk, kalori_degeri
-    FROM meyveler
-    WHERE kalori_degeri < ? AND renk = ?');
-
-    $sth->execute(array($_POST['kalori_degeri'], 'Kırmızı'));
-```
-
-Artık herhangi bir süzmeye gerek kalmadan, `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bindledik. 
-
-Artık `PDO driver`i, sorguyu oluştururken `?` gördüğü bölümlere bizim verdiğimiz parametreleri ekleyecek ve `SQL Injection` saldırılarının tamamını bizim yerimize önleyecektir.
-
-### 5. Database Abstraction Layers (DBAL) ve Object Relational Mapping (ORM) ###
-
-Bir önceki örnekte `SQL Injection`'un nasıl önleneceğini öğrenmiştik. Bilmeniz gereken bir konu da `PDO` ve `Mysqli`'nin üzerine `abstraction` (Soyutlama) katmanları çekebileceğinizdir. `Abstraction` (Soyutlama), Nesne Yönelimli Programlama'nın temel 4 ilkesinden biridir. (Hatırlarsanız daha önce `Kapsülleme` ilkesini anlatmıştık.)
-
-Örneğin, bir veritabanı sınıfı yazalım.
-
-```php
-<?php
-
-class Database
-{
-
-     private $queryCount, $pdo;
-
-     public function __construct($dsn, $user, $password, $host)
-     {
-          $this->queryCount = 0;
-          $this->pdo = new PDO($dsn, $user, $password, $host)
-     }
-
-     public function isConnected()
-     {
-          return $this->pdo->isConnected();
-     }
-
-     public function getQueryCount()
-     {
-          return $this->queryCount();
-     }
-
-     public function getResult()
-     {
-          return $this->pdo->fetch();
-     }
-
-     public function query($query, Array $params)
-     {
-          $this->queryCount++;
-
-          $this->pdo->prepare(); //Sorguyu hazırla
-          $this->pdo->execute(); //Sorguyu çalıştır
-     }
-}
-
-$database = new Database('dsn', 'user', 'password', 'host');
-
-$database->query('SELECT * FROM users WHERE username = ?', array($_POST['kullanici']);
-
-$database->getResult(); // Kullanıcının bilgilerini aldık
-$database->getQueryCount(); // 1
-
-```
-
-Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz. 
-
-Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar da `MySQL` üzerine çekilmiş birer soyutlama katmanlarıydı. `PHP` dünyasında genellikle  `Abstraction`lar (Soyutlamalar), bir özelliğin üzerine işi daha da kolaylaştıran bir başka sınıf çekilmesi olarak görülmektedir.
-
-Bu konuyu öğrendiğimize göre, artık `DBAL` ve `ORM` konularına girebiliriz.
-
-Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğiydi. Popüler bir `DBAL` örneği olarak `Doctrine DBAL`'ı gösterebiliriz. İstersiniz bunu direkt olarak projenize dahil edip kullanmaya başlayabilirsiniz.
-
-`Object Relational Mapping` (İlişkisel Obje Eşleme) ise, veritabanı yapınızın objeler şeklinde tutulmasını sağlar. `ORM` araçları olarak `Doctrine ORM`, `Propel ORM`, `ActiveRecord ORM` gösterilebilir. Ben anlaşılması en basit olan, `Laravel`'in (framework) geliştirdiği `Eloquent ORM` ile bir örnek vereceğim.
-
-`ORM` kullandığımızda, neredeyse hiç `SQL` sorgusu kullanmayız. Biz, veritabanımızı temsil eden sınıflar üzerinde değişiklik yaparız. Bu sınıflar gerekli değişiklikleri analiz edip veritabanımızda kullanırlar.
-
-> Not: Bu bölüm, Eloquent ORM'in, Laravel'de nasıl çalıştığını göstermektedir.
-
-`Eloquent ORM` için, veritabanımızdaki `users` tablosunu temsil eden bir sınıf oluşturalım.
-
-```php
-<?php
-class User extends Eloquent
-{
-
-}
-```
-Laravel frameworkü, otomatik olarak veritabanındaki `users` tablosunu referans ettiğimizi anlayacaktır, çünkü `user` (kullanıcı) kelimesinin çoğul şekli `users` (kullanıcılar) olacaktır. Siz de veritabanı oluştururken tablo isimlerinizi çoğul oluşturabilirsiniz. (örneğin kullanıcılar, kategoriler, yorumlar vb.) Tablo isimlerini çoğul olarak kullanmak iyi bir kullanım sayılmaktadır. Ancak, biz Eloquent örneğimize geri dönelim.
-
-Artık, `User` sınıfını uygulamamızda kullanabiliriz! (Hepsi bu kadardı, gerçekten.)
-
-```php
-<?php
-
-    $user->find(1); // ID'si 1 olan kullanıcıyı al
-    $user->find(1)->delete(); // ID'si 1 olan kullanıcıyı sil
-
-    $user->find(15);
-        $user->email = "deneme@ornek.com";
-    $user->save(); // ID'si 15 olan kullanının email adresini güncelle
-
-    $user->all(); // Tüm kullanıcıları çek
-
-    $user->where('yetki', 'admin')->take(5)->get();
-    // Yetkisi admin olan kullanıcılardan 5 tane çek
-```
-
-Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz bütün veritabanı işlemlerini gerçekleştirebiliyoruz! `Eloquent` neredeyse sizinle konuşuyor.
-
-Her `ORM` aracı, `Eloquent` kadar kolay olmamakla beraber, bu tür kullanımı desteklemektedir. Projelerinizde kullanmanızı şiddetle tavsiye ederim!
-
-### 6. Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
-
-Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir. Orta seviye bir bilgisayar bile birkaç dakika içinde `md5()` şifrelemeleri kırabilir.
-
-Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
-
-1. Sağlam bir şifreleme algoritması kullanın.
-2. Salt veri oluşturun ve bunu şifrelemede kullanın.
-
-`Salt` veri nedir? `Salt` veri, `Kriptoloji`'de şifrenin çözülmesini zorlaştırmak için şifreye rastgele veri eklenmesidir.
-
-`PHP`'de şifreleme için `bcrypt` algoritmasını kullanabilirsiniz. `Bcrypt` algoritması, şifrenin güvenli olması için:
-
-1. Salt veri kullanımını mecbur kılar.
-2. Şifreyi birçok defa şifrelemeden geçirir ve kırılmasını çok zorlaştırır.
-3. Tek taraflı şifreleme algoritmasıdır.
-
-`Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, şifrenin bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
-
-`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir.
-
-İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
-
-### 7. Input escape edilir, output filtrelenir. ###
-
-Çok popüler bir yanlışta `XSS` koruması sağlamak için kullanıcıdan gelen verilerin `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi fonksiyonlardan geçirilip veritabanına eklenmesidir. Bu yanlıştır.
-
-Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` veritabanında bir zarara yol açmayacağı için veritabanında tutulmasının bir sakıncası yoktur. Ancak, `XSS` verileri ekrana basılırken mutlaka filtrelenmesi gerekmektedir. Bu yüzden filtreleme işi ekrana bastırırken yapılmalıdır. Bunun birçok sebebi bulunmakta olup, başlıca sebeplerini şöyle sıralayabiliriz:
-
-**a. Verilerin bozulmadan saklanmasını sağlanmalıdır.**
-
-Kullanıcının gönderdiği veri ham haliyle veritabanında saklanmalıdır, bu yüzden orjinal içeriğe daima ulaşma şansınız olur.
-
-**b. Potansiyel uzunluk hatalarının önüne geçmiş olursunuz.**
-
-Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bu kelimeler `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk kontrolü yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
-
-**c. Zararlı kod bir şekilde veritabanına sızmışsa, çıktı esnasında bu temizlenir.**
-
-Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazsanız bile, ekrana bastırma esnasında filtreleme yapacağınız için bu sorun olmaktan çıkar. Ancak, filtreleme işlemini veritabanına girmeden önce yapmış olsaydınız, zararlı kod orada kalmaya ve çalışmaya devam edecekti.
-
-Bu yüzden, altın kuralımız:
-
-1. İstek geldiğinde veritabanına eklemeden önce `SQL Injection`'dan koru.
-2. Veritabanındaki verileri ekrana bastırırken daima temizleyerek bastır.
-
-### 8. Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
-
-Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. `TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
-
-Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak sizin yararınızadır.
-
-### 9. Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
-
-İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir. 
-
-İngilizce yazılım dünyasında hemen hemen heryerde karşınıza çıkacaktır. Örneğin, ullandığımız programlama dillerindeki methodlar İngilizce'dir. Takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşmaktadır. Takip edebileceğiniz bloglar ve websiteleri İngilizce'dir. Github üzerindeki açık kaynaklı projeler İngilizce olarak dökümanta edilmiştir. Projelerin kaynak kodları İngilizce'dir.
-
-Özellikle Github ve açık kaynaklı projeler içerisinde, İngilizce kullanmayan, değişkenlerin ve sınıfların yazılımcının kendi anadilinde tanımlandığı projeler, ne kadar iyi olurlarsa olsunlar asla kullanılmayacaklardır, asla destek görmeyeceklerdir ve asla yeterince popüler olamayacaklardır. Bu durum sizin `amatör` olduğunuz algısı yaratır.
-
-Buna Türkçe kullanmakta dahildir ve aşağıdaki örnek sınıf Türkçe olarak geliştirilmeye çalışılmıştır.
-
-```php
-<?php
-    
-class AssetYukleyici
-{
-    private $dosyalar;
-
-    public function __construct()
-    {
-        $this->dosyalar = array();
-    }
-
-    public function style_ekle()
-    {
-        $stilDosyalari = Directory::get('*', 'css');
-        if( !empty($stilDosyalari) return $stilDosyalari;
-    }
-
-    public function css_ciktisi()
-    {
-        return array_walk($this->dosyalar, function($value, $key) {
-            return "<link href=\"assets/admin/css/{$value}.css'\" rel=\"stylesheet\">";
-            });
-        );
-    }
-```
-
-Bu sınıf son derece çirkin ve amatörce duruyor. Türkçe desen tam olarak Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey. Zira PHP unicode desteklemediği için Türkçe karakterleri de kullanamıyoruz, bu yüzden ortaya Türkçe karakterlerin kullanılmadığı bir garip Türkçe çıkıyor.
-
-Sorun sadece bununla kalmıyor. İleri de bir sorun çıktığını farzedelim ve siz saatlerce uğraşmanıza rağmen bunu çözemiyorsunuz. Monitörü kırmak istiyorsunuz ancak bunun sorunu çözmeyeceğinin farkındasınız.
-
-Bu durumda, eğer İngilizce kullandıysanız `Stackoverflow` ve kullandığınız dilin `irc kanalları` veya forumlarında sorununuzu kolayca dile getirebilirsiniz. Türkçe kullanırsanız kod parçacıklarını koyarken bunları İngilizce'ye çevirmeniz gerekecek aksi takdirde büyük çoğunluğu İngilizce konuşan insanlar sizin ne yapmak istediğinizi anlayamayacaktır.
-
-Türkçe karakterleri kullanmak ayrıca son derece sakıncalıdır. `SSH` üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. 
-
-Bu yazıyı yazarken bile Türkçe karakterler yüzünden birçok sıkıntı çektim ve neredeyse yarım günümü bu hataları çözmek için harcadım.
-
-> Not: Tartıştığım yazılımcıların karşı argümanı bazen İngilizce bilmeyen yazılımcılarla çalıştıkları, bu yüzden Türkçe kullanmayı tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemli olabilir.
-
-### 10. Kimin yazdığını bilmediğiniz bloglardan, eğitim setlerinden uzak durun. ###
-
-Kötü eğitim yarardan sağlamaktan çok zarar verir. Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
-
-Bu tür bloglar bazen `Google aramalarında` en üstte çıkmaktalar ve ister istemez sitelerine girmek zorunda kalabilmektesiniz. Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara göz gezdiririm. (Bilmiyorum siz de böylemisiniz.) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöplükten fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorum. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
-
-Hatta PHP geliştiricilerin blogları en kötüleri. PHP bloglarının kötü olmasının sebepleri bana göre;
-
-1. PHP ile birşeyler yapabilmenin çok kolay olması bu yüzden amatör yazılımcılar tarafından sıkça tercih edilmesi,
-2. WordPress ve Joomla gibi son derece ilkel yöntemlerle geliştirilen projelerin son derece popüler olması,
-3. Birkaç yıl öncesine kadar Github ve Composer'in olmayışı bu yüzden zbilyon tane sınıf ve kod örneklerinin internette dolaşması gibi sebepler sıralabilir.
-
-Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksektir. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
-
-Bunların dışında, bir de Türkçe bloglarda göze çarpan genel eksikliklerden bahsetmek istiyorum;
-
-1. Öncelikle açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler.)
-2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor. Çok az kişi eleştiriyi kabullenebiliyor.
-3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor.
-4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. (Ben bunun bir marketing stratejisi olduğunu düşünüyorum.)
-
-Bu yüzden, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden ve doğru kitaplardan alın. Bir eğitim setindeki videoları izliyorsanız, o eğitim setini kim yazmış? Ne zaman yazmış? PHP'in hangi sürümü kullanılmış? Yorumları nasıl? gibi konuları araştırın, yoksa bunlar size hiçbirşey kazandırmaz.
-
-> Not: Bu yazdıklarım genellikle Türkçe blog yazanlar için. İngilizce makeleler nispeten daha iyi durumda.
-
-### 11. ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
-
-`OOP` kullanmak istemeyenlerin, frameworklere "Çok hantal çalışıyor." diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa?`
-
-Kısa cevap: Hiçbirşey olmaz.
-
-Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır vs.
-
-### 12. Kaptan gemiyi terk etmişse, o gemide kalmanın fazla bir anlamı yok. ###
-
-Son birkaç yılda açık kaynak adına son derece büyük adımlar atıldı. Artık neredeyse her türlü açık kaynaklı proje `Github` üzerinden yayınlanmakta. Ancak bu son derece avantajlı olmasına rağmen, bazen dezavantajları da olabiliyor.
-
-Dezavantajlarından biri, `PHP`'in çok fazla açık kaynaklı projeye sahip olması. Bir `Mail` sınıfı arıyorsunuz ve karşınıza binlerce `Github repository`si çıkıyor.
-
-Bir diğer dezavantajı da, insanlar haklı olarak en çok gelecek vaadeden projelere yönelmesi. Bazen bir projeyi geliştiren yazılımcı, tekerleği tekrar icat etmektense, farklı bir yazılımcının projesinin daha iyi konumda olduğunu düşünüyor ve o projeye destek olmaya başlıyor. Kendi projesini ise geliştirmeyi bırakıyor veya başka birinin devralmasını istiyor. (Devredilen projelerden çoğu zaman hayır çıkmıyor.)
-
-Buna örnek olarak `Code Igniter` framework projesi gösterilebilir. Bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `Code Igniter` projesininden sorumlu olan `EllisLab` firması, projeyi devralacak birini arıyor. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
-
-Geminin kaptanı atladıysa, mürettebatı atladıysa, filikalar indirildiyse ve yolcuların birçoğu tahliye edilmeye başlandıysa, o gemide kalmanın mantıklı olduğunu savunamazsınız.
-
-Bu durum sadece `Code Igniter` projesiyle ilgili değil. Hertürlü açık kaynaklı ileride bu tür sorunlarla karşılaşılabilir. Bu yüzden, projenizde o günün şartlarındaki en popüler ve en gelecek vaadeden frameworkleri, komponentleri, sınıfları ve kütüphaneleri kullanmaya çalışın.
-
-Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
-
-### 13. DRY kuralına uyun ve akıllı çalışın. ###
-
-`DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz.
-
-Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o işlem için fonksiyon oluşturuyorsa DRY için bir adım atmış olur. Üst düzey bir yazılımcı her projesinde kullanabileceği bir komponent yazmış ve bunu package managerlar tarafından yönetiyorsa DRY için bir adım atmış olur.
-
-// Salt PHP ve L4 konusunda DRY örnekleri gelecek buraya.
-
-`DRY`ın sonu yoktur ve sadece programlama dilleriyle ilgili değildir. Proje geliştirirken sık sık yaptığınız işlemleri bilgisayara yaptırmakta bu kural için atılmış adımlar olacaktır.
-
-Örneğin, veritabanı yedeği mi alınacak? Veritabanı yönetici paneline gir, veritabanını seç, tabloları seç, exporta tıkla, yol olarak bir path belirle, çıktıyı oluştur, o klasöre gir, çıktıyı zip içerisine koy, sonra ismini "x dbsi yedeği" yap... Bu tür işlemlerle kaybettiğiniz zamanı hesaplayın ve o kaybolan zaman içerisinde kaç tane proje geliştirebileceğinizi düşünün.
-
-Bunun yerine:
-
-    grunt backup:veritabani
-
-yazdığınızda bu işlemlerin sizin yerinize yapılması daha hoş olmaz mı?
-
-Veya:
-
-    grunt backup:veritabani --push
-
-yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz?
-
-Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın. 
-
-Her seferinde `public function` yazmak zor mu geliyor? Kullandığınız IDE içerisinde `Snippet` oluşturun. (ya da daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
-
-Uzun terminal komutlarını zor mu geliyor? `Alias` oluşturun, hatta gerekiyorsa bunları script haline getirin.
-
-Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına varabilirsin. 
-
-Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kaybetme. İyi olmak kadar hızlı olmakta önemli.
-
-> Not: Geliştirici ortamında yapabileceğiniz iyileştirmelerden `Geliştirici Ortamı` bölümünde bahsedilecektir.
-
-### 14. Daima tutarlı olun. ###
-
-Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları `_` kullanarak ayırıyorsanız, `_` kullanarak devam edin. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın. Yaptığınız herşey tutarlı olsun.
-
-Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`?
-
-Neden bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Neden bir standart yok?
-
-Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine çevirir. PHP'de bu ne tahmin edin bakalım?
-
-`str_reverse? streverse? strrev? revstr? reverse?`
-
-Hepsi de olabilir, ama doğrusu `strrev`.
-
-Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, `ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin!` Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın.
-
-> Not: Bu yüzden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta.
-
-> Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
-
-### 15. ÖNEMLİ: Dependency Injection, Dependency Injection Container ve Inversion of Control nedir öğrenin.###
+### - Dependency Injection, Dependency Injection Container ve Inversion of Control nedir öğrenin.###
 
 Bunların ne olduğunu bilmek artık her `PHP` geliştirici için şart olduğu için ne olduklarını yazma ihtiyacı hissediyorum.
 
@@ -878,7 +554,333 @@ Bu yukarıdaki örnekte fazla bir problem teşkil etmiyor, ancak 100 tane `Denem
 
 > Not: Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı değil. Detaylı bilgiye sahip olmak isteyen arkadaşlar Google üzerinde araştırma yapabilir.
 
-### 16. Gerekmedikçe else ve uzun if blokları kullanmayın. Dima köşeli parantez kullanın. ###
+### - mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
+
+Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek `SQL Injection` saldırılarından korunduğunu sanmaktadır. Bu klasik bir yanlıştır ve sizi anca temel düzeydeki `SQL Injection` saldırılarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında bu fonksiyon hiçbir işe yaramaz ve sizi koruyamaz.
+
+`SQL Injection`'dan korunmak için, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
+
+```php
+<?php
+
+    $sth = $dbh->prepare('SELECT isim, renk, kalori_degeri
+    FROM meyveler
+    WHERE kalori_degeri < ? AND renk = ?');
+
+    $sth->execute(array($_POST['kalori_degeri'], 'Kırmızı'));
+```
+
+Artık herhangi bir süzmeye gerek kalmadan, `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bindledik. 
+
+Artık `PDO driver`i, sorguyu oluştururken `?` gördüğü bölümlere bizim verdiğimiz parametreleri ekleyecek ve `SQL Injection` saldırılarının tamamını bizim yerimize önleyecektir.
+
+### - Database Abstraction Layers (DBAL) ve Object Relational Mapping (ORM) ###
+
+Bir önceki örnekte `SQL Injection`'un nasıl önleneceğini öğrenmiştik. Bilmeniz gereken bir konu da `PDO` ve `Mysqli`'nin üzerine `abstraction` (Soyutlama) katmanları çekebileceğinizdir. `Abstraction` (Soyutlama), Nesne Yönelimli Programlama'nın temel 4 ilkesinden biridir. (Hatırlarsanız daha önce `Kapsülleme` ilkesini anlatmıştık.)
+
+Örneğin, bir veritabanı sınıfı yazalım.
+
+```php
+<?php
+
+class Database
+{
+
+     private $queryCount, $pdo;
+
+     public function __construct($dsn, $user, $password, $host)
+     {
+          $this->queryCount = 0;
+          $this->pdo = new PDO($dsn, $user, $password, $host)
+     }
+
+     public function isConnected()
+     {
+          return $this->pdo->isConnected();
+     }
+
+     public function getQueryCount()
+     {
+          return $this->queryCount();
+     }
+
+     public function getResult()
+     {
+          return $this->pdo->fetch();
+     }
+
+     public function query($query, Array $params)
+     {
+          $this->queryCount++;
+
+          $this->pdo->prepare(); //Sorguyu hazırla
+          $this->pdo->execute(); //Sorguyu çalıştır
+     }
+}
+
+$database = new Database('dsn', 'user', 'password', 'host');
+
+$database->query('SELECT * FROM users WHERE username = ?', array($_POST['kullanici']);
+
+$database->getResult(); // Kullanıcının bilgilerini aldık
+$database->getQueryCount(); // 1
+
+```
+
+Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz. 
+
+Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar da `MySQL` üzerine çekilmiş birer soyutlama katmanlarıydı. `PHP` dünyasında genellikle  `Abstraction`lar (Soyutlamalar), bir özelliğin üzerine işi daha da kolaylaştıran bir başka sınıf çekilmesi olarak görülmektedir.
+
+Bu konuyu öğrendiğimize göre, artık `DBAL` ve `ORM` konularına girebiliriz.
+
+Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğiydi. Popüler bir `DBAL` örneği olarak `Doctrine DBAL`'ı gösterebiliriz. İstersiniz bunu direkt olarak projenize dahil edip kullanmaya başlayabilirsiniz.
+
+`Object Relational Mapping` (İlişkisel Obje Eşleme) ise, veritabanı yapınızın objeler şeklinde tutulmasını sağlar. `ORM` araçları olarak `Doctrine ORM`, `Propel ORM`, `ActiveRecord ORM` gösterilebilir. Ben anlaşılması en basit olan, `Laravel`'in (framework) geliştirdiği `Eloquent ORM` ile bir örnek vereceğim.
+
+`ORM` kullandığımızda, neredeyse hiç `SQL` sorgusu kullanmayız. Biz, veritabanımızı temsil eden sınıflar üzerinde değişiklik yaparız. Bu sınıflar gerekli değişiklikleri analiz edip veritabanımızda kullanırlar.
+
+> Not: Bu bölüm, Eloquent ORM'in, Laravel'de nasıl çalıştığını göstermektedir.
+
+`Eloquent ORM` için, veritabanımızdaki `users` tablosunu temsil eden bir sınıf oluşturalım.
+
+```php
+<?php
+class User extends Eloquent
+{
+
+}
+```
+Laravel frameworkü, otomatik olarak veritabanındaki `users` tablosunu referans ettiğimizi anlayacaktır, çünkü `user` (kullanıcı) kelimesinin çoğul şekli `users` (kullanıcılar) olacaktır. Siz de veritabanı oluştururken tablo isimlerinizi çoğul oluşturabilirsiniz. (örneğin kullanıcılar, kategoriler, yorumlar vb.) Tablo isimlerini çoğul olarak kullanmak iyi bir kullanım sayılmaktadır. Ancak, biz Eloquent örneğimize geri dönelim.
+
+Artık, `User` sınıfını uygulamamızda kullanabiliriz! (Hepsi bu kadardı, gerçekten.)
+
+```php
+<?php
+
+    $user->find(1); // ID'si 1 olan kullanıcıyı al
+    $user->find(1)->delete(); // ID'si 1 olan kullanıcıyı sil
+
+    $user->find(15);
+        $user->email = "deneme@ornek.com";
+    $user->save(); // ID'si 15 olan kullanının email adresini güncelle
+
+    $user->all(); // Tüm kullanıcıları çek
+
+    $user->where('yetki', 'admin')->take(5)->get();
+    // Yetkisi admin olan kullanıcılardan 5 tane çek
+```
+
+Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz bütün veritabanı işlemlerini gerçekleştirebiliyoruz! `Eloquent` neredeyse sizinle konuşuyor.
+
+Her `ORM` aracı, `Eloquent` kadar kolay olmamakla beraber, bu tür kullanımı desteklemektedir. Projelerinizde kullanmanızı şiddetle tavsiye ederim!
+
+### - Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
+
+Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir. Orta seviye bir bilgisayar bile birkaç dakika içinde `md5()` şifrelemeleri kırabilir.
+
+Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
+
+1. Sağlam bir şifreleme algoritması kullanın.
+2. Salt veri oluşturun ve bunu şifrelemede kullanın.
+
+`Salt` veri nedir? `Salt` veri, `Kriptoloji`'de şifrenin çözülmesini zorlaştırmak için şifreye rastgele veri eklenmesidir.
+
+`PHP`'de şifreleme için `bcrypt` algoritmasını kullanabilirsiniz. `Bcrypt` algoritması, şifrenin güvenli olması için:
+
+1. Salt veri kullanımını mecbur kılar.
+2. Şifreyi birçok defa şifrelemeden geçirir ve kırılmasını çok zorlaştırır.
+3. Tek taraflı şifreleme algoritmasıdır.
+
+`Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, şifrenin bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
+
+`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir.
+
+İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
+
+### - Input escape edilir, output filtrelenir. ###
+
+Çok popüler bir yanlışta `XSS` koruması sağlamak için kullanıcıdan gelen verilerin `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi fonksiyonlardan geçirilip veritabanına eklenmesidir. Bu yanlıştır.
+
+Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` veritabanında bir zarara yol açmayacağı için veritabanında tutulmasının bir sakıncası yoktur. Ancak, `XSS` verileri ekrana basılırken mutlaka filtrelenmesi gerekmektedir. Bu yüzden filtreleme işi ekrana bastırırken yapılmalıdır. Bunun birçok sebebi bulunmakta olup, başlıca sebeplerini şöyle sıralayabiliriz:
+
+**a. Verilerin bozulmadan saklanmasını sağlanmalıdır.**
+
+Kullanıcının gönderdiği veri ham haliyle veritabanında saklanmalıdır, bu yüzden orjinal içeriğe daima ulaşma şansınız olur.
+
+**b. Potansiyel uzunluk hatalarının önüne geçmiş olursunuz.**
+
+Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bu kelimeler `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk kontrolü yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
+
+**c. Zararlı kod bir şekilde veritabanına sızmışsa, çıktı esnasında bu temizlenir.**
+
+Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazsanız bile, ekrana bastırma esnasında filtreleme yapacağınız için bu sorun olmaktan çıkar. Ancak, filtreleme işlemini veritabanına girmeden önce yapmış olsaydınız, zararlı kod orada kalmaya ve çalışmaya devam edecekti.
+
+Bu yüzden, altın kuralımız:
+
+1. İstek geldiğinde veritabanına eklemeden önce `SQL Injection`'dan koru.
+2. Veritabanındaki verileri ekrana bastırırken daima temizleyerek bastır.
+
+### - Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
+
+Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. `TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
+
+Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak sizin yararınızadır.
+
+### - Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
+
+İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir. 
+
+İngilizce yazılım dünyasında hemen hemen heryerde karşınıza çıkacaktır. Örneğin, ullandığımız programlama dillerindeki methodlar İngilizce'dir. Takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşmaktadır. Takip edebileceğiniz bloglar ve websiteleri İngilizce'dir. Github üzerindeki açık kaynaklı projeler İngilizce olarak dökümanta edilmiştir. Projelerin kaynak kodları İngilizce'dir.
+
+Özellikle Github ve açık kaynaklı projeler içerisinde, İngilizce kullanmayan, değişkenlerin ve sınıfların yazılımcının kendi anadilinde tanımlandığı projeler, ne kadar iyi olurlarsa olsunlar asla kullanılmayacaklardır, asla destek görmeyeceklerdir ve asla yeterince popüler olamayacaklardır. Bu durum sizin `amatör` olduğunuz algısı yaratır.
+
+Buna Türkçe kullanmakta dahildir ve aşağıdaki örnek sınıf Türkçe olarak geliştirilmeye çalışılmıştır.
+
+```php
+<?php
+    
+class AssetYukleyici
+{
+    private $dosyalar;
+
+    public function __construct()
+    {
+        $this->dosyalar = array();
+    }
+
+    public function style_ekle()
+    {
+        $stilDosyalari = Directory::get('*', 'css');
+        if( !empty($stilDosyalari) return $stilDosyalari;
+    }
+
+    public function css_ciktisi()
+    {
+        return array_walk($this->dosyalar, function($value, $key) {
+            return "<link href=\"assets/admin/css/{$value}.css'\" rel=\"stylesheet\">";
+            });
+        );
+    }
+```
+
+Bu sınıf son derece çirkin ve amatörce duruyor. Türkçe desen tam olarak Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey. Zira PHP unicode desteklemediği için Türkçe karakterleri de kullanamıyoruz, bu yüzden ortaya Türkçe karakterlerin kullanılmadığı bir garip Türkçe çıkıyor.
+
+Sorun sadece bununla kalmıyor. İleri de bir sorun çıktığını farzedelim ve siz saatlerce uğraşmanıza rağmen bunu çözemiyorsunuz. Monitörü kırmak istiyorsunuz ancak bunun sorunu çözmeyeceğinin farkındasınız.
+
+Bu durumda, eğer İngilizce kullandıysanız `Stackoverflow` ve kullandığınız dilin `irc kanalları` veya forumlarında sorununuzu kolayca dile getirebilirsiniz. Türkçe kullanırsanız kod parçacıklarını koyarken bunları İngilizce'ye çevirmeniz gerekecek aksi takdirde büyük çoğunluğu İngilizce konuşan insanlar sizin ne yapmak istediğinizi anlayamayacaktır.
+
+Türkçe karakterleri kullanmak ayrıca son derece sakıncalıdır. `SSH` üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. 
+
+Bu yazıyı yazarken bile Türkçe karakterler yüzünden birçok sıkıntı çektim ve neredeyse yarım günümü bu hataları çözmek için harcadım.
+
+> Not: Tartıştığım yazılımcıların karşı argümanı bazen İngilizce bilmeyen yazılımcılarla çalıştıkları, bu yüzden Türkçe kullanmayı tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemli olabilir.
+
+### - Kimin yazdığını bilmediğiniz bloglardan ve eğitim setlerinden uzak durun. ###
+
+Kötü eğitim yarardan sağlamaktan çok zarar verir. Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
+
+Bu tür bloglar bazen `Google aramalarında` en üstte çıkmaktalar ve ister istemez sitelerine girmek zorunda kalabilmektesiniz. Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara göz gezdiririm. (Bilmiyorum siz de böylemisiniz.) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöplükten fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorum. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+
+Hatta PHP geliştiricilerin blogları en kötüleri. PHP bloglarının kötü olmasının sebepleri bana göre;
+
+1. PHP ile birşeyler yapabilmenin çok kolay olması bu yüzden amatör yazılımcılar tarafından sıkça tercih edilmesi,
+2. WordPress ve Joomla gibi son derece ilkel yöntemlerle geliştirilen projelerin son derece popüler olması,
+3. Birkaç yıl öncesine kadar Github ve Composer'in olmayışı bu yüzden zbilyon tane sınıf ve kod örneklerinin internette dolaşması gibi sebepler sıralabilir.
+
+Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksektir. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
+
+Bunların dışında, bir de Türkçe bloglarda göze çarpan genel eksikliklerden bahsetmek istiyorum;
+
+1. Öncelikle açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler.)
+2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor. Çok az kişi eleştiriyi kabullenebiliyor.
+3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor.
+4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. (Ben bunun bir marketing stratejisi olduğunu düşünüyorum.)
+
+Bu yüzden, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden ve doğru kitaplardan alın. Bir eğitim setindeki videoları izliyorsanız, o eğitim setini kim yazmış? Ne zaman yazmış? PHP'in hangi sürümü kullanılmış? Yorumları nasıl? gibi konuları araştırın, yoksa bunlar size hiçbirşey kazandırmaz.
+
+> Not: Bu yazdıklarım genellikle Türkçe blog yazanlar için. İngilizce makeleler nispeten daha iyi durumda.
+
+### - ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
+
+`OOP` kullanmak istemeyenlerin, frameworklere "Çok hantal çalışıyor." diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa?`
+
+Kısa cevap: Hiçbirşey olmaz.
+
+Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır vs.
+
+### - Kaptan gemiyi terk etmişse, o gemide kalmanın fazla bir anlamı yok. ###
+
+Son birkaç yılda açık kaynak adına son derece büyük adımlar atıldı. Artık neredeyse her türlü açık kaynaklı proje `Github` üzerinden yayınlanmakta. Ancak bu son derece avantajlı olmasına rağmen, bazen dezavantajları da olabiliyor.
+
+Dezavantajlarından biri, `PHP`'in çok fazla açık kaynaklı projeye sahip olması. Bir `Mail` sınıfı arıyorsunuz ve karşınıza binlerce `Github repository`si çıkıyor.
+
+Bir diğer dezavantajı da, insanlar haklı olarak en çok gelecek vaadeden projelere yönelmesi. Bazen bir projeyi geliştiren yazılımcı, tekerleği tekrar icat etmektense, farklı bir yazılımcının projesinin daha iyi konumda olduğunu düşünüyor ve o projeye destek olmaya başlıyor. Kendi projesini ise geliştirmeyi bırakıyor veya başka birinin devralmasını istiyor. (Devredilen projelerden çoğu zaman hayır çıkmıyor.)
+
+Buna örnek olarak `Code Igniter` framework projesi gösterilebilir. Bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `Code Igniter` projesininden sorumlu olan `EllisLab` firması, projeyi devralacak birini arıyor. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
+
+Geminin kaptanı atladıysa, mürettebatı atladıysa, filikalar indirildiyse ve yolcuların birçoğu tahliye edilmeye başlandıysa, o gemide kalmanın mantıklı olduğunu savunamazsınız.
+
+Bu durum sadece `Code Igniter` projesiyle ilgili değil. Hertürlü açık kaynaklı ileride bu tür sorunlarla karşılaşılabilir. Bu yüzden, projenizde o günün şartlarındaki en popüler ve en gelecek vaadeden frameworkleri, komponentleri, sınıfları ve kütüphaneleri kullanmaya çalışın.
+
+Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
+
+### - DRY kuralına uyun ve akıllı çalışın. ###
+
+`DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz.
+
+Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o işlem için fonksiyon oluşturuyorsa DRY için bir adım atmış olur. Üst düzey bir yazılımcı her projesinde kullanabileceği bir komponent yazmış ve bunu package managerlar tarafından yönetiyorsa DRY için bir adım atmış olur.
+
+// Salt PHP ve L4 konusunda DRY örnekleri gelecek buraya.
+
+`DRY`ın sonu yoktur ve sadece programlama dilleriyle ilgili değildir. Proje geliştirirken sık sık yaptığınız işlemleri bilgisayara yaptırmakta bu kural için atılmış adımlar olacaktır.
+
+Örneğin, veritabanı yedeği mi alınacak? Veritabanı yönetici paneline gir, veritabanını seç, tabloları seç, exporta tıkla, yol olarak bir path belirle, çıktıyı oluştur, o klasöre gir, çıktıyı zip içerisine koy, sonra ismini "x dbsi yedeği" yap... Bu tür işlemlerle kaybettiğiniz zamanı hesaplayın ve o kaybolan zaman içerisinde kaç tane proje geliştirebileceğinizi düşünün.
+
+Bunun yerine:
+
+    grunt backup:veritabani
+
+yazdığınızda bu işlemlerin sizin yerinize yapılması daha hoş olmaz mı?
+
+Veya:
+
+    grunt backup:veritabani --push
+
+yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz?
+
+Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın. 
+
+Her seferinde `public function` yazmak zor mu geliyor? Kullandığınız IDE içerisinde `Snippet` oluşturun. (ya da daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
+
+Uzun terminal komutlarını zor mu geliyor? `Alias` oluşturun, hatta gerekiyorsa bunları script haline getirin.
+
+Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına varabilirsin. 
+
+Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kaybetme. İyi olmak kadar hızlı olmakta önemli.
+
+> Not: Geliştirici ortamında yapabileceğiniz iyileştirmelerden `Geliştirici Ortamı` bölümünde bahsedilecektir.
+
+### - Daima tutarlı olun. ###
+
+Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları `_` kullanarak ayırıyorsanız, `_` kullanarak devam edin. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın. Yaptığınız herşey tutarlı olsun.
+
+Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`?
+
+Neden bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Neden bir standart yok?
+
+Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine çevirir. PHP'de bu ne tahmin edin bakalım?
+
+`str_reverse? streverse? strrev? revstr? reverse?`
+
+Hepsi de olabilir, ama doğrusu `strrev`.
+
+Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, `ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin!` Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın.
+
+> Not: Bu yüzden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta.
+
+> Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
+
+### - Gerekmedikçe else ve uzun if blokları kullanmayın ve daima köşeli parantez kullanın. ###
 
 Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz.
 
@@ -1032,7 +1034,7 @@ Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son dere
 
 Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden bizim yapmamız gereken, köşeli parantezleri doğru kullanmak.
 
-### 17. Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
+### - Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
 `DRY` bölümünde anlattığım konuya bir örnekte bu konudur. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. Bilgisayarın yapması gereken şeyleri siz yapıyorsunuz.
 
@@ -1048,19 +1050,19 @@ Bu yüzden kendinizi test yazmaya alıştırın. `F5`'e ne zaman basmanız gerek
 
 > Not: PHPUnit, Codeception, Selenium, Behat gibi araçları araştırabilirsiniz.
 
-### 18. Testlerinizi yazarken string kullanmamaya çalışın. ###
+### - Testlerinizi yazarken string kullanmamaya çalışın. ###
 
 İster unit test yazıyor olun, ister acceptance, ne kadar az string kontrol ederseniz sizin için o kadar sağlıklı olur.
 
 Mesela acceptance testlerinde `<p>Anasayfa</p>` varmı diye kontrol etmektense header kodunun 200 OK olduğunu kontrol edin. Anasayfa yazısı değişebilir (Anasayfa yerine Font Awesome ile ev resmi koyabilirsiniz örneğin) ama header kodu değişmez.
 
-### 19. HTTP Response kodlarını öğrenmeye ve kullanmaya çalışın. ###
+### - HTTP Response kodlarını öğrenmeye ve kullanmaya çalışın. ###
 
 HTTP Response kodları önemlidir. Örneğin, headeri 404 olmayan bir 404 sayfası, gerçek bir 404 sayfası değildir. Google gibi arama motorları bu sayfayı 404 olarak saymazlar çünkü bu sayfanın aslında 404 ID'sine sahip kullanıcının profili olup olmadığını bilemezler.
 
 Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_codes adresinden ulaşabilirsiniz.
 
-### 20. MVC kullanıyorsanız, MVC gibi kullanın. ###
+### - MVC kullanıyorsanız, MVC gibi kullanın. ###
 
 **a. Controller içerisinde echo'yu unutun.**
 
@@ -1111,7 +1113,7 @@ class Controller
 }
 ```
 
-### 21. Çıkan notice ve warningler birer bugdur ve düzeltilmesi gerekir. ###
+### - Çıkan notice ve warningler birer bugdur ve düzeltilmesi gerekir. ###
 
 PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar bazen görmezden gelinebilir. Bunlar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING`'dir. (Hepsine http://php.net/manual/en/errorfunc.constants.php adresinden bakabilirsiniz.)
 
@@ -1125,7 +1127,7 @@ PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar b
 
 Bu yüzden geliştirme ortamınızda hata raporlamanın açık durumda olması ve hertürlü hata seviyesindeki sorunları çözüyor olmanız sizin için bir avantajdır.
 
-### 22. Hataları analiz etmek için backtrace kullanın. ###
+### - Hataları analiz etmek için backtrace kullanın. ###
 
 Uygulamanızda bir hata aldınız, ancak neden böyle bir hata aldığınızı bilmiyorsanız PHP'in `backtrace` (geri sarma) özelliğini kullanabilirsiniz.
 
@@ -1137,13 +1139,13 @@ Stack trace hakkında bilgi sahibi olmak için:
 
 2. `debug_backtrace()` fonksiyonunu kullanarak stack traceyi kendiniz takip edebilirsiniz.
 
-### 23. @ kullanmayın. ###
+### - @ kullanmayın. ###
 
 `@`, PHP'de muhtemel hataların ekrana yansımaması için onları sessizleştirir. Siz istediğiniz hataları sessizleştirin, susturun, onlar oluşmaya devam edecektir.
 
 Açıkcası bu özelliğin PHP'ye neden eklendiğini anlamış biri değilim. Ölümcül hatalar, warningler, noticeler, exceptionlar, trigger_error ve bunların fonksiyonları ile php.ini konfigürasyonları derken zaten yeterince kafa karışıklığı oluşuyor. Birde bunları susturacak (hepsini değil) özellikler var. Neden diye soramıyorum... çünkü PHP kullanıyoruz, bunlara alıştık. ¯\_(ツ)_/¯
 
-### 24. ?> kullanmayın. ###
+### - ?> kullanmayın. ###
 
 PHP kullanırken `?>` kullanarak açılan tagları kapatmanıza gerek yok. Kapattığınız takdirde `?>` tagından sonra yeni satır veya boşluk gibi karakterler kalabiliyor. Bu karakterler PHP tarafından `output` (çıktı) olarak algılandığı için `Headers already sent` hatası, sessionların oluşturulamaması, header kodlarının değiştirilememesi gibi hatalara sebep oluyor.
 
@@ -1151,7 +1153,7 @@ Ben hiçbirşeyi gözden kaçırmam demeyin, kaçabiliyor. 
 
 > Not: Kaçabiliyordan sonra birtane whitespace kaçtı mesela. Farkettin mi?
 
-### 25. Short tags kullanmayın. ###
+### - Short tags kullanmayın. ###
 
 Bazı yazılımcılar `<?php` yerine `<?` kullanıyor. Bu son derece yanlış. Short tag kullanacaksanız `short_open_tag` mutlaka açık konumda olmalı. Kapalı olursa ne olur? Hiç. Kaynak kodlarınız kabak gibi tarayıcıya çıkar.
 
@@ -1161,13 +1163,13 @@ Sadece bu değil, dünya çapında birçok web sitesi bu tür basit dikkatsizlik
 
 Bu yüzden, `<?php` dışında hiçbir açılış tagını kullanmayın.
 
-### 26. Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
+### - Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
 
 Yanlışlıkla sunucu, ftp, veritabanı veya API bilgilerinizin olduğu dosyaları Github'a yüklemeyin. Gizli kalması gereken dosyaları `.gitignore` kullanarak gizleyin.
 
 Commit logları kaldığı için daha sonra silseniz bile başkaları tarafından görünebiliyorlar. Dikkatli ve uyanık olun.
 
-### 27. Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
+### - Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
 
 Aşağıda mükemmel yazılımcıların... (*öhüöhü*) açık kaynaklı projeleri... (*öhüöhü*) Kusura bakmayın, biraz kötü oldum. Bu kadar kötü kod görünce bünyem kaldırmıyor. 
 
@@ -1181,45 +1183,63 @@ Bazıları session onları korur diye düşünebilir, ama session spoofing, sess
 
 Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritabanı sorgusuna sokmayın.
 
-### 28. Composer kullanın. ###
+### - Composer kullanın. ###
 
 // Yakında
 
-### 29. Statik fonksiyon kullanmayın. ###
+### - Statik fonksiyon kullanmayın. ###
 
 // Yakında
 
-## Frontend ##
+### - PHP asenkron çalılabilir. ReactPHP'i tanıyın. ###
 
-**--- CSS ---**
+// PHP nasıl nonblocking IO'ya sahip olabilir ve nasıl çalışır.
 
-**CSS Explosiona maruz kalmayın.**
+### - Ağır sorguları önbellekleyin. ###
 
-**Precompiler kullanın.**
+// Yakında
 
-**Semantic HTML yazın.**
+---
+# Frontend #
+---
 
-**Ayraçları HTML ile yazmayın.**
+## CSS ##
 
-**Duplicate HTML yazmayın.**
+### CSS Explosiona maruz kalmayın. ###
 
-**Linkleri doğru şekilde yazın.**
+// CSS explosion nedir? Nasıl korunulur?
+
+### Precompiler kullanın. ###
+
+// Popüler CSS precompilerlar, + SASS örneği
+
+### Semantic HTML yazın. ###
+
+### Ayraçları HTML ile yazmayın. ###
+
+### Duplicate HTML yazmayın. ###
+
+### Linkleri doğru şekilde yazın. ###
 
 Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır.
 
 Örneğin `http://www.anilunal.com` hatalıyken, doğru olan `http://anilunal.com/`'dur.
 
-**Tarayıcı uyumluluğunu test edin.**
+### Tarayıcı uyumluluğunu test edin. ###
 
 // Browserstack, caniuse, shim/modernizer vs
 
-**Fazla opacity ve alpha kullanmayın.**
+### Fazla opacity ve alpha kullanmayın. ###
 
-**ID seçicilerini gerekmedikçe kullanmayın.**
+// GPU
 
-**--- Javascript ---**
+### ID seçicilerini gerekmedikçe kullanmayın. ###
 
-**Javascript kullanıyorsanız tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın.**
+// Sebep
+
+## Javascript ##
+
+### Javascript kullanıyorsanız tanımlamaları çoğu zaman Javascript Object Literals kullanarak yapın. ###
 
 Javascript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
 
@@ -1258,64 +1278,88 @@ b. JSON'da method tanımlanamaz. Yukarıdaki örnekte `isOld()` bir methoddur.
 
 c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
 
-**Debug için alert kullanmayın, lütfen!**
+### Debug için alert kullanmayın, lütfen! ###
 
-**Hoisting hakkında bilgi sahibi olun.**
+// Rly.
 
-**Tanımlamaları lambda altında yapın.**
+### Hoisting hakkında bilgi sahibi olun. ###
 
-**Selector kullandığınız zaman onu önbellekleyin.**
+// Nedir?
+
+### Tanımlamaları lambda altında yapın. ###
+
+// jQuery örneklerinden
+
+### Bir selector kullandığınız zaman onu önbellekleyin. ###
+
+// Sebep?
 
 ## Geliştirici Ortamı ##
 
-**--- Grunt ---**
+### Sublime Text ###
 
-**Ayak işlerini yaptıralım.**
+// Kullanmayanlar bu bölümü esgeçsin.
 
-**Kendi modülümüzü yazalım.**
+### GruntJS ###
 
-**Kullanabileceğiniz diğer araçlar.**
+**a. Ayak işlerimizi Grunt'a yaptıralım.**
 
-**Kullanmamanız gereken araçlar.**
+**b. Kendi Grunt modülümüzü yazalım.**
 
-// DW
-
-**Gözlerinizi koruyun.**
+### Kullanabileceğiniz diğer araçlar. ###
 
 // Yakında
 
-**Terminale ne kadar yakın, o kadar iyi.**
+### Kullanmamanız gereken araçlar. ###
 
-**Farenizi değil, klavyenizi hızlandırın.**
+// DreamWeaver!!1
+
+### Gözlerinizi koruyun. ###
+
+// Yakında
+
+### Terminale ne kadar yakın, o kadar iyi. ###
+
+// Yakında
+
+### Farenizi değil, klavyenizi hızlandırın. ###
+
+// Yakında
 
 ## Veritabanları ##
 
-**Neden utf8mb4_unicode_ci?**
+### Neden `utf8mb4_unicode_ci?` ###
 
 // Yakında
 
 ## Deployment ##
 
-**Capistrano**
+### Capistrano ###
 
 // Yakında
 
-**FTP kullanmayın!**
+### FTP kullanmayın! ###
 
 // Sebepleri ve alternatif kullanımları
 
 ## Versiyon kontrol ##
 
-**Sus ve git kullan.**
+### Sus ve git kullan. ###
 
 // Kaçışın yok
 
-**Commit mesajlarınız açıklayıcı olsun.**
+### Commit mesajlarınız açıklayıcı olsun. ###
+
+// Niye?
 
 ## Hosting ve sunucu ##
 
-**Neden PaaS?**
+### Shared hostingler artık öldü. ###
 
-**Shared hostingler artık öldü.**
+// Yakında
 
-> Not: Bu makale vakit buldukça güncellenecektir. Eklenmesini istediğiniz konuları issue oluşturarak bildirebilirsiniz.
+### Neden PaaS? ###
+
+// Yakında
+
+> Not: Bu makaleyi vakit buldukça güncelleyeceğim.
