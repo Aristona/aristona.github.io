@@ -1103,7 +1103,7 @@ class Controller
     public function test()
     {
         // yanlış
-        $link = "http://aristona.github.io/" . $_POST['id];
+        $link = "http://aristona.github.io/" . $_POST['id'];
         $view->bind('link', $link);
 
         // doğru
