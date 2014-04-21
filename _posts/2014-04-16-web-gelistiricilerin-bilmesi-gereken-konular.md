@@ -1289,14 +1289,14 @@ Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullan
 
 `Javascript Object Literals` ile `JSON` farkı:
 
-a. Object literallerin keyleri stringdir, JSON'un attribute dir.
+a. Object literallerin keyleri `attribute`dir, JSON'un `string`dir.
 
 ```js
-var user = { name: "Anıl" } //Object literal
-var user = { "name": "Anıl" }  //Object notation
+var user = { name: "Anıl" } // Object literal
+var user = { "name": "Anıl" }  // Object notation (Json)
 ```
 
-b. JSON'da method tanımlanamaz. Yukarıdaki örnekte `isOld()` bir methoddur.
+b. Object notation'da method tanımlanamaz, object literal'de tanımlanabilir. Yukarıdaki örnekte `isOld()` bir methoddur.
 
 c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
 
