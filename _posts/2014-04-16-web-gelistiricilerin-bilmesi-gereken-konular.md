@@ -14,17 +14,17 @@ Merhaba,
 
 Uzun zamandır bloguma yazı yazmıyordum, ancak neredeyse hergün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm için bu yazıyı yazmaya karar verdim.
 
-Bu yazımda web geliştiricilerin bilmesi gereken konulardan bahsedeceğim. Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum. Bu yüzden  geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. gibi konularda bilmeniz gerekenleri anlatmaya çalışacağım. Bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir.
+Bu yazımda web geliştiricilerin bilmesi gereken konulardan ve good practice kullanımlardan bahsedeceğim. Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum. Bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. konularda bilmeniz gerekenleri anlatmaya çalışacağım. Anlattığım bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir. Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayabilir.
 
-Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayabilir.
+Bu yazı, açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu için kolayca güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konuları da `issue` oluşturarak belirtebilirsiniz.
 
-Bu yazı açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu kolayca güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konular varsa bu konuları da `issue` oluşturarak belirtebilirsiniz. Kaynak [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır.
+Bu yazı, [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır. Format olarak `Markdown (Redcarpet)` kullanılmıştır, bu yüzden `pull request` attığınızda, yazılarınızın bu formata uygun olması gerekmektedir.
 
-> Not: Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır. (Bağış yapmak isteyen arkadaşlar isterlerse yapabilirler.)
+> Not: Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır.
 
 # Backend (Arka yüz) #
 
-Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak yazılım mimarileriyle ilgili olduğu için diğer programlama dillerinde de kullanılabilirler.
+Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilirler.
 
 ### 1. Global scopeyi asla kirletmeyin. ###
 
@@ -32,7 +32,7 @@ Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla ber
 
 `Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın heryerinden erişebilir olurlar. `Global scope` içerisindeki değişkenlere ne kadar bağımlı olursanız, uygulamanın farklı bir noktasında hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullanıyorsanız, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
-İsterseniz başlamadan önce `scope` kavramının ne olduğundan ve `PHP`'de nasıl kullanıldıklarından kısaca bahsedelim.
+İsterseniz başlamadan önce `scope` kavramının ne olduğundan ve `PHP`'de nasıl kullanıldığından kısaca bahsedelim.
 
 ```php
 <?php
@@ -50,16 +50,16 @@ Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla ber
 
 Yukarıdaki örnekte `$global` değişkeni `global scope` içerisinde tanımlanmıştır. Bu yüzden uygulamanın heryerinden erişilebilir olur. Buna karşın, `$fonksiyon` değişkeni `fonksiyon scope` içerisinde tanımlanmıştır ve sadece o fonksiyon içerisinden erişilebilir olur.
 
-Şimdi bunu öğrendiğimize göre, değişkenlerin `global` olarak tanımlanması neden yanlıştır bunu inceleyelim.
+Bunu belirttiğimize göre, değişkenlerin `global` olarak tanımlanması neden yanlıştır bunu inceleyelim.
 
-Bir `$veritabani` değişkeninde `MySQL` bağlantısını tuttuğumuzu farzedelim.
+Bir `$veritabani` değişkeninde `MySQL` bağlantısını tuttuğumuzu varsayalım;
 
 ```php
 <?php
 	$veritabani = //bir mysql bağlantısı;
 ```
 
-Gördüğünüz gibi, `$veritabani` değişkeni `global scope` içerisinde `global` olarak tanımlanmıştır. Ancak, uygulamanın herhangi bir yerinde:
+Görüldüğü gibi, `$veritabani` değişkeni `global scope` içerisinde `global` olarak tanımlanmıştır. Ancak, uygulamanın herhangi bir yerinde;
 
 ```php
 <?php
@@ -76,7 +76,7 @@ Bu tür hatalardan korunmak için tanımlayacağınız değişkenleri `class sco
 
 Bunu önlemek için, `OOP`in (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabiliriz.
 
-Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` prefixlerini kullanarak değişkenlerin veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliriz. Kapsülleme yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` prefixlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz.
+Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` prefixlerini kullanarak değişkenlerin veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliyoruz. `Kapsülleme` yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` prefixlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz.
 
 Bunu hemen bir örnekle anlatalım. Örneğin, `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu `extend` etmesiyle çalışacak.
 
@@ -121,7 +121,7 @@ abstract class Database
 }
 ```
 
-Dikkat ettiyseniz `$info` değişkeni `public` olarak, `$isConnected` değişkeni ise `private` olarak yazıldı. Yani, `$isConnected` erişilemez hale getirildi.
+Dikkat ettiyseniz `$info` değişkeni `public` olarak, `$isConnected` değişkeni ise `private` olarak yazıldı. Yani, `$isConnected` dışarıdan erişilemez hale getirildi.
 
 Şimdi, bir `MySQL` sınıfı oluşturalım. Bu sınıf `Database` sınıfımızı extend ederek başlatıyor olsun.
 
@@ -151,16 +151,16 @@ class MySQL extends Database implements DatabaseConnectorInterface
 }
 ```
 
-Şuan `MySQL` sınıfı, `Database` sınıfındaki `$isConnected` değişkenine erişemeyecektir, çünkü değişken `private` olarak tanımlandığı için sadece `Database sınıfı scopesi` içerisinden erişilebilir olacaktır. Biz şuan `MySQL sınıfı scopesi` içerisine olduğumuza göre bu değişkene erişme hakkımız bulunmamaktadır.
+Şuan `MySQL` sınıfı, `Database` sınıfındaki `$isConnected` değişkenine erişemeyecektir, çünkü değişken `private` olarak tanımlandığı için sadece `Database sınıfı scopesi` içerisinden erişilebilir olacaktır. Biz ise `MySQL sınıfı scopesi` içerisine olduğumuza göre bu değişkene erişme hakkımız bulunmamaktadır.
 
-Ancak, `public` olarak bir `isConnected()` methodu yazmıştık ve bu method içerisinde `$info` değişkeninin değerini döndürmüştük. Prefix olarak `public` kullanıldığı için `MySQL` sınıfı, `Database` sınıfındaki `isConnected()` methoduna erişebilecektir.
+Ancak, `public` olarak bir `isConnected() methodu` yazmıştık ve bu method içerisinde `$info` değişkeninin değerini döndürmüştük. Prefix olarak `public` kullanıldığı için `MySQL` sınıfı, `Database` sınıfındaki `isConnected()` methoduna erişebilecektir.
 
 Bu durumda;
  
 1. `MySQL` sınıfı `isConnected()` methoduna erişebilecek mi? Evet. 
 2. `isConnected()` methodunun kendi sınıfı içerisindeki `$isConnected` değişkenine erişim hakkı var mı? Evet. 
 
-Bu durumda, `MySQL` sınıfı, `Database` sınıfındaki `public` fonksiyon üzerinden gizli `$isConnected` değişkenine ulaşabilecektir. Bunun adına `encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel prensiplerinden biridir.
+Artık `MySQL` sınıfı, `Database` sınıfındaki `public` fonksiyon üzerinden gizli `$isConnected` değişkenine ulaşabilecektir. Buna `encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel prensiplerinden biridir.
 
 Şimdi, bu durumu size daha dünyevi bir örnekle anlatayım. Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz. `$kdvOrani` adında bir değişken belirlediniz ve değer olarak `0.18` float değerini verdiniz. Eğer siz `$kdvOrani` değişkenini dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? `100` liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
 
@@ -181,9 +181,9 @@ class KDVHesaplayici
 }
 ```
 
-Bir de bunun tam tersi olan `settler fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirirler.
+Bir de bunun tam tersi mantıkla çalışan `settler fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirirler.
 
-Bir örnekle gösterelim:
+Bir örnekle gösterelim;
 
 ```php
 <?php
@@ -248,15 +248,17 @@ class Database
 end
 ```
 
-`attr_accessor`, `info` değişkeninin gettler ve settler fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım yok ve gettler ile settler fonksiyonlarımızı elle yazmak zorundayız.
+`attr_accessor`, `info` değişkeninin gettler ve settler fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz, gettler ile settler fonksiyonlarımızı elle yazmak zorundayız.
 
-`PHP`'de eğer `gettler` ve `settler` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girer.
+Bilmeniz gereken bir başka konu ise, `PHP`'de eğer `gettler` ve `settler` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler.
+
+// Buraya `__get` ve `__set()` hakkında örnekler gelecek.
 
 > Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlardır. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlardır.
 
 ### 2. Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
-Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, genel kanı aşağıdaki altın kurala uymanın bize avantaj sağlayacağıdır. 
+Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, genel kanı aşağıdaki altın kurala uymanın bize avantaj sağlayacağı yönündedir. 
 
 1. Bir methodda maksimum `10 satır kod` bulunmalıdır.
 2. Bir sınıfta maksimum `10 method` bulunmalıdır.
@@ -267,7 +269,7 @@ Peki, nedir bu bağımlılık?
 
 Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan diğer sınıfların toplamıdır. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya sınıf scope içerisinde bağımlılık sınıflarının `instantiate` edilmesiyle eklenebilir.
 
-Aşağıdaki örneği ele alalım.
+Aşağıdaki örneği ele alalım;
 
 ```php
 <?php namespace Controllers;
@@ -297,26 +299,38 @@ Burada, `HomeController` sınıfının 3 `bağımlılığı` bulunmaktadır.
 2. `Image` sınıfına bağımlıdır.
 3. Global `uzaydaki` (namespace) `Logger` sınıfına bağımlıdır.
 
-Eğer bu sayı `4`'ün üzerine çıkarsa sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de `SOLID ilkeleri`nin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
+Eğer bu sayı `4`'ün üzerine çıkarsa, sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de `SOLID ilkeleri`nin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
 
-`Tek Amaç İlkesi`'ne uymak için, sınıflarımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız.
+`Tek Amaç İlkesi`'ne uymak için, sınıflarımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız. Ayrıca, sınıflarımızın veya methodlarımızın ne iş yaptığını anlatırken `ve` kelimesini mümkün olduğunca az kullanmalıyız. Örneğin, kullanıcının kayıt olması için bir method oluşturduğumuzu farzedelim. Bu methodun ne iş yaptığını kendimize açıklayalım.
 
-> Not: Buradaki sayılar bir kural değil, bir görüştür. Sayılarda ufak oynamalar olabileceği gibi, çok büyük oynamalar Tek Amaç İlkesi'nden çıktığınız anlamına gelebilir.
+1. Kullanıcıdan gelen `$_POST` verilerini alıyoruz VE
+2. Bu değerleri oluşturduğumuz `validation` kontrollerinden geçiriyoruz VE
+3. Kullanıcının avatar upload ettiyse, bunu resize ediyoruz VE
+4. Resize edilen avatarı bir klasör içerisine yerleştiriyoruz VE
+5. Veritabanına kullanıcının bilgilerini ekliyoruz VE
+6. Eğer veritabanı false döndürmüş veya exception fırlatmışsa bunu yakalıyoruz VE
+7. Ekrana başarılı veya başarısız olacak bir sayfa çıktısı veriyoruz.
+
+Gördüğünüz gibi bu methodun ne iş yaptığını açıklarken 6 defa `VE` kullandık. Bu method gereğinden fazla iş yaptığı için, bu işlerin bazılarını farklı sınıflara dağıtmamız bizim `Tek Amaç İlkesi`'ne sadık kalmamızı sağlayacaktır.
+
+Burada `Kayıt` sınıfının amacı, kullanıcıyı başarılı bir şekilde veritabanına kayıt ettirmek olmalıdır. `Validation`'ların, avatarın resize edilmesinin ve resize edilen avatarın belirtilen bir klasöre yerleştirilmesinin `Kayıt` sınıfıyla bir ilgisi bulunmamaktadır. Bu işlemler farklı sınıflarda yapılmalıdır.
+
+> Not: Bu maddenin bir kural değil, bir görüş olduğunu hatırlatmalıyım. Sayılarda ufak oynamalar olabileceği gibi, çok büyük oynamalar Tek Amaç İlkesi'nden çıktığınız anlamına gelebilir.
 
 ### 3. Kendinizi == yerine === kullanmaya alıştırın. ###
 
-`==`, `loose comparison` yaptığı için `0` ile `false`'yi, `1` ile `true`'yi eşit sayar. Ancak bazı durumlarda gücü elinize almanız gerekir. 
+`==`, `loose comparison` yaptığı için sayı olan `0` ile `false`'ı, sayı olan `1` ile `true`'yu eşit sayar. `Loose comparison` PHP'nin doğasında olmasına rağmen, bazı durumlarda gücü elimize almamız gerekebilir. 
 
-Örneğin:
+Aşağıdaki örneği inceleyelim.
 
 ```php
 <?php
     strpos('abcde', 'ab');
 ```
 
-`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.
+`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. (Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.)
 
-Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksın.
+Ancak, siz bunu `==` ile kontrol etmeye çalışırsanız, aslında bir sayı olan `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksınız.
 
 ```php
 <?php
@@ -324,7 +338,9 @@ Ancak, sen bunu `==` ile kontrol etmeye çalışırsan, `0` değeri `false` olar
         return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
 ```
 
-Yanlış. Doğrusu `===` kullanmak olmalıydı
+Yukarıdaki örnek yanlıştır. `strpos` fonksiyonu `0` döndürmüş, ama bu `0` değeri if koşulu esnasında yanlışlıkla `false` olarak algılanmıştır.
+
+Doğrusu `===` kullanmak olmalıydı. Böylece `0` değeri `false` olarak algılanmayacaktı.
 
 ```php
 <?php
@@ -332,9 +348,7 @@ Yanlış. Doğrusu `===` kullanmak olmalıydı
          return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
 ```
 
-PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (===) kullanmak var, ancak ben biraz disiplinli çalışmayı sevdiğimden daima strict comparison (===) kullanıyorum.
-
-Özellikle `boolean` verileri karşılaştırırken mutlaka strict comparison operatörünü kullanın.
+Ben biraz disiplinli çalışmayı sevdiğim için daima `strict comparison` (===) kullanıyorum. Siz, özellikle `boolean` verilerini karşılaştırırken mutlaka `strict comparison` operatörünü kullanın.
 
 `Boolean` verileri şunlardır: 
 
@@ -347,11 +361,13 @@ PHP'nin doğasında loose comparison (==) ve gerektiğinde strict comparison (==
 7. Object (daima true)
 8. Resources (daima true, http://www.php.net/manual/en/resource.php)
 
+Bu durum, `Javascript` gibi diller için de geçerlidir.
+
 ### 4. mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
 
 Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek `SQL Injection` saldırılarından korunduğunu sanmaktadır. Bu klasik bir yanlıştır ve sizi anca temel düzeydeki `SQL Injection` saldırılarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında bu fonksiyon hiçbir işe yaramaz ve sizi koruyamaz.
 
-`SQL Injection`'dan korunmak, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
+`SQL Injection`'dan korunmak için, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
 
 ```php
 <?php
@@ -363,17 +379,132 @@ Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek
     $sth->execute(array($_POST['kalori_degeri'], 'Kırmızı'));
 ```
 
-Korkmadan `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bindledik. Artık `PDO driver`i, sorguyu oluşturacak ve enjeksiyonların tamamını bizim yerimize önleyecektir.
+Artık herhangi bir süzmeye gerek kalmadan, `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bindledik. 
 
-### 5. ORM araçları hakkında bilgi sahibi olun. ###
+Artık `PDO driver`i, sorguyu oluştururken `?` gördüğü bölümlere bizim verdiğimiz parametreleri ekleyecek ve `SQL Injection` saldırılarının tamamını bizim yerimize önleyecektir.
 
-// Yakında.
+### 5. Database Abstraction Layers (DBAL) ve Object Relational Mapping (ORM) ###
+
+Bir önceki örnekte `SQL Injection`'un nasıl önleneceğini öğrenmiştik. Bilmeniz gereken bir konu da `PDO` ve `Mysqli`'nin üzerine `abstraction` (Soyutlama) katmanları çekebileceğinizdir. `Abstraction` (Soyutlama), Nesne Yönelimli Programlama'nın temel 4 ilkesinden biridir. (Hatırlarsanız daha önce `Kapsülleme` ilkesini anlatmıştık.)
+
+Örneğin, bir veritabanı sınıfı yazalım.
+
+```php
+<?php
+
+class Database
+{
+
+     private $queryCount, $pdo;
+
+     public function __construct($dsn, $user, $password, $host)
+     {
+          $this->queryCount = 0;
+          $this->pdo = new PDO($dsn, $user, $password, $host)
+     }
+
+     public function isConnected()
+     {
+          return $this->pdo->isConnected();
+     }
+
+     public function getQueryCount()
+     {
+          return $this->queryCount();
+     }
+
+     public function getResult()
+     {
+          return $this->pdo->fetch();
+     }
+
+     public function query($query, Array $params)
+     {
+          $this->queryCount++;
+
+          $this->pdo->prepare(); //Sorguyu hazırla
+          $this->pdo->execute(); //Sorguyu çalıştır
+     }
+}
+
+$database = new Database('dsn', 'user', 'password', 'host');
+
+$database->query('SELECT * FROM users WHERE username = ?', array($_POST['kullanici']);
+
+$database->getResult(); // Kullanıcının bilgilerini aldık
+$database->getQueryCount(); // 1
+
+```
+
+Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz. 
+
+Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar da `MySQL` üzerine çekilmiş birer soyutlama katmanlarıydı. `PHP` dünyasında genellikle  `Abstraction`lar (Soyutlamalar), bir özelliğin üzerine işi daha da kolaylaştıran bir başka sınıf çekilmesi olarak görülmektedir.
+
+Bu konuyu öğrendiğimize göre, artık `DBAL` ve `ORM` konularına girebiliriz.
+
+Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğiydi. Popüler bir `DBAL` örneği olarak `Doctrine DBAL`'ı gösterebiliriz. İstersiniz bunu direkt olarak projenize dahil edip kullanmaya başlayabilirsiniz.
+
+`Object Relational Mapping` (İlişkisel Obje Eşleme) ise, veritabanı yapınızın objeler şeklinde tutulmasını sağlar. `ORM` araçları olarak `Doctrine ORM`, `Propel ORM`, `ActiveRecord ORM` gösterilebilir. Ben anlaşılması en basit olan, `Laravel`'in (framework) geliştirdiği `Eloquent ORM` ile bir örnek vereceğim.
+
+`ORM` kullandığımızda, neredeyse hiç `SQL` sorgusu kullanmayız. Biz, veritabanımızı temsil eden sınıflar üzerinde değişiklik yaparız. Bu sınıflar gerekli değişiklikleri analiz edip veritabanımızda kullanırlar.
+
+> Not: Bu bölüm, Eloquent ORM'in, Laravel'de nasıl çalıştığını göstermektedir.
+
+`Eloquent ORM` için, veritabanımızdaki `users` tablosunu temsil eden bir sınıf oluşturalım.
+
+```php
+<?php
+class User extends Eloquent
+{
+
+}
+```
+Laravel frameworkü, otomatik olarak veritabanındaki `users` tablosunu referans ettiğimizi anlayacaktır, çünkü `user` (kullanıcı) kelimesinin çoğul şekli `users` (kullanıcılar) olacaktır. Siz de veritabanı oluştururken tablo isimlerinizi çoğul oluşturabilirsiniz. (örneğin kullanıcılar, kategoriler, yorumlar vb.) Tablo isimlerini çoğul olarak kullanmak iyi bir kullanım sayılmaktadır. Ancak, biz Eloquent örneğimize geri dönelim.
+
+Artık, `User` sınıfını uygulamamızda kullanabiliriz! (Hepsi bu kadardı, gerçekten.)
+
+```php
+<?php
+
+    $user->find(1); // ID'si 1 olan kullanıcıyı al
+    $user->find(1)->delete(); // ID'si 1 olan kullanıcıyı sil
+
+    $user->find(15);
+        $user->email = "deneme@ornek.com";
+    $user->save(); // ID'si 15 olan kullanının email adresini güncelle
+
+    $user->all(); // Tüm kullanıcıları çek
+
+    $user->where('yetki', 'admin')->take(5)->get();
+    // Yetkisi admin olan kullanıcılardan 5 tane çek
+```
+
+Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz bütün veritabanı işlemlerini gerçekleştirebiliyoruz! `Eloquent` neredeyse sizinle konuşuyor.
+
+Her `ORM` aracı, `Eloquent` kadar kolay olmamakla beraber, bu tür kullanımı desteklemektedir. Projelerinizde kullanmanızı şiddetle tavsiye ederim!
 
 ### 6. Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
 
-Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir.
+Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir. Orta seviye bir bilgisayar bile birkaç dakika içinde `md5()` şifrelemeleri kırabilir.
 
-// Bu bölüm ilerleyen günlerde daha detaylı anlatılacak.
+Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
+
+1. Sağlam bir şifreleme algoritması kullanın.
+2. Salt veri oluşturun ve bunu şifrelemede kullanın.
+
+`Salt` veri nedir? `Salt` veri, `Kriptoloji`'de şifrenin çözülmesini zorlaştırmak için şifreye rastgele veri eklenmesidir.
+
+`PHP`'de şifreleme için `bcrypt` algoritmasını kullanabilirsiniz. `Bcrypt` algoritması, şifrenin güvenli olması için:
+
+1. Salt veri kullanımını mecbur kılar.
+2. Şifreyi birçok defa şifrelemeden geçirir ve kırılmasını çok zorlaştırır.
+3. Tek taraflı şifreleme algoritmasıdır.
+
+`Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, şifrenin bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
+
+`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir.
+
+İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
 
 ### 7. Input escape edilir, output filtrelenir. ###
 
