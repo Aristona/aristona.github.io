@@ -1229,6 +1229,10 @@ Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritaba
 
 // Yakında
 
+### Assetleri yüklerden http veya https kullanmayın. ###
+
+// //link şeklinde olmalı.
+
 ### YAZILARINIZI BÜYÜK HARFLE yazmayın! ###
 
 // text-transform: uppercase;
