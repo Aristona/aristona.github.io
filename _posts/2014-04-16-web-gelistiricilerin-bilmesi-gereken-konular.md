@@ -1199,6 +1199,10 @@ Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritaba
 
 // Yakında
 
+### - PSR standartlarına uyun. ###
+
+// PHP-FIG nedir? PSR nedir? Tüm standartlar açıklanacak
+
 ---
 # Frontend #
 ---
