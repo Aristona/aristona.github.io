@@ -20,19 +20,21 @@ Bu yazı, açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır
 
 Bu yazı, [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır. Format olarak `Markdown (Redcarpet)` kullanılmıştır, bu yüzden `pull request` attığınızda, yazılarınızın bu formata uygun olması gerekmektedir.
 
-> Not: Bu yazıdan hiçbir ticari beklentim yoktur ve olmayacaktır.
+Bu yazıdan hiçbir ticari beklentim yoktur, ancak bağış yapmak isterseniz `PayPal` hesabım üzerinden bağış yapabilirsiniz.
 
 ---
 # Backend (Arka yüz) #
 ---
 
-Backend bölümü için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilirler.
+Backend için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
+
+Bu bölümdeki örneklerin bazıları, temel veya orta düzeyde `PHP` bilgisi gerektirmektedir.
 
 ### - Global scopeyi asla kirletmeyin. ###
 
 **a. Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
-`Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın heryerinden erişebilir olurlar. `Global scope` içerisindeki değişkenlere ne kadar bağımlı olursanız, uygulamanın farklı bir noktasında hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullanıyorsanız, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
+`Global scope` (Global alan) içerisinde tanımladığınız değişkenler uygulamanızın heryerinden erişebilir olurlar. `Global scope` içerisindeki değişkenlere ne kadar bağımlı olursanız, uygulamanın farklı bir noktasında hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınız zaman, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
 İsterseniz başlamadan önce `scope` kavramının ne olduğundan ve `PHP`'de nasıl kullanıldığından kısaca bahsedelim.
 
@@ -61,22 +63,22 @@ Bir `$veritabani` değişkeninde `MySQL` bağlantısını tuttuğumuzu varsayal�
 	$veritabani = //bir mysql bağlantısı;
 ```
 
-Görüldüğü gibi, `$veritabani` değişkeni `global scope` içerisinde `global` olarak tanımlanmıştır. Ancak, uygulamanın herhangi bir yerinde;
+Görüldüğü gibi, `$veritabani` değişkeni `global scope` içerisinde `global` olarak tanımlanmıştır. Ancak, uygulamanın herhangi bir yerinde bir başkası;
 
 ```php
 <?php
 	$veritabani = null;
 ```
 
-yazıldığı zaman, artık `$veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir. Bu durumda uygulamanız `runtime esnasında` bozulacaktır.
+yazdığı zaman, artık `$veritabani` değişkeni `NULL` değerine sahip olacağı için hiçbir veritabanı işlemi yapılamaz hale gelecektir. Bu durumda uygulamanız `runtime esnasında` bozulacaktır.
 
-Bu tür hatalardan korunmak için tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında, sınıflarınızı da `namespace` (isim uzayları) altında tanımlayın.
+Bu tür hatalardan korunmak için tanımlayacağınız değişkenleri `class scope` (sınıf scope) altında, sınıflarınızı da `namespace` (isim uzayları) altında tanımlamaya çalışın.
 
 **b. Encapsulation (Kapsülleme) yapın, gizli değişkenlere erişimi kesin.**
 
-`Class scope` (sınıf scope) içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar. Bu yüzden yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi `class scope` içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde `instantiate edilebilir` (çalıştırılabilir) ve buradan değişkenlere erişilebilir.
+`Class scope` (sınıf scope) içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar. Bu yüzden yukarıdaki örnek tek başına yeterli olmaz. Siz herşeyi `class scope` içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi biryerinde `instantiate edilebilir` (çalıştırılabilir) ve buradan değişkenlere erişim sağlanabilir.
 
-Bunu önlemek için, `OOP`in (Nesne Yönelimli Programlama) temellerinden olan `Encapsulation` (Kapsülleme) özelliğini kullanabiliriz.
+Bunu önlemek için, `OOP`in (Nesne Yönelimli Programlama) 4 temel ilkesinden biri olan `Encapsulation` (Kapsülleme) özelliğini kullanabiliriz.
 
 Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` prefixlerini kullanarak değişkenlerin veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliyoruz. `Kapsülleme` yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` prefixlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz.
 
@@ -162,11 +164,13 @@ Bu durumda;
 1. `MySQL` sınıfı `isConnected()` methoduna erişebilecek mi? Evet. 
 2. `isConnected()` methodunun kendi sınıfı içerisindeki `$isConnected` değişkenine erişim hakkı var mı? Evet. 
 
-Artık `MySQL` sınıfı, `Database` sınıfındaki `public` fonksiyon üzerinden gizli `$isConnected` değişkenine ulaşabilecektir. Buna `encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel prensiplerinden biridir.
+Artık `MySQL` sınıfı, `Database` sınıfındaki `public` olan `isConnected()` fonksiyonu üzerinden gizli `$isConnected` değişkenine ulaşabilecektir. Buna `encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel ilkelerinden biridir.
 
-Şimdi, bu durumu size daha dünyevi bir örnekle anlatayım. Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz. `$kdvOrani` adında bir değişken belirlediniz ve değer olarak `0.18` float değerini verdiniz. Eğer siz `$kdvOrani` değişkenini dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? `100` liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
+Şimdi, bu durumu size daha dünyevi bir örnekle anlatmaya çalışayım. 
 
-Ancak, `MySQL` örnediğinde anlattığım gibi bazı durumlarda `$kdvOrani` değişkenine erişmeniz gerekebilir. Belki bir ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyorsunuz. Kim bilir? Bu durumda biraz önce bahsettiğimiz `public fonksiyon`  üzerinden gizli değişkenlere mantığı giriyor. Bu fonksiyonlara `gettler fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkenin değerini döndürmekten ibarettir.
+Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz. `$kdvOrani` adında bir değişken belirlediniz ve değer olarak `0.18` float değerini verdiniz. Eğer siz `$kdvOrani` değişkenini dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? `100` liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
+
+Ancak, `MySQL` örnediğinde anlattığım gibi, bazı durumlarda `$kdvOrani` değişkenine erişmeniz gerekebilir. Belki bir ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyorsunuz. Kim bilir? Bu durumda biraz önce bahsettiğimiz `public fonksiyon`  üzerinden gizli değişkenlere erişme mantığı giriyor. Bu tür erişim sağlayıcı fonksiyonlara `gettler fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkenin değerini döndürmekten ibarettir.
 
 ```php
 <?php
@@ -183,7 +187,7 @@ class KDVHesaplayici
 }
 ```
 
-Bir de bunun tam tersi mantıkla çalışan `settler fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirirler.
+Bir de bunun tam tersi mantıkla çalışan `settler fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirmekle yükümlüdürler.
 
 Bir örnekle gösterelim;
 
@@ -227,7 +231,7 @@ $kdv->getKdvOrani(); // 3.00
     }
 ```
 
-Artık dışarıdan müdahele edilerek bozulamayacak bir sınıf yapısına sahibiz.
+Artık dışarıdan müdahele edilerek bozulamayacak bir sınıf yapısına sahibiz, ve biz istemedikçe kimse uygulamamızı bozamaz.
 
 > Biliyor musunuz?
 
@@ -250,9 +254,9 @@ class Database
 end
 ```
 
-`attr_accessor`, `info` değişkeninin gettler ve settler fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz, gettler ile settler fonksiyonlarımızı elle yazmak zorundayız.
+`attr_accessor`, Ruby dilinde `info` değişkeninin gettler ve settler fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz gettler ve settler fonksiyonlarımızı çoğu zaman elle yazmak zorundayız.
 
-Bilmeniz gereken bir başka konu ise, `PHP`'de eğer `gettler` ve `settler` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler.
+Bilmeniz gereken bir başka konu daha var. `PHP`'de eğer `gettler` ve `settler` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler.
 
 // Buraya `__get` ve `__set()` hakkında örnekler gelecek.
 
@@ -269,7 +273,7 @@ Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, g
 
 Peki, nedir bu bağımlılık?
 
-Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan diğer sınıfların toplamıdır. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya sınıf scope içerisinde bağımlılık sınıflarının `instantiate` edilmesiyle eklenebilir.
+Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan diğer sınıfların toplamıdır. Bağımlılıklar `use` kullanılarak, `constructor injection` aracılığıyla veya sınıf scope içerisinde bağımlılık sınıflarının `instantiate` edilmesiyle vb. yöntemlerle eklenebilir.
 
 Aşağıdaki örneği ele alalım;
 
@@ -303,36 +307,38 @@ Burada, `HomeController` sınıfının 3 `bağımlılığı` bulunmaktadır.
 
 Eğer bu sayı `4`'ün üzerine çıkarsa, sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de `SOLID ilkeleri`nin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
 
-`Tek Amaç İlkesi`'ne uymak için, sınıflarımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız. Ayrıca, sınıflarımızın veya methodlarımızın ne iş yaptığını anlatırken `ve` kelimesini mümkün olduğunca az kullanmalıyız. Örneğin, kullanıcının kayıt olması için bir method oluşturduğumuzu farzedelim. Bu methodun ne iş yaptığını kendimize açıklayalım.
+`Tek Amaç İlkesi`'ne uymak için, sınıfımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız. Ayrıca, sınıfımız ile methodlarımızın ne iş yaptığını anlatırken `ve` kelimesini mümkün olduğunca az kullanmalıyız. 
+
+Örneğin, kullanıcının kayıt olması için hayali bir method oluşturduğumuzu farzedelim ve bu methodun ne iş yaptığını kendimize konuşur gibi anlatalım:
 
 1. Kullanıcıdan gelen `$_POST` verilerini alıyoruz VE
-2. Bu değerleri oluşturduğumuz `validation` kontrollerinden geçiriyoruz VE
-3. Kullanıcının avatar upload ettiyse, bunu resize ediyoruz VE
-4. Resize edilen avatarı bir klasör içerisine yerleştiriyoruz VE
-5. Veritabanına kullanıcının bilgilerini ekliyoruz VE
+2. Bu verileri oluşturduğumuz `Validation` (Doğrulama) kontrollerinden geçiriyoruz VE
+3. Kullanıcı avatar resmi yüklediyse, avatar resmini boyutlandırıyoruz VE
+4. Boyutlandırılam avatarı isimlendirip bir klasör içerisine yerleştiriyoruz VE
+5. Veritabanına bağlanıp kayıt olacak kullanıcının bilgilerini ekliyoruz VE
 6. Eğer veritabanı false döndürmüş veya exception fırlatmışsa bunu yakalıyoruz VE
 7. Ekrana başarılı veya başarısız olacak bir sayfa çıktısı veriyoruz.
 
-Gördüğünüz gibi bu methodun ne iş yaptığını açıklarken 6 defa `VE` kullandık. Bu method gereğinden fazla iş yaptığı için, bu işlerin bazılarını farklı sınıflara dağıtmamız bizim `Tek Amaç İlkesi`'ne sadık kalmamızı sağlayacaktır.
+Gördüğünüz gibi bu methodun ne iş yaptığını açıklarken 6 defa `VE` kullandık. Bu yanlış bir kullanımdır. Bu method gereğinden fazla iş yapmaktadır. Burada gerçekleştirilen işlemlerin bazılarını farklı sınıflara veya methodlara dağıtmamız bizim `Tek Amaç İlkesi`'ne sadık kalmamızı sağlayacaktır.
 
-Burada `Kayıt` sınıfının amacı, kullanıcıyı başarılı bir şekilde veritabanına kayıt ettirmek olmalıdır. `Validation`'ların, avatarın resize edilmesinin ve resize edilen avatarın belirtilen bir klasöre yerleştirilmesinin `Kayıt` sınıfıyla bir ilgisi bulunmamaktadır. Bu işlemler farklı sınıflarda yapılmalıdır.
+Şimdi biraz düşünelim. Kayıt sınıfı yazdığımıza göre, `Kayıt` sınıfının amacı, kullanıcıyı başarılı bir şekilde veritabanına kayıt ettirmek olmalıdır. `Doğrulama`'ların, avatar resminin yeniden boyutlandırılmasının, yeniden boyutlandırılan resmin bir klasöre yerleştirilmesinin `Kayıt` sınıfıyla bir ilgisi bulunmamaktadır. Bu işlemler farklı sınıflarda yapılmalıdır.
 
 > Not: Bu maddenin bir kural değil, bir görüş olduğunu hatırlatmalıyım. Sayılarda ufak oynamalar olabileceği gibi, çok büyük oynamalar Tek Amaç İlkesi'nden çıktığınız anlamına gelebilir.
 
 ### - Kendinizi == yerine === kullanmaya alıştırın. ###
 
-`==`, `loose comparison` yaptığı için sayı olan `0` ile `false`'ı, sayı olan `1` ile `true`'yu eşit sayar. `Loose comparison` PHP'nin doğasında olmasına rağmen, bazı durumlarda gücü elimize almamız gerekebilir. 
+`==`, `loose comparison` yaptığı için sayı olan `0` ile `false`'ı, sayı olan `1` ile `true`'yu eşit sayar. `Loose comparison` PHP'nin doğasında olmasına rağmen, bazı durumlarda gücü elimize almanız gerekebilir. 
 
-Aşağıdaki örneği inceleyelim.
+Bu durum için hemen bir örnek verelim;
 
 ```php
 <?php
     strpos('abcde', 'ab');
 ```
 
-`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu fonksiyon, bu şekilde kullanıldığında integer olan `0` değerini döndürecektir. (Yani `ab` stringi ilk sırada geçiyor anlamına gelmekte.)
+`strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu örnekte `strpos` fonksiyonu sayı olan `0` değerini döndürecektir. Çünkü, `ab` yazısı, `abcde` yazısının ilk sırasında geçmektedir.
 
-Ancak, siz bunu `==` ile kontrol etmeye çalışırsanız, aslında bir sayı olan `0` değeri `false` olarak algılanacak ve farketmeden bug çıkarmış olacaksınız.
+Siz bu fonksiyondan dönen değeri `==` ile kontrol etmeye çalışırsanız, aslında bir sayı olan `0` değeri `false` olarak algılanacağı için farkında olmadan `bug` çıkarmış olacaksınız.
 
 ```php
 <?php
@@ -340,9 +346,9 @@ Ancak, siz bunu `==` ile kontrol etmeye çalışırsanız, aslında bir sayı ol
         return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
 ```
 
-Yukarıdaki örnek yanlıştır. `strpos` fonksiyonu `0` döndürmüş, ama bu `0` değeri if koşulu esnasında yanlışlıkla `false` olarak algılanmıştır.
+Yukarıdaki örnek hatalıdır. `strpos` fonksiyonu `0` döndürmüş, ama bu `0` değeri if koşulu esnasında yanlışlıkla `false` olarak algılanmıştır.
 
-Doğrusu `===` kullanmak olmalıydı. Böylece `0` değeri `false` olarak algılanmayacaktı.
+Bu koşul için mutlaka `===` kullanmamız gerekmekteydi. Böylece `0` değeri `false` olarak algılanmamış olacaktı.
 
 ```php
 <?php
@@ -350,32 +356,33 @@ Doğrusu `===` kullanmak olmalıydı. Böylece `0` değeri `false` olarak algıl
          return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
 ```
 
-Ben biraz disiplinli çalışmayı sevdiğim için daima `strict comparison` (===) kullanıyorum. Siz, özellikle `boolean` verilerini karşılaştırırken mutlaka `strict comparison` operatörünü kullanın.
+Artık `0` değeri `false` olmadığı için, yazdığımız ufak scriptimiz doğru çalışacaktır.
 
-`Boolean` verileri şunlardır: 
+Açıkcası, ben biraz disiplinli çalışmayı sevdiğim için daima `strict comparison` operatörünü kullanmaktayım. Özellikle `boolean` türündeki değerleri karşılaştırırken mutlaka `strict comparison` operatörünü kullanın.
 
-1. Sayı olan 0 ve 1
-2. Float olan 0.0 ve 1.0
-3. Boolean olan true ve false
-4. Boş string veya string olan 0 ("0")
-5. null
-6. Boş array (boş array false, dolu array true)
-7. Object (daima true)
-8. Resources (daima true, http://www.php.net/manual/en/resource.php)
+PHP'de, `boolean` verileri şunlardır: 
 
-Bu durum, `Javascript` gibi diller için de geçerlidir.
+1. Sayı olan `0` ve `1`. (0 false, 1 true)
+2. Float olan `0.0` ve `1.0`.
+3. Boolean olan `true` ve `false`.
+4. Boş string ve string olan 0 `"0"`. (daima false)
+5. Dolu string. (daima true)
+6. `null` değeri. (false)
+7. Boş ve dolu `array`. (boş array false, dolu array true.)
+8. `Object` (daima true)
+9. `Resources` (daima true)
 
-### - Dependency Injection, Dependency Injection Container ve Inversion of Control nedir öğrenin.###
+### - Dependency Injection, Dependency Injection Container, Inversion of Control, Liskov's Substitution Principle ve Dependency inversion principle. ###
 
-Bunların ne olduğunu bilmek artık her `PHP` geliştirici için şart olduğu için ne olduklarını yazma ihtiyacı hissediyorum.
+**a. Dependency Injection**
 
-`Dependency Injection` (Bağımlılık Enjeksiyonu), `James Shore`'ın dediği gibi: "5 centlik konsept için 25 dolarlık terim kullanılması."
+Kendisine üst düzey bir `PHP geliştirici` diyen herkesin mutlaka bilgi sahibi olması gereken konular olduğu için bu terimlerin ne olduğunu ve hangi amaçla kullanıldıklarını anlatma ihtiyacı hissediyorum.
 
-Buna katılmakla beraber, ben de `bağımlılık enjeksiyonu`'nun mantık olarak son derece basit olduğunu düşünüyorum. Hatta, şuana kadar verdiğim örneklerde birkaç defa kullandığım oldu. 
+Öncelikle, `Dependency Injection` (Bağımlılık Enjeksiyonu), `James Shore`'ın dediği gibi: "5 centlik konsept için 25 dolarlık terim kullanılması." sebebiyle, insanın kulağına sanki çok karışık bir konuymuş gibi geliyor. Bu söze ben de katılıyorum çünkü ben de `bağımlılık enjeksiyonu`'nun mantık olarak son derece basit olduğunu düşünenler arasındayım. Hatta, şuana kadar verdiğim örneklerde birkaç defa kullandığım oldu.
 
-Kuralımız son derece basit. Oluşturduğunuz sınıflarda `new` kullanmayacağız, kullanmamız gereken `bağımlılık sınıfları` bizim sınıfımıza dışarıda oluşturulup verilecek.
+`Dependency Injection` için kuralımız son derece basit. Oluşturduğunuz sınıflarda asla `new` kullanmayacağız. `Bağımlı olduğumuz` sınıflar, dışarıda oluşturulup bizim sınıfımıza enjekte edilecekler.
 
-Örneğin:
+Aşağıdaki örneği ele alalım;
 
 ```php
 <?php
@@ -391,9 +398,9 @@ class Deneme
 }
 ```
 
-Burada `dependency injection` kullanmadık ve büyük bir hata. Böyle yaptığımız zaman `Deneme` sınıfı `Mailer` sınıfıyla `tightly coupled` (Sıkı Sıkıya Bağlanmış) olur ve `unit testlerimizi` yazmak çok zor, hatta imkansız bir hale gelir. Ayrıca `Decoupling` (Bağlaşımı koparma) ilkesinden uzaklaşmış oluruz.
+Bu örnekte `Dependency Injection` kullanmadık. Bu aslında büyük bir hata. Bağımlı olduğumuz sınıfları (Mailer sınıfı) bu şekilde oluşturursak, `Deneme` sınıfımız `Mailer` sınıfıyla `tightly coupled` (Sıkı Sıkıya Bağlanmış) olur ve `unit testlerimizi` yazmak çok zor, hatta imkansız bir hale gelir. Ayrıca `Decoupling` (Bağlaşımı koparma) ilkesinden uzaklaşmış oluruz.
 
-Bunun yerine `Dependency Injection` kullanıp, bağımlılıkları dışarıdan enjekte etmeliyiz. Aşağıda bunun nasıl yaptıldığını görebilirsiniz:
+Ne demiştik? Sınıf içerisinde `new` kullanmayacağız ve `Dependency Injection` yöntemini kullanarak bağımlılıkları dışarıda oluşturup sınıfımıza enjekte edeceğiz. Aşağıdaki örnekte bunun nasıl yaptıldığını görebilirsiniz;
 
 ```php
 <?php
@@ -413,15 +420,27 @@ new Deneme(new Mailer);
 
 ```
 
-`Dependency Injection` işte bu kadar basit! Sınıfımız kendisi `Mailer` sınıfını oluşturmaktansa, `constructor injection` (Enjeksiyonu constructor üzerinden eklemek) aracılığıyla `Mailer` sınıfına sahip oluyor.
+`Dependency Injection` işte bu kadar basit! Sınıfımız `Mailer` sınıfını kendisi oluşturmaktansa, dışarıda oluşturulan `Mailer` sınıfının `constructor injection` (Enjeksiyonu constructor üzerinden yapmak) aracılığıyla sınıfımıza enjekte edilmesi yoluyla `Mailer` sınıfına sahip oluyor. Böylece sınıfımız `Mailer` sınıfına sıkı sıkıya bağlı olmaktan çıkıyor ve test edilebilirliğimiz muazzam düzeyde artıyor. Artık `unit testlerimizi` yazarken, `Mailer` sınıfını kolayca taklit edebiliriz. (Taklit etme olayına `Mocking` denmektedir.)
 
-Böylece, sınıfımız `Mailer` sınıfına sıkı sıkıya bağlı olmaktan çıkıyor ve test edilebilirliğimiz muazzam düzeyde artıyor.
+**b. Liskov's Substitution Principle**
 
-Yukarıdaki örnek doğru olmasına karşın, biraz eksik ve hatalıdır. Bu yazdığımız script `SOLID İlkeleri`'ni ihlal ediyor. Neden? Çünkü biz `sınıfı` direkt olarak enjekte etmiş oluyoruz. Ancak `Liskov's Substitution Principle` (Liskov'un İkame Kuralı) bize diyor ki; `Sınıflar, başka sınıflar yerine abstractionlara (soyutlamalara) bağlı olmalıdır.`
+Yukarıdaki örnek doğru bir `Dependency Injection` örneği olmasına rağmen bir eksikliği bulunmaktadır. Yazdığımız sınıf `SOLID İlkeleri`'nden biri olan `Liskov's Substitution Principle`'ı (Liskov'un İkame Kuralı) ihlal etmektedir. `Liskov'un İkame Kuralı` bize der ki; "Sınıflar, başka sınıflar yerine `Abstraction`'lara (Soyutlamalara) bağlı olmalıdır."
 
-Bu ne demek? Bu `PHP`'de şu anlama geliyor. `Mailer` sınıfı bir `Interface`'yi implement etmeli, ve bu interfaceye uyan herhangi bir sınıf `Deneme` sınıfı içerisinde çalışabilir olmalıdır.
+Bu kural `PHP`'de şu anlama geliyor. Örnekte kullandığımız `Mailer` sınıfını direkt olarak sınıfa enjekte etmek yerine, `Mailer` sınıfının bir `Interface`'e sadık kalması şart koşulmalı, bu `Interface`'e sadık kalan herhangi bir sınıf `type hinting` (Tür Dayatma) ile kontrol edilmeli ve sınıfımızda çalışabilir olmalıdır.
 
-Bu konuyu bir örnekle açıklayalım. Öncelikle interfacemizi oluşturalım ve sınıfımızda hangi methodların bulunması gerekiyor bunları belirtelim.
+Hatırlarsanız yukarıdaki örneğimizde tür dayatmayı şu şekilde yapmıştık;
+
+```php
+<?php
+     public function __construct(Mailer $mailer) // Mailer tür dayatmadır
+     {
+         $this->mailer = $mailer;
+     }
+```
+
+Burada tür dayatma `Mailer` olduğu için, sadece `Mailer` sınıfı enjekte edilebilir olacaktır. Ancak, biz `Mailer` sınıfı yerine, belli bir `Interface`'e sadık kalan her sınıfı kullanabilmeliyiz.
+
+Bu konuyu bir örnekle açıklayalım. Öncelikle `Interface`mizi oluşturalım ve bu interfaceye uyacak her sınıfta hangi methodların bulunması gerektiğini belirleyelim.
 
 ```php
 <?php
@@ -430,7 +449,7 @@ interface MailerInterface {
     public function mail();
     public function attachFile();
     public function setSender();
-    public function setTo();
+    public function setTo($to);
 }
 
 ```
@@ -440,7 +459,7 @@ Daha sonra `Mailer` sınıfımızın bu interfaceye uymasını sağlayalım.
 ```php
 <?php
 
-class Mailer implements MailerInterface
+class Mailer implements MailerInterface // Dikkat ettiyseniz implements MailerInterface dedik
 {
     public function mail()
     {
@@ -461,7 +480,9 @@ class Mailer implements MailerInterface
 }
 ```
 
-Son olarak, `Mailer` sınıfı yerine, `MailerInterface` interfacesini enjekte edelim.
+Şuan bu `Mailer` sınıfı, `MailerInterface` interfacesine sadık kaldığı için çalışabilecektir. Ancak, örneğin `Mailer` sınıfında `setTo()` methodu olmasaydı, sınıfımız `MailerInterface` içerisinde şart koşulan `setTo()` methoduna sahip olmadığı için çalışamayacaktı. Kısacası, kullandığımız interface, sınıfımızın sahip olması gereken methodları şart koşmaktadır. Interface içerisinde belirtilen 4 methodun hepsi bulunmayan sınıflar bu `Interface`'ye sadık kalamazlar.
+
+`Liskov'un İkame Kuralı`'na uymak istediğimiz için, öncelikle tür dayatmamızı `Interface` olarak değiştirelim. (`Interface`'ler de birer soyutlama katmanı sayılırlar.)
 
 ```php
 <?php
@@ -477,37 +498,45 @@ class Deneme
 }
 ```
 
-Şuan `Deneme` sınıfımız `Mailer` sınıfı yerine, `MailerInterface` interfacesine uyan herhangi bir sınıfı kabul edecek.
+Artık `Deneme` sınıfımız, `MailerInterface` interfacesine sadık kalan herhangi bir sınıfı kabul edecektir.
 
-Anlamadınız mı? Sorun değil, bu durumu hemen dünyevi bir örnekle anlatalım. Aracınızla uzun bir yola gittiğinizi farzedelim ve benzininiz bitmek üzere. Benzin almak için bir benzinliğe uğruyorsunuz.
+Anlamadınız mı? Sorun değil, bu durumu hemen dünyevi bir örnekle anlatayım. 
 
-1. Eğer benzinliğe (sınıf) bağlı olsaydınız, Türkiye'deki tek benzinciden benzin alabilirdiniz.
-2. Benzin yerine mezot doldurulmadığından emin olamazdınız. (Aracınızı çalıştırdığınızda neden motordan garip sesler geliyor diye düşünürdünüz.)
+Aracınızla uzun bir yola gittiğinizi farzedelim ve benzininiz bitmek üzere. Benzin almak için bir benzinliğe uğradınız.
 
-`Interface`lere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin alabiliyor olmamızı sağlar. Çünkü, biz eminiz ki benzin pompası bizim aracımızın benzin deposuna uygun. Biz eminiz ki, pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (interface)
+1. Eğer benzinliğe (sınıfa) bağlı olsaydınız, Türkiye'deki tek benzinciden benzin alabilirdiniz.
+2. Depoya benzin yerine mezot doldurulmadığından emin olamazdınız.
+
+Ne kadar saçma değil mi? O kadar yolu aynı benzinciye gitmek için geri dönmemiz gerekecek. Ama biz Türkiye'deki herhangi bir benzinliğe girip benzin alabilmek istiyoruz. `Interface`lere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin alabiliyor olmamızı sağlar. Çünkü, biz eminiz ki her benzinlikteki benzin pompası bizim aracımızın benzin deposuna uygun. Biz eminiz ki, pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (interface) Her benzinlik istasyonu bu tür standartlara sadık kaldığı için istediğimiz benzinliğe girebiliriz.
 
 Şimdi yukarıda verdiğimiz örneği yazılımsal bir örnekle anlatalım.
 
-Mail göndermek için `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` kullanabiliriz. Interfacemize uyduğu sürece istediğimiz sınıfı kullanabiliriz, çünkü artık bir sınıfa bağımlı değiliz. Belki çalıştığımız işyeri artık maillerin `Mandrill API`'si kullanılarak gönderilmesini istedi. Tüm mail gönderme sistemini baştan mı yazacağız? Hayır. İmplementasyonu değiştirip yolumuza devam edeceğiz.
+Mail göndermek için tek bir `Mailer` sınıfı yerine, `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` gibi sınıfları kullanabiliriz. Oluşturduğumuz interfaceye uygun oldukları canımız hangisini isterse o sınıfı kullanabiliriz.
 
-Artık, herhangi bir `Mailer` sınıfını uygulamamızda kullanabiliriz.
+Peki bu bize ne avantaj sağlar? Belki çalıştığımız işyeri artık maillerin `Mandrill API`'si kullanılarak gönderilmesini istedi. Tüm mail gönderme sistemini baştan mı yazacağız? Hayır. Bir `Interface`'e sadık kaldığı sürece her mail sınıfını kullanabiliriz.
+
+Örneğin:
 
 ```php
 <?php
 
+interface MailerInterface {
+    // Şart koşulan methodlar
+}
+
 class SwiftMailer implements MailerInterface
 {
-
+    // SwiftMailer implementasyonu
 }
 
 class MandrillMailer implements MailerInterface
 {
-
+    // MandrillMailer implementasyonu
 }
 
 class AWSMailer implements MailerInterface
 {
-
+    // AWSMailer implementasyonu
 }
 
 class Deneme
@@ -526,19 +555,50 @@ $mailer = new Mailer(new AWSMailer); // çalışır
 $mailer = new Mailer(new BenzinPompasi); // çalışmaz!!
 ```
 
-Artık işyerindeki patronunuz `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edersiniz. İleride tekrar `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e geçebilirsiniz.
+Yukarıdaki örneği inceleyelim.
 
-**Dependency Injection konteynerleri**
+1. Deneme sınıfı, `SwiftMailer` sınıfını kabul edecek mi? Evet. Çünkü interfacemize sadık kalmış.
+2. Deneme sınıfı, `MandrillMailer` sınıfını kabul edecek mi? Evet. Çünkü interfacemize sadık kalmış.
+3. Deneme sınıfı, `AWSMailer` sınıfını kabul edecek mi? Evet. Çünkü interfacemize sadık kalmış.
+4. Deneme sınıfı, `BenzinPompasi` sınıfını kabul edecek mi? Hayır! Çünkü interfacemize sadık kalmış. Ne olduğu belirsiz birşey bu!
 
-`DI Containers` (DI Konteynerleri), Dependency Injection konusunda bize yardımcı olan konteyner sınıflardır. Hangi sınıfın nereye bağımlı olduğuna, nereye enjekte edileceğine çoğu zaman bu konteyner sınıflar karar verir ve bize yardımcı olur.
+Sonuç olarak, `Liskov'un İkame İlkesi`'ne artık uyabiliyoruz. Artık bir sınıfa bağlı olmak yerine, bir `Interface`e bağlıyız!
+
+Peki bu bize ne avantaj sağlayacak? Artık işyerindeki patronunuz mail göndermek için `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edebiliriz. `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e dönebiliriz.
+
+```php
+<?php
+     $mailer = new Mailer(new canimizNeIsterse());
+```
+
+**c. Dependency Injection konteynerleri**
+
+`Dependency Injection` kavramını öğrendik. `Liskov'un İkame İlkesi`'ni öğrendik. Birçok şey öğrendik ama hala öğrenmemiz gereken konular var.
+
+Şuana kadar herşey güzel, ama yüzlerce `Deneme` sınıfımız varsa ne yapacağız?
+
+```php
+<?php
+     new Deneme1(new Mandrill());
+     new Deneme2(new Mandrill());
+     new Deneme3(new Mandrill());
+     new Deneme4(new Mandrill());
+     new Deneme5(new Mandrill());
+     new Deneme6(new Mandrill());
+     ...
+```
+
+Hepsine tek tek `new Mandrill();` mi diyeceğiz? Hayır. Daha önce ne anlatmıştık? "DRY kuralına uyacağız, ve kendimizi tekrar etmeyeceğiz."
+
+`Dependency Injection Containers` (Dependency Injection Konteynerleri), Dependency Injection (kısaca DI) konusunda bize yardımcı olan konteyner sınıflardır. Hangi sınıfın nereye bağımlı olduğuna, nereye enjekte edileceğine çoğu zaman bu konteyner sınıflar karar verir ve bize yardımcı olur.
 
 Interface kullanırken, şöyle bir sorunla karşı karşıya kalabiliriz. Interfaceler, sınıflar gibi instantiate edilemezler. (Yani `new` kullanarak onları çalıştıramayız.)
 
-Bu yukarıdaki örnekte fazla bir problem teşkil etmiyor, ancak 100 tane `Deneme ` sınıfınızın olduğunu varsayalım. Hepsine tek tek `new Mandrill`, `new Maindrill`, `new Mandrill` mi diyeceğiz? Hayır. Daha önce ne anlatmıştık? `DRY kuralına uyacağız, ve kendimizi tekrar etmeyeceğiz.`
+Şimdi, çok basit bir algoritma geliştirip Dependency Injection konteynerimizi oluşturacağız. Bu konteyner, `MailerInterface` tür dayatmasını gördüğü yere, bizim belirlediğimiz sınıfı çalıştıracak ve enjekte edecek.
 
-Şimdi, çok basit bir algoritma geliştirip Dependency Injection konteynerimizi oluşturacağız. Bu konteyner, MailerInterface ibaresini gördüğü zaman, hangi sınıfın çalıştırılması gerektiğine karar verecek ve o sınıfı enjekte edecek.
+Örneğin, biz konteyner sınıfında `Mandrill`'i seçersek, konteyner sınıfı bundan böyle `MailerInterface` gördüğü heryere `Mandrill` sınıfını enjekte edecek. Eğer `SwiftMailer`'i seçersek, `MailerInterface` gördüğü yere `SwiftMailer` sınıfını enjekte edecek.
 
-Örneğin, biz konteyner sınıfında `Mandrill`'i seçerse, konteyner sınıfı `MailerInterface` gördüğü yere `MandrillMailer` sınıfını gönderecek. Eğer `SwiftMailer`'i seçersek, `MailerInterface` gördüğü yere `SwiftMailer` sınıfını gönderecek.
+Dependency Injection konteynerlerinin, genel olarak aşağıdaki gibi bir kullanımları bulunmaktadır.
 
 ```php
 <?php
@@ -548,11 +608,32 @@ Bu yukarıdaki örnekte fazla bir problem teşkil etmiyor, ancak 100 tane `Denem
     $container->bind('MailerInterface', function() {
         return new MandrillMailer; //Artık burayı değiştirmemiz yeterli olacak.
     });
+
+    // Yeni bir MandrillMailer instancesi
+    $deneme = new Deneme($container->resolve('MailerInterface'));
+    
+    // Yeni bir MandrillMailer instancesi
+    $deneme2 = new Deneme($container->resolve('MailerInterface'));
+
+    // Yeni bir MandrillMailer instancesi
+    $deneme3 = new Deneme($container->resolve('MailerInterface'));
+
+    ...
 ```
 
-// Bu örneğin konteyner sınıfı yazılacak ve örnek geliştirilecek
+Bu örnekte, `return new MandrillMailer` bölümünü değiştirmemiz yeterli olacaktır.
 
-> Not: Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı değil. Detaylı bilgiye sahip olmak isteyen arkadaşlar Google üzerinde araştırma yapabilir.
+Bazı konteyner sınıflar, `Singleton` kullanımını gibi diğer kullanımları da destekler. (`Singleton` kullanılan sınıflar sadece tek bir instanceye sahip olabilirler, 2. defa instanceleri oluşturulamaz.) Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı olmamakla beraber, detaylı bilgiye sahip olmak isteyen arkadaşlar daha fazla araştırma yapabilirler.
+
+**d. Inversion of Control**
+
+// Yakında
+
+**e. Dependency Inversion Principle**
+
+Yazımız boyunca birçok defa bahsettiğimiz `SOLID İlkeleri`'nin sonuncusudur.
+
+// Yakında
 
 ### - mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
 
