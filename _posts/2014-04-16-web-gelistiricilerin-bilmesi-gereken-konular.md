@@ -1290,53 +1290,45 @@ PHP, siz istemedikçe hatalar hakkında stack trace bilgisi vermez. Sadece `X do
 
 Stack trace hakkında bilgi sahibi olmak için:
 
-1. Whoops adlı paketi (http://filp.github.io/whoops/) uygulamanızda kullanabilirsiniz. (önerilen)
+1. `Whoops` adlı paketi (http://filp.github.io/whoops/) uygulamanızda kullanabilirsiniz. (önerilen)
 
 2. `debug_backtrace()` fonksiyonunu kullanarak stack traceyi kendiniz takip edebilirsiniz.
 
+Normalde hiçbir PHP kütüphanesinden bu yazımda bahsetmeyecektim, ama bana kalırsa en yararlı kütüphanelerden biri şuan `Whoops` bu yüzden ondan bahsetmek istedim. Kullanmamanız için hiçbir sebep yok.
+
 ### - @ kullanmayın. ###
 
-`@`, PHP'de muhtemel hataların ekrana yansımaması için onları sessizleştirir. Siz istediğiniz hataları sessizleştirin, susturun, onlar oluşmaya devam edecektir.
-
-Açıkcası bu özelliğin PHP'ye neden eklendiğini anlamış biri değilim. Ölümcül hatalar, warningler, noticeler, exceptionlar, trigger_error ve bunların fonksiyonları ile php.ini konfigürasyonları derken zaten yeterince kafa karışıklığı oluşuyor. Birde bunları susturacak (hepsini değil) özellikler var. Neden diye soramıyorum... çünkü PHP kullanıyoruz, bunlara alıştık. ¯\_(ツ)_/¯
+`@`, PHP'de muhtemel hataların ekrana yansımaması için onları sessizleştirir. Siz istediğiniz kadar hataları sessizleştirin, susturun, onlar oluşmaya devam edecektir. Bu yüzden hataları susturmak yerine çözmeye çalışın.
 
 ### - ?> kullanmayın. ###
 
-PHP kullanırken `?>` kullanarak açılan tagları kapatmanıza gerek yok. Kapattığınız takdirde `?>` tagından sonra yeni satır veya boşluk gibi karakterler kalabiliyor. Bu karakterler PHP tarafından `output` (çıktı) olarak algılandığı için `Headers already sent` hatası, sessionların oluşturulamaması, header kodlarının değiştirilememesi gibi hatalara sebep oluyor.
+`PHP` kullanırken açılan tagları `?>` kullanarak kapatmanıza gerek yok. Kapattığınız takdirde `?>` tagından sonra yeni satır veya boşluk gibi karakterler kalabiliyor. Bu karakterler PHP tarafından `output` (çıktı) olarak algılandığı için `Headers already sent` hatası, sessionların oluşturulamaması, header kodlarının değiştirilememesi gibi hatalarla karşılaşabiliyorsunuz.
 
-Ben hiçbirşeyi gözden kaçırmam demeyin, kaçabiliyor. 
-
-> Not: Kaçabiliyordan sonra birtane whitespace kaçtı mesela. Farkettin mi?
+Bu yüzden, `good practice` (İyi Kullanım), kapanış taglarını kullanmamaktır.
 
 ### - Short tags kullanmayın. ###
 
-Bazı yazılımcılar `<?php` yerine `<?` kullanıyor. Bu son derece yanlış. Short tag kullanacaksanız `short_open_tag` mutlaka açık konumda olmalı. Kapalı olursa ne olur? Hiç. Kaynak kodlarınız kabak gibi tarayıcıya çıkar.
+Bazı yazılımcılar `<?php` yerine `<?` kullanıyor. Bu son derece yanlış. Short tag kullanacaksanız `short_open_tag` mutlaka açık konumda olmalıdır. Kapalı olursa ne olur? Kaynak kodlarınız tarayıcıya çıkabilir.
 
-Bu hatayı malesef devasa kurumlar bile yapmakta. 2011 yılında `sahibinden.com`'u geliştiren bir yazılımcı `<?php` yerine `a?php` (<'in bir üstündeki tuş) yazdı diye `sahibinden.com`'un tüm kaynak dosyasını tarayıcıda gösterdi ve bu bilgiler arasında duyduğum kadarıyla veritabanı şifresinden ve FTP bilgileri bile vardı.
+Dünya çapında birçok web sitesi bu tür basit dikkatsizliklerin kurbanı olabiliyor. Türkiye'de bildiğim kadarıyla `sahibinden.com` var, kaynak kodu tarayıcıya çıkarmayı başarabilen (!) ender firmalardan.
 
-Sadece bu değil, dünya çapında birçok web sitesi bu tür basit dikkatsizliklerin kurbanı olabiliyor ve oldu da.
+Bu yüzden, `<?php` dışında hiçbir `açılış etiketini` kullanmayın.
 
-Bu yüzden, `<?php` dışında hiçbir açılış tagını kullanmayın.
+> Not: `PHP 5.4` ve üzeri versiyonlarda, kısa ekrana yazdırma etiketi olan `<?=` kullanılabilir, ancak açılış etiketleri yine `<?php` olarak yazılmalıdır.
 
 ### - Projelerinizi açık kaynaklı olarak paylaşıyorsanız, .gitignore kullanın! ###
 
-Yanlışlıkla sunucu, ftp, veritabanı veya API bilgilerinizin olduğu dosyaları Github'a yüklemeyin. Gizli kalması gereken dosyaları `.gitignore` kullanarak gizleyin.
+Yanlışlıkla sunucu, ftp, veritabanı veya API bilgilerinizin olduğu dosyaları `Github`'a yüklemeyin. Gizli kalması gereken dosyaları düzgün şekilde `.gitignore` kullanarak gizleyin. Daha sonra silseniz bile commit logları kaldığı için başkaları tarafından görünebiliyorlar. Özellikle veritabanı ve API bilgilerinin tutulduğu konfigürasyon dosyaları, mümkün olduğunca ambar üzerinde tutulmamalıdır.
 
-Commit logları kaldığı için daha sonra silseniz bile başkaları tarafından görünebiliyorlar. Dikkatli ve uyanık olun.
+### - Kullandığınız açık kaynaklı projelerin güvenli olduklarından emin olun. ###
 
-### - Projelerinizi açık kaynaklı olarak paylaşıyorsanız, güvenli olduklarından emin olun. ###
+Aşağıda mükemmel yazılımcıların açık kaynaklı projeleri yer alıyor. Bedava `VPS` isteyen var mı?
 
-Aşağıda mükemmel yazılımcıların... (*öhüöhü*) açık kaynaklı projeleri... (*öhüöhü*) Kusura bakmayın, biraz kötü oldum. Bu kadar kötü kod görünce bünyem kaldırmıyor. 
+[https://github.com/search?q=exec+sudo+%24_GET&type=Code]()
 
-Durumun vehametini size tek bir linkle göstereceğim.
+Sorunu anlamayanlar varsa anlatmaya çalışayım. Buradaki scriptlerin bazıları, gelen `GET` isteğini kontrol etmeden direkt olarak linux üzerinde yönetici yetkisiyle çalıştırıyorlar. Yani birisi "Hey linux, bana sunucunun şifresini verir misin?" diye sorabilir veya "Hey linux, kendine format atar mısın?" tarzındaki komutları çalıştırabilir.
 
-https://github.com/search?q=exec+sudo+%24_GET&type=Code
-
-Sorunu anlamayanlar varsa anlatmaya çalışayım. Buradaki scriptlerin bazıları, gelen `GET` isteğini kontrol etmeden direkt olarak linux adminin yetkisiyle çalıştırıyorlar. Yani birisi "Hey linux, bana sunucunun şifresini verir misin?" diye sorabilir veya "Hey linux, kendine format atar mısın?" tarzındaki komutları çalıştırabilir.
-
-Bazıları session onları korur diye düşünebilir, ama session spoofing, session hijacking gibi saldırılara maruz kalabilirsin veya cookilerin çalınabilir. Bu durumda ne yapacaksın? Session beni korur demek nasıl olsa kimse beni hacklemez diye SQL Injection açığı bırakmakla aynı şeydir.
-
-Kullanıcıya asla güvenmeyin. Kontrol etmeden hiçbirşeyi shell veya veritabanı sorgusuna sokmayın.
+Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığı belli olmayan açık kaynaklı projeleri kullanmamaya çalışın. Bunların size hackerların sokmaya çalıştığı `shell` dosyalarından hiçbir farkı yok. Hackerların size sokmaya çalıştığı `shell` dosyalarını siz kendiniz sitenize yüklemeyin.
 
 ### - Composer kullanın. ###
 
