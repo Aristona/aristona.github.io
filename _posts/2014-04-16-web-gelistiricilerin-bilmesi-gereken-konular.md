@@ -710,15 +710,15 @@ $database->getQueryCount(); // 1
 
 Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz. 
 
-Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar da `MySQL` üzerine çekilmiş birer soyutlama katmanlarıydı. `PHP` dünyasında genellikle  `Abstraction`lar (Soyutlamalar), bir özelliğin üzerine işi daha da kolaylaştıran bir başka sınıf çekilmesi olarak görülmektedir.
+Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar da `MySQL` üzerine çekilmiş birer soyutlama katmanlarıydı.
 
 Bu konuyu öğrendiğimize göre, artık `DBAL` ve `ORM` konularına girebiliriz.
 
-Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğiydi. Popüler bir `DBAL` örneği olarak `Doctrine DBAL`'ı gösterebiliriz. İstersiniz bunu direkt olarak projenize dahil edip kullanmaya başlayabilirsiniz.
+Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğidir. Popüler bir `DBAL` örneği olarak `Doctrine DBAL`'ı gösterilebilir.
 
-`Object Relational Mapping` (İlişkisel Obje Eşleme) ise, veritabanı yapınızın objeler şeklinde tutulmasını sağlar. `ORM` araçları olarak `Doctrine ORM`, `Propel ORM`, `ActiveRecord ORM` gösterilebilir. Ben anlaşılması en basit olan, `Laravel`'in (framework) geliştirdiği `Eloquent ORM` ile bir örnek vereceğim.
+`Object Relational Mapping` (İlişkisel Obje Eşleme) ise, veritabanı yapınızın objeler şeklinde tutulmasını sağlar. `ORM` araçları olarak `Doctrine ORM`, `Propel ORM`, `ActiveRecord ORM` gösterilebilir. Ben anlaşılması en basit olan, `Laravel`'in (framework) geliştirdiği `Eloquent ORM` ile bir örnek vererek anlatacağım.
 
-`ORM` kullandığımızda, neredeyse hiç `SQL` sorgusu kullanmayız. Biz, veritabanımızı temsil eden sınıflar üzerinde değişiklik yaparız. Bu sınıflar gerekli değişiklikleri analiz edip veritabanımızda kullanırlar.
+`ORM` kullandığımızda, neredeyse hiç `SQL` sorgusu kullanmayız. Biz yapacağımız değişiklikleri, veritabanımızı temsil eden sınıflar üzerinde yaparız.
 
 > Not: Bu bölüm, Eloquent ORM'in, Laravel'de nasıl çalıştığını göstermektedir.
 
@@ -731,9 +731,9 @@ class User extends Eloquent
 
 }
 ```
-Laravel frameworkü, otomatik olarak veritabanındaki `users` tablosunu referans ettiğimizi anlayacaktır, çünkü `user` (kullanıcı) kelimesinin çoğul şekli `users` (kullanıcılar) olacaktır. Siz de veritabanı oluştururken tablo isimlerinizi çoğul oluşturabilirsiniz. (örneğin kullanıcılar, kategoriler, yorumlar vb.) Tablo isimlerini çoğul olarak kullanmak iyi bir kullanım sayılmaktadır. Ancak, biz Eloquent örneğimize geri dönelim.
+Laravel frameworkü, otomatik olarak veritabanındaki `users` tablosunu referans ettiğimizi anlayacaktır, çünkü `user` (kullanıcı) kelimesinin çoğul şekli `users` (kullanıcılar) olacaktır. Siz de veritabanı oluştururken tablo isimlerinizi çoğul oluşturabilirsiniz. (örneğin kullanıcılar, kategoriler, yorumlar vb.) Tablo isimlerini çoğul olarak kullanmak `good practice` (iyi kullanım) sayılmaktadır. Ancak, biz Eloquent örneğimize geri dönelim.
 
-Artık, `User` sınıfını uygulamamızda kullanabiliriz! (Hepsi bu kadardı, gerçekten.)
+Artık, `User` sınıfını uygulamamızda kullanabiliriz! Hepsi bu kadardı, gerçekten.
 
 ```php
 <?php
@@ -751,20 +751,24 @@ Artık, `User` sınıfını uygulamamızda kullanabiliriz! (Hepsi bu kadardı, g
     // Yetkisi admin olan kullanıcılardan 5 tane çek
 ```
 
-Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz bütün veritabanı işlemlerini gerçekleştirebiliyoruz! `Eloquent` neredeyse sizinle konuşuyor.
+Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz tüm veritabanı işlemlerini gerçekleştirebiliyoruz. `Eloquent` neredeyse bizimle konuşuyor.
 
-Her `ORM` aracı, `Eloquent` kadar kolay olmamakla beraber, bu tür kullanımı desteklemektedir. Projelerinizde kullanmanızı şiddetle tavsiye ederim!
+Her `ORM` aracı, `Eloquent` kadar kolay olmamakla beraber, bu tür kullanımı desteklemektedir. Projelerinizde kullanmanızı şiddetle tavsiye ederim.
 
 ### - Kullanıcı şifrelerini md5() gibi yöntemlerle şifrelemeyin. ###
 
-Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir. Orta seviye bir bilgisayar bile birkaç dakika içinde `md5()` şifrelemeleri kırabilir.
+Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir. Orta seviye bir bilgisayarın bile birkaç dakika içerisinde `md5()` şifrelerini kırabilmektedir.
+
+`md5`'in zayıf olduğu bir konu da, birçok stringe aynı md5 karşılığını verebilmesidir. Genellikle md5 şifreleri kıranlar, bu şifreleri kırmaktan çok, aynı md5 çıktısını türeten veren başka bir şifreyi bulmaya çalışırlar.
+
+Siz kullanıcı girişi gibi bölümlerde md5 şifreyi karşılaştırdığınız için, saldıran kişiler farklı bir şifreyi kullansa bile, md5 çıktısı aynı olacağı için sisteme giriş yapmış olurlar.
 
 Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
 
 1. Sağlam bir şifreleme algoritması kullanın.
 2. Salt veri oluşturun ve bunu şifrelemede kullanın.
 
-`Salt` veri nedir? `Salt` veri, `Kriptoloji`'de şifrenin çözülmesini zorlaştırmak için şifreye rastgele veri eklenmesidir.
+`Salt` veri nedir? `Salt` veri, `Kriptoloji`'de şifrenin çözülmesini zorlaştırmak için şifreye rastgele veri eklenmesidir. Salt verileri şifrenin kırılmasını zorlaştırır.
 
 `PHP`'de şifreleme için `bcrypt` algoritmasını kullanabilirsiniz. `Bcrypt` algoritması, şifrenin güvenli olması için:
 
@@ -774,15 +778,13 @@ Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
 
 `Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, şifrenin bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
 
-`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir.
+`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir. İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
 
-İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
+### - Kullanıcıya güvenmeyin ama aşırı paranoyak olmayın. Ne gerekiyorsa onu temizleyin. ###
 
-### - Input escape edilir, output filtrelenir. ###
+Sosyal platformlarda gördüğüm en büyük yanlışlardan biri bu konu. `XSS` veya `SQL Injection` koruması sağlamak için kullanıcıdan gelen veriler `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi birçok fonksiyondan geçirilip veritabanına ekleniyor. Bu son derece yanlıştır.
 
-Çok popüler bir yanlışta `XSS` koruması sağlamak için kullanıcıdan gelen verilerin `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi fonksiyonlardan geçirilip veritabanına eklenmesidir. Bu yanlıştır.
-
-Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` veritabanında bir zarara yol açmayacağı için veritabanında tutulmasının bir sakıncası yoktur. Ancak, `XSS` verileri ekrana basılırken mutlaka filtrelenmesi gerekmektedir. Bu yüzden filtreleme işi ekrana bastırırken yapılmalıdır. Bunun birçok sebebi bulunmakta olup, başlıca sebeplerini şöyle sıralayabiliriz:
+Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` saldırıları veritabanında bir zarara yol açmayacağı için veritabanına girmesinin, veya veritabanında tutulmasının bir sakıncası yoktur. Ancak, bu veriler ekrana basılırken (output) mutlaka filtrelenmesi veya escape edilmesi gerekmektedir.
 
 **a. Verilerin bozulmadan saklanmasını sağlanmalıdır.**
 
@@ -790,16 +792,53 @@ Kullanıcının gönderdiği veri ham haliyle veritabanında saklanmalıdır, bu
 
 **b. Potansiyel uzunluk hatalarının önüne geçmiş olursunuz.**
 
-Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bu kelimeler `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk kontrolü yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
+Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bunlar `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk doğrulaması yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
 
 **c. Zararlı kod bir şekilde veritabanına sızmışsa, çıktı esnasında bu temizlenir.**
 
-Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazsanız bile, ekrana bastırma esnasında filtreleme yapacağınız için bu sorun olmaktan çıkar. Ancak, filtreleme işlemini veritabanına girmeden önce yapmış olsaydınız, zararlı kod orada kalmaya ve çalışmaya devam edecekti.
+Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazsanız bile, ekrana bastırma esnasında filtreleme yapacağınız için bu sorun olmaktan çıkar.
 
-Bu yüzden, altın kuralımız:
+Bu yüzden, altın kuralımız şunlar.
 
-1. İstek geldiğinde veritabanına eklemeden önce `SQL Injection`'dan koru.
-2. Veritabanındaki verileri ekrana bastırırken daima temizleyerek bastır.
+`İstek` (Input) esnasında:
+
+1. İstek geldiğinde veritabanına eklemeden önce düzgün şekilde escape edin ve `SQL Injection`'dan koruyun. İstek shell içine girecekse, o zaman shell içine girecek veriyi düzgün şekilde escape edin.
+2. Verileri daima doğrulamadan geçirin. Veritabanı hücresi bir tarih istiyorsa, veriyi eklemeden önce bir tarih olduğundan emin olun, yoksa veritabanınız ileride çöplüğe dönebilir.
+
+`Çıktı` (Output) esnasında:
+
+1. Kullanıcıdan gelen tüm verileri süzerek ekrana bastırın. Örneğin, kullanıcı Javascript kodları yazmışsa bunların çalışmasını engelleyin. Kullanıcı `</div></div></div>` yazıp HTML'yi bozmaya kalkmışsa bunu engelleyin. Kullanıcı özel CSS oluşturup sayfa arkaplanını değiştirmeye kalkmışsa bunu engelleyin.
+
+Şu örneği ele alalım. Kullanıcı bilgilerini güncellemek istiyor. Bu yüzden HTML formunu doldurdu.
+
+1. Doğrulamanızı yapın. Eski şifre doğru mu? Yeni şifre 3-12 karakter arasında mı? Yeni şifre özel karakterleri barındırıyor mu? İsmi doğru mu? Email adresi düzgün yazılmış mı?
+2. Prepared statements kullanarak veritabanını güncelleyin.
+3. Verileri ekrana basarken `htmlspecialchars` veya `strip_tags` gibi fonksiyonlardan geçirin.
+
+Bunu yaptığınız zaman;
+
+1. Veritabanınızı çöplüğe döndürmemiş olursunuz.
+2. Veritabanınızda orjinal içeriği tutmuş olursunuz.
+3. Input esnasında yapılabilecek saldırılardan korunmuş olursunuz.
+4. Output esnasında çalışabilecek zararlı kodlardan korunmuş olursunuz.
+
+### - Black list (kara liste) fonksiyonlarına güvenmeyin. ###
+
+Kara liste oluşturan tüm fonksiyonlar çöptür. Örneğin, `XSS`'i engellemek için aşağıdaki fonksiyonun kullanılması size hiçbir yarar sağlamaz.
+
+```php
+<?php
+
+    function xss_cleaner($input_str) {
+        $return_str = str_replace( array('<','>',"'",'"',')','('), array('&lt;','&gt;','&apos;','&#x22;','&#x29;','&#x28;'), $input_str );
+        $return_str = str_ireplace( '%3Cscript', '', $return_str );
+        return $return_str;
+    }
+```
+
+Sen burada `script` kelimesini engellediğini düşünebilirsin, ama saldırgan `s/**/cript` gibi bir yöntem kullanarak bunu aşabilir. Bu yüzden kara liste oluşturan fonksiyonlar işe yaramazlar.
+
+Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonksiyona güvenmeyin.
 
 ### - Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
 
@@ -945,9 +984,7 @@ Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kayb
 
 Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları `_` kullanarak ayırıyorsanız, `_` kullanarak devam edin. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın. Yaptığınız herşey tutarlı olsun.
 
-Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`?
-
-Neden bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Neden bir standart yok?
+Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`? Veya niye tam tersi değil? Niye bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Bu tutarsızlıklar neden var?
 
 Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine çevirir. PHP'de bu ne tahmin edin bakalım?
 
@@ -955,17 +992,17 @@ Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine
 
 Hepsi de olabilir, ama doğrusu `strrev`.
 
-Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, `ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin!` Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın.
+Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin! Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın.
 
-> Not: Bu yüzden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta.
+> Not: Tutarsızlığı yüzünden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta.
 
 > Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
 
-### - Gerekmedikçe else ve uzun if blokları kullanmayın ve daima köşeli parantez kullanın. ###
+### - Gerekmedikçe else ve uzun if blokları kullanmayın. Daima köşeli parantez kullanın. ###
 
 Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz.
 
-Bir değişkenin array olup olmadığını anlamak istediğiniz bir fonksiyon yazıyorsunuz. (Aslında bu örnek is_array ile yapılabilir ancak ben burada soruna değinmek istediğim için fonksiyon oluşturarak anlatacağım.)
+Bir değişkenin array olup olmadığını anlamak istediğiniz bir fonksiyon yazıyorsunuz. Aslında bu örnek direkt olarak `is_array` kullanılarak yapılabilir, ancak ben burada soruna değinmek istediğim için fonksiyon oluşturarak yapabileceklerinizi anlatacağım.
 
 Bu fonksiyon aşağıdaki şekilde yazılabilir.
 
@@ -985,7 +1022,7 @@ Bu fonksiyon aşağıdaki şekilde yazılabilir.
     }
 ```
 
-Ama `return` kullanmak fonksiyonu zaten durduracağı için `else` kullanmaya gerek kalmadan şu şekilde yazılabilir.
+Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya gerek kalmadan şu şekilde yazılabilir.
 
 ```php
 <?php
@@ -1001,7 +1038,9 @@ Ama `return` kullanmak fonksiyonu zaten durduracağı için `else` kullanmaya ge
     }
 ```
 
-If bloğu içerisindeki ilk satır daima if bloğu içerisinde sayılacağı için, köşeli parantezleri de silebiliriz.
+Şuanki hali üsttekinden çok daha güzel. Gereksiz `else` bloğunu kaldırmış olduk. Gereksiz `else` bloklarından korunmak çok büyük avantaj sağlıyor. Fonksiyonunuz sağ tarafa doğru uzamamış oluyor.
+
+Devam edelim. `if` bloğu içerisindeki ilk satır daima if bloğu içerisinde sayılacağı için, köşeli parantezleri de silebiliriz.
 
 ```php
 <?php
@@ -1015,7 +1054,9 @@ If bloğu içerisindeki ilk satır daima if bloğu içerisinde sayılacağı iç
     }
 ```
 
-Bunu biraz daha geliştirip, ternary yapısını da kullanabiliriz.
+Bu örnek düzgün çalışır ama son derece `tehlikelidir.` Neden tehlikeli olduğu nu birazdan `Apple`'ın meşhur `goto fail;` exploiti ile açıklayacağım, ama biz şimdilik devam edelim.
+
+Biz bunu biraz daha geliştirip, `ternary` operatörünü de kullanabiliriz.
 
 ```php
 <?php
@@ -1026,7 +1067,7 @@ Bunu biraz daha geliştirip, ternary yapısını da kullanabiliriz.
     }
 ```
 
-Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi bile silebilirsiniz.
+Dilerseniz, `ternary` operatörünün ilk parametresi olan `true` yi bile silebilirsiniz.
 
 ```php
 <?php
@@ -1037,7 +1078,7 @@ Dilerseniz, ternary operatörünün ilk çıktısı olan `true` yi bile silebili
     }
 ```
 
-hatta, is_array() fonksiyonu true veya false döndüreceği için, ondan dönen değeri siz de direkt olarak döndürebilirsiniz.
+Son olarak, `is_array()` fonksiyonu `true` veya `false` döndüreceği için, fonksiyondan dönen değeri siz de direkt olarak döndürebilirsiniz.
 
 ```php
 <?php
@@ -1048,9 +1089,9 @@ hatta, is_array() fonksiyonu true veya false döndüreceği için, ondan dönen 
     }
 ```
 
-Ancak, herşeyi kısa yazmak her zaman doğru değildir. Köşeli parantezleri kaldırmak, farkında olmadan birçok hatanın çıkmasına sebep olabilir.
+Bu ufak fonksiyon bile birçok şekilde yazılabiliyor, ancak herşeyi kısa yazmak her zaman doğru değildir. Özellikle köşeli parantezleri kaldırmak, farkında olmadan birçok hatanın çıkmasına sebep olabilir.
 
-Yanlışlıkla, if bloğu sonrasına 2. bir satır eklenirse, 2. satır daima çalışacağı için scriptimiz yanlış çalışacaktır.
+Köşeli parantezler olmadığındai yanlışlıkla `if` bloğu sonrasına 2. bir satır eklenirse, 2. satır daima çalışacağı için scriptimiz yanlış çalışmaya başlayacaktır.
 
 ```php
 <?php
@@ -1058,14 +1099,16 @@ Yanlışlıkla, if bloğu sonrasına 2. bir satır eklenirse, 2. satır daima ç
     function test()
     {
         if(birşey)
-          return "Merhaba";
-          return "Hata";
+          return "If";
+          return "Hata"; // Burası if bloğu içinde değil
         else
           return "Else";
     }
 ```
 
-Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `birsey` şartı sağlanıyorsa, sadece `return "Merhaba";` çalışacak ve uygulama Merhaba değerini döndürecektir. Her türlü durumda `return "Hata";` çalışacaktır, ancak köşeli parantez kullanılsaydı bu sorun oluşmayacaktı.
+Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `birsey` şartı sağlanıyorsa, sadece `return "If";` çalışacak ve fonksiyon `Merhaba` değerini döndürecektir. Diğer her türlü durumda `return "Hata";` çalışacaktır ve fonksiyon `Hata` değerini döndürecektir. Siz uygulamamızı `else` bloğunun çalışacağı durumlarda `Else` değeri dönecek diye programladıysanız, büyük küçük hata birçok bug oluşmasına sebep olacaktır.
+
+Köşeli parantez kullansaydınız bu sorun oluşmayacaktı.
 
 ```php
 <?php
@@ -1102,18 +1145,25 @@ Bu neden mi önemli? Apple'ın SSL'de çıkardığı meşhur `goto fail;` hatas�
         goto fail;
     if ((err = SSLHashSHA1.update(&hashCtx, &signedParams)) != 0)
         goto fail;
-        goto fail;  // Bu aslında burada olmamalıydı
+        goto fail;
     if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
         goto fail;
 
     fail: return err;
 ```
 
-Sorunu gördünüz mü? `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)` hiçbir zaman erişilemiyor çünkü bir üstte 2 tane `goto fail;` yazılı. 2. `goto fail;` daima çalışacağı için script `fail`'e düşüyor ancak burada hatanın dönmesi yerine `true` değeri dönüyor. En alttaki if kontrolü çalışmadığı için bu bölüm üzerinden bir exploit ortaya çıkmış oluyor.
+Sorunu görmediniz mi? Tekrar bakın:
 
-Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son derece komik olmakla beraber, sadece düzgün şekilde köşeli parantez kullanılsaydı kendiliğinden çözülmüş olacaktı.
+```c
+    goto fail;
+    goto fail; // Bunun burada ne işi var?
+    if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
+        goto fail;
+```
 
-Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden bizim yapmamız gereken, köşeli parantezleri doğru kullanmak.
+Yanlışlıkla 2 tane `goto fail;` yazıldığı için `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)` kontrolü hiçbir zaman zaman erişilemiyor. 2. sıradaki `goto fail;` daima çalışacağı için script `fail`'e düşüyor ancak burada hatanın dönmesi yerine `true` değeri dönüyor. Yani en alttaki `if` kontrolü yok sayılıyor, ve bu kontrol yok sayıldığı için bu bölüm üzerinden bir exploit ortaya çıkmış oluyor.
+
+Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son derece komik olmakla beraber, sadece düzgün şekilde köşeli parantez kullanılsaydı kendiliğinden çözülmüş olacaktı. Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden "Ben dikkatliyim, hiçbirşeyi gözden kaçırmam." demeyin. Bu yüzden mümkün olduğunca köşeli parantezleri doğru kullanmaya çalışın ve gereksiz `else` ifadelerini kullanmaktan kaçının.
 
 ### - Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
