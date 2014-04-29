@@ -1167,31 +1167,49 @@ Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son dere
 
 ### - Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
-`DRY` bölümünde anlattığım konuya bir örnekte bu konudur. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. Bilgisayarın yapması gereken şeyleri siz yapıyorsunuz.
+`DRY` (Kendinizi Tekrar Etmeyin) bölümünde anlattığım konuya bir örnekte bu konu. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım. "Bilgisayarın yapması gereken şeyleri siz yapmamalısınız."
 
-Oluşturduğunuz form submite tıkladığında form verilerini uygulamaya gönderiyor mu? Güzel, ama bunu `acceptance testi` yazarak test edin.
+Oluşturduğunuz form submite tıkladığında form verilerini uygulamaya gönderiyor mu? Güzel, ama bunu `acceptance testi` yazarak test edin. Tarayıcıdan bakarak değil.
 
-Formdan veri gönderildiğinde, gelen istek doğru yere yönlendiriliyor mu? Güzel, ama bunu `unit testi` yazarak kontrol edin.
+Formdan veri gönderildiğinde, gelen istek doğru yere yönlendiriliyor mu? Güzel, ama bunu `unit testi` yazarak kontrol edin. Tarayıcıdan bakarak değil.
 
-Formdan gelen tc kimlik no verisini doğrulayan method doğru çıktıları veriyor mu? Güzel, ama bunu `fonksiyonel test` yazarak kontrol edin.
+Formdan gelen tc kimlik no verisini doğrulayan method doğru çıktıları veriyor mu? Güzel, ama bunu `fonksiyonel test` yazarak kontrol edin. Tarayıcıdan bakarak değil.
 
-Bunu yapmadığınız zaman projenin herhangi biryerinde değişiklik yapmaya korkar olursunuz. Proje ne kadar büyürse projeyi manuel test etmek o kadar zorlaşır ve hata oranı büyük ölçüde artar. Benim gibi projeden projeye atlayan biriyseniz, hangi projenin ne durumda olduğunu aklınızda tutamazsınız. 
+Bunu yapmadığınız zaman projenin herhangi biryerinde değişiklik yapmaya korkar olursunuz. Proje ne kadar büyürse projeyi manuel test etmek o kadar zorlaşır ve hata oranı büyük ölçüde artar. Benim gibi projeden projeye atlayan biriyseniz, hangi projenin ne durumda olduğunu aklınızda tutamazsınız.
 
-Bu yüzden kendinizi test yazmaya alıştırın. `F5`'e ne zaman basmanız gerekiyorsa parmağınızı geri çekin ve test yazın.
+Projeyi geliştirirken her ihtimali tarayıcı üzerinden test etmiş olabilirsiniz. Formlar doğru veriyi gönderiyor, doğrulamalar çalışıyor, özel fonksiyonlar doğru çalışıyor, veriler veritabanına ekleniyor, bilgilendirme sayfası çalışıyor. Evet, herşey çalışıyor ama emin ol o projeye 1 ay ara verdiğinde birdaha neyin çalışıp neyin çalışmadığını hatırlayamayacaksın.
 
-> Not: PHPUnit, Codeception, Selenium, Behat gibi araçları araştırabilirsiniz.
+Bu yüzden kendinizi test yazmaya alıştırın. `F5`'e ne zaman basmanız gerekiyorsa parmağınızı geri çekin ve test yazın. Test işlemini kolaylaştıran `PHPUnit`, `Codeception`, `Selenium`, `Behat` gibi araçları inceleyin ve kullanın.
+
+**Continuous Integration için ayrı bir sayfa açalım...**
+
+Continuous Integration, en basit haliyle yazılan testlerin sıklıkla çalıştırılmasını sağlamaya denmektedir. Yazdığınız testleri saatlik olarak, veya versiyon kontrol sistemlerini kullanıyorsanız her commmitte vb. çalıştırılmasını sağlayabilirsiniz. 
+
+Continuous Integration için Travis CI, Hudson CI, Jenkins CI gibi araçları kullanabilirsiniz. Continuous Integration araçlarını kullanmanın size faydası şudur.
+
+Örneğin, projenize bir arkadaşınız destek oluyor. Bu arkadaşınız geliştirme esnasında uygulamanın bir bölümünü bozmuş olabilir. Bu durumda CI sunucusu sizi uyarır. "Hey, 9a8fja numaralı committen sonra artık butonaTıklandığındaFormVerileriSunucuyaGidiyorMu testi çalışmamaya başladı." Bunun sebebini araştırıp kolayca bulabilirsiniz.
+
+Eğer test yazmazsanız ve bu araçları kullanmazsanız, arkadaşınız size şunu diyebilir. "Bugün anasayfadaki formun tasarımını biraz değiştirdim." Aslında değiştirmedi, bozdu. Siz de test yazmadığınız için burada bir hata olduğunu anca müşteriniz telefon açıp sizi azarlayınca anlayabilirsiniz.
+
+Test konusunu çok önemli olup, son zamanlarda kendi başına bir sektör haline dönüşmeye başladı. Kalite kontrol departmanları sistemi test edecek Test Uzmanları/Mühendisleri çalıştırmaya başladılar. Siz de geliştirdiğiniz uygulamanın kaliteli ve çalışır durumda olduğunu kanıtlamak için testlerinizi yazın. Büyük bir proje geliştiriyorsanız proje geliştirmeyi `F5`'e basarak devam ettiremezsiniz.
+
+Test yazmak bazen zaman alıcı olabilir. Çoğu zaman `var_dump()` yazıp `F5`'e basmak geliştiricilere daha kolay gelir. Bu yüzden artık geliştirilmeyeceğinden emin olduğunuz küçük uygulamaları bu şekilde test edip müşteriye verebilirsiniz. Ama o müşterinin 2 yıl sonra sizi arayıp yeni şeyler istemeyeceğinden nasıl emin olacaksınız, orası ayrı konu.
 
 ### - Testlerinizi yazarken string kullanmamaya çalışın. ###
 
-İster unit test yazıyor olun, ister acceptance, ne kadar az string kontrol ederseniz sizin için o kadar sağlıklı olur.
+İster `unit` test yazıyor olun, ister `acceptance`, ne kadar az string kontrol ederseniz sizin için o kadar sağlıklı olur.
 
-Mesela acceptance testlerinde `<p>Anasayfa</p>` varmı diye kontrol etmektense header kodunun 200 OK olduğunu kontrol edin. Anasayfa yazısı değişebilir (Anasayfa yerine Font Awesome ile ev resmi koyabilirsiniz örneğin) ama header kodu değişmez.
+Mesela acceptance testlerinde `<p>Anasayfa</p>` varmı diye kontrol etmektense header kodunun `200 OK` olduğunu veya `homepage.view.php` çalıştırılmış mı diye kontrol edin. Anasayfa yazısını değiştirmek `zararsız` sayılacağı için kolayca değiştirilebilir. Örneğini, anasayfa yazısı yerine `Font Awesome` ile ev resmi koyabilirsiniz, ama `homepage.view.php` dosyasının adı kolay kolay değişmez. Bu dosyanın adı değişirse, controllerdeki methodlarında birçoğu değişecektir.
+
+Bu yüzden testlerinizi yazarken mümkün olduğunda string kullanmaktan kaçının ve değişmeyecek şeyleri kullanarak testlerinizi yazın.
 
 ### - HTTP Response kodlarını öğrenmeye ve kullanmaya çalışın. ###
 
-HTTP Response kodları önemlidir. Örneğin, headeri 404 olmayan bir 404 sayfası, gerçek bir 404 sayfası değildir. Google gibi arama motorları bu sayfayı 404 olarak saymazlar çünkü bu sayfanın aslında 404 ID'sine sahip kullanıcının profili olup olmadığını bilemezler.
+HTTP Response kodları önemlidir. Örneğin, response kodu `404` olmayan bir `404 `sayfası, gerçek bir `404` sayfası değildir. Google gibi arama motorları bu sayfayı 404 sayfası olarak saymazlar, çünkü bu sayfanın aslında 404 ID'sine sahip  bir kullanıcının profili olup olmadığını bilemezler. Daha sonra arama sonuçlarında bu sayfa ekrana yansır ve sizin için hoş olmaz.
 
-Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_codes adresinden ulaşabilirsiniz.
+Bu yüzden sizin, tarayıcıların, arama motorlarının ve diğer araçların anlayabileceği response kodlarını kullanın. 
+
+> Not: Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_codes adresinden ulaşabilirsiniz.
 
 ### - MVC kullanıyorsanız, MVC gibi kullanın. ###
 
@@ -1244,17 +1262,23 @@ class Controller
 }
 ```
 
-### - Çıkan notice ve warningler birer bugdur ve düzeltilmesi gerekir. ###
+**c. Zayıf controller sınıfları, şişman modeller. **
 
-PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar bazen görmezden gelinebilir. Bunlar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING`'dir. (Hepsine http://php.net/manual/en/errorfunc.constants.php adresinden bakabilirsiniz.)
+// Yakında
 
-1. `E_DEPRECATED` kullanılan bir özelliğin ileride PHP'den kaldırılacağını belirtir. (örneğin `mysql` ile başlayan fonksiyonlar)
+### - Notice ve Warning'ler birer bugdur ve düzeltilmeleri gerekir. ###
 
-2. `E_STRICT` yazılan scriptin hatalı olabileceğini ve sıkı kurallara uyulmasını gerektiğini belirtir.
+PHP çok katı kurallara sahip değildir bu yüzden ufak çaplı basit hatalar bazen görmezden gelinir. Bu tür hatalar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING` olarak kayıtlara eklenir. (Hepsine [http://php.net/manual/en/errorfunc.constants.php]() adresinden bakabilirsiniz.)
 
-3. `E_WARNING` çok tehlikeli olabilecek hataların bırakıldığını belirtir.
+Ancak, çoğu `PHP` geliştirici bunları fazla umursamıyor. Buradaki hataların düzeltilmesi, projenizin geleceği için son derece önemlidir.
 
-4. `E_NOTICE` warning kadar olmasa da, düzeltilmesi gereken hataları belirtir.
+1. `E_DEPRECATED` kullanılan bir `PHP` özelliğinin ileride PHP'den kaldırılacağını belirtir. (örneğin `mysql` ile başlayan fonksiyonlar)
+
+2. `E_STRICT` yazılan scriptin hatalı olabileceğini ve sıkı kurallara uyulmasını gerektiğini belirtir. (örneğin statik olmayan bir methodu statik olarak çağırmak)
+
+3. `E_WARNING` runtime esnasında ortaya çıkan uyarılardır.
+
+4. `E_NOTICE` runtime esnasında ortaya çıkan bildirimlerdir. Warning kadar önemli değildir. (örneğin favicon ikonunun bulunamaması gibi)
 
 Bu yüzden geliştirme ortamınızda hata raporlamanın açık durumda olması ve hertürlü hata seviyesindeki sorunları çözüyor olmanız sizin için bir avantajdır.
 
