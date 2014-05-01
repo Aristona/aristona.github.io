@@ -1068,17 +1068,79 @@ Hepsi de olabilir, ama doğrusu `strrev`.
 
 Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin! Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın. (Yeni öğrendiğim her şey için projeyi düzeltmeye kalksaydım, tek satır kod yazmadan optimize etmeye çalışıyor olurdum.)
 
-Evini sarı renge boyarken yarı yolda fikrini değiştirip evin kalanını yeşil renge boyayan birini gördünüz mü? Ben görmedim, ama projenin yarısını farklı, kalan yarısını farklı geliştiren insanları tanıyorum.
+Evini sarı renge boyarken yarı yolda fikrini değiştirip evin kalanını yeşil renge boyayan birini gördünüz mü? Ben görmedim, ama projenin yarısını farklı, kalan yarısını farklı geliştiren insanları tanıyorum. Onlardan olmayın.
 
-> Not: Tutarsızlığı yüzünden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta. (hatta artık kabak tadı verdi)
+> Not: Tutarsızlığı yüzünden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta. (ve eleştirenler hep aynı şeyleri söylediği için artık kabak tadı vermeye başladı.)
 
-> Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var. Kullanmanızı tavsiye etmem, ama bilginiz olsun diye yazıyorum.
+Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` extensionunu kullanabilirsiniz ancak birçok eksikliği/limitasyonu var. 3. parti extension olduğu için kullanmanızı tavsiye etmem (çünkü shared hostinglerde çalışmaz) ama bilginiz olsun diye yazıyorum, böyle bir kullanım var.
 
-### - Gerekmedikçe else ve uzun if blokları kullanmayın. Daima köşeli parantez kullanın. ###
+Örneğin:
 
-Bazen, 7-8 satırlık if/else bloklarını tek satırda bile yazabilirsiniz.
+```
+<?php
 
-Bir değişkenin array olup olmadığını anlamak istediğiniz bir fonksiyon yazıyorsunuz. Aslında bu örnek direkt olarak `is_array` kullanılarak yapılabilir, ancak ben burada soruna değinmek istediğim için fonksiyon oluşturarak yapabileceklerinizi anlatacağım.
+    class StringHandler {
+        public function reverse() {
+            return strrev($this);
+        }
+    }
+    
+    register_primitive_type_handler('string', 'StringHandler');
+
+    $ornek = "Merhaba!";
+    echo $ornek->reverse(); // Çıktı: "!abahreM"
+```
+
+İleride `PHP` çekirdeğine eklenir mi bilinmez, ama ben şahsen bu özelliğin eklenmesini çok isterdim.
+
+### - Gerekmedikçe else ve uzun if blokları kullanmayın. Daima köşeli parantez kullanın. Yazdığınız kodları sağa yaklaştırmayın. ###
+
+Bazen 7-8 satırlık `if/else` bloklarını tek satırda bile yazabilirsiniz, ve çoğu zaman gereksiz `else` bloklarını kaldırabilirsiniz. Gereksiz `else` bloklarını silmemiz kodlarımızın sağa doğru yaklaşmaması konusunda bize yardımcı olur.
+
+Yazdığımız kodlar, bazen sağa doğru yaklaşırlar. Bu genellikle içiçe `if` blokları kullandığımız zaman ortaya çıkar. Aslında konu başlığı "İç içe if blokları açmak genellikle hatadır." olabilecekken, ben "Kodlarınızı sağa doğru yaklaştırmayın." demeyi tercih ediyorum çünkü hem daha genel bir alanı kapsıyor, hem de daha akılda kalıcı.
+
+Öncelikle, kodların sağa yaklaşması ne demek önce hemen bunu açıklayalım.
+
+```php
+<?php
+
+     public function deneme()
+     {
+          // 1. seviye
+          if(birsey)
+          {
+               // 2. seviye
+               if(baska_birsey)
+               {
+                    // 3. seviye
+                    if(baska_birsey_daha)
+                    {
+                        //...
+                    }
+                    else
+                    {
+                        //...
+                    }
+               } 
+               else
+               {
+
+               }
+          }
+          else 
+          {
+
+          }
+     }
+```
+
+Bu örnekte gördüğünüz gibi iç içe `3` tane `if bloğu` açılmış. Dikkat ettiyseniz her `if` bloğu sağ tarafa biraz daha yaklaşmış. Eğer böyle yaparsanız yazdığınız kodlar okunaklı olmaktan çıkar. Bunun içine `else` blokları da girdiğinde hangi köşeli parantezin hangi bloğu kapattığını veya açtığını anlamanız güç olur. Fonksiyon içerisinde genellikle `1` veya `2` seviye if bloğu oluşturmalısınız. `3` ve üzeri çok fazla iş yapıldığına ve kodun okunamaz olacağına işarettir. 
+
+İyi bir kod, bakıldığında aşağıya doğru düz bir çizgiyi andırmalı ve dalgalanmalar az olmalıdır. Burada bizim oluşturduğumuz fonksiyon düz bir çizgi yerine, yassı bir `C` harfini (tersten) andırıyor. Oluşturduğunuz sınıfta bu fonksiyon gibi 10 fonksiyon daha olduğunu hayal ederseniz, dalgalı bir çizgi görüntüsü gözünüzde canlanacaktır.
+
+"Kodlarınızı sağa doğru yaklaştırmayın." dememin bir sebebi daha var. Kodlarınızdaki her satır, ortalama maksimum 80 ile 120 karakter uzunluğunda olmalıdır. Bu bir kural değildir ancak `good practice` (İyi Kullanım) sayılmaktadır. IDE veya iyi bir tex editörü kullanıyorsanız, siz de `wrapping` ayarını 80 veya 120 karakter uzunluğa getirebilirsiniz.
+
+Kodun okunabilir olması için bir bilgiyi öğrendik, ancak daha geliştirilebilecek noktalar var. Örneğin, bir değişkenin array olup olmadığını anlamak istediğiniz bir fonksiyon yazalım. Aslında bu örnek direkt olarak `is_array` kullanılarak yapılabilir, ancak ben burada soruna değinmek istediğim için fonksiyon oluşturarak yapabileceklerinizi anlatmak istiyorum.
 
 Bu fonksiyon aşağıdaki şekilde yazılabilir.
 
@@ -1114,9 +1176,9 @@ Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya g
     }
 ```
 
-Şuanki hali üsttekinden çok daha güzel. Gereksiz `else` bloğunu kaldırmış olduk. Gereksiz `else` bloklarından korunmak çok büyük avantaj sağlıyor. Fonksiyonunuz sağ tarafa doğru uzamamış oluyor.
+Şuanki hali üsttekinden çok daha güzel. Gereksiz `else` bloğunu kaldırmış olduk. Gereksiz `else` bloklarını kaldırmak bize çok büyük avantaj sağlıyor. Hem fonksiyonunuz sağ tarafa doğru uzamamış oluyor, hem de gereksiz kod yükünden kurtuluyoruz. (`return`'un sadece fonksiyon içerisinde kullanılabileceğini unutmayın.)
 
-Devam edelim. `if` bloğu içerisindeki ilk satır daima if bloğu içerisinde sayılacağı için, köşeli parantezleri de silebiliriz.
+Devam edelim. `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde sayılacağı için, köşeli parantezleri de silebiliriz.
 
 ```php
 <?php
@@ -1143,7 +1205,7 @@ Biz bunu biraz daha geliştirip, `ternary` operatörünü de kullanabiliriz.
     }
 ```
 
-Dilerseniz, `ternary` operatörünün ilk parametresi olan `true` yi bile silebilirsiniz.
+Dilerseniz, `ternary` operatörünün ilk parametresi olan `true` yi bile silebilirsiniz, ancak bu da `tehlikelidir`.
 
 ```php
 <?php
@@ -1165,16 +1227,16 @@ Son olarak, `is_array()` fonksiyonu `true` veya `false` döndüreceği için, fo
     }
 ```
 
-Bu ufak fonksiyon bile birçok şekilde yazılabiliyor, ancak herşeyi kısa yazmak her zaman doğru değildir. Özellikle köşeli parantezleri kaldırmak, farkında olmadan birçok hatanın çıkmasına sebep olabilir.
+Bu ufacık fonksiyon bile birçok şekilde yazılabilmekte, ancak herşeyi kısa yazmak her zaman doğru değildir. Özellikle köşeli parantezleri kaldırmak, farkında olmadan birçok hatanın çıkmasına sebep olabilir.
 
-Köşeli parantezler olmadığındai yanlışlıkla `if` bloğu sonrasına 2. bir satır eklenirse, 2. satır daima çalışacağı için scriptimiz yanlış çalışmaya başlayacaktır.
+Köşeli parantezler olmadığında, yanlışlıkla `if` bloğu sonrasına 2. bir satır eklenirse, 2. satır daima çalışacağı için scriptimiz yanlış çalışmaya başlayacaktır.
 
 ```php
 <?php
 
     function test()
     {
-        if(birşey)
+        if(birsey)
           return "If";
           return "Hata"; // Burası if bloğu içinde değil
         else
@@ -1182,16 +1244,18 @@ Köşeli parantezler olmadığındai yanlışlıkla `if` bloğu sonrasına 2. bi
     }
 ```
 
-Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `birsey` şartı sağlanıyorsa, sadece `return "If";` çalışacak ve fonksiyon `Merhaba` değerini döndürecektir. Diğer her türlü durumda `return "Hata";` çalışacaktır ve fonksiyon `Hata` değerini döndürecektir. Siz uygulamamızı `else` bloğunun çalışacağı durumlarda `Else` değeri dönecek diye programladıysanız, büyük küçük hata birçok bug oluşmasına sebep olacaktır.
+Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `birsey` şartı sağlanıyorsa, sadece `return "If";` çalışacak ve fonksiyon `Merhaba` değerini döndürecektir. Diğer her türlü durumda `return "Hata";` çalışacaktır ve fonksiyon `Hata` değerini döndürecektir. Köşeli parantez olmadığında 2. satır `if bloğu` içerisinde sayılmaz.
 
-Köşeli parantez kullansaydınız bu sorun oluşmayacaktı.
+Siz uygulamamızı `else` bloğunun çalışacağı durumlarda `Else` değeri dönecek diye programladıysanız, ama bu durum gözden kaçmışsa ve fonksiyonunuz `Hata` değerini döndürüyorsa, birçok `bug` oluşmasına davetiye çıkarmışsınız demektir.
+
+Bu durumdan kurtulmak için köşeli parantez kullansaydınız, bu durum sorun olmaktan kendiliğinden çıkacaktı.
 
 ```php
 <?php
 
     function test()
     {
-        if(birşey)
+        if(birsey)
         {
             return "Merhaba";
             return "Hata";
@@ -1203,9 +1267,9 @@ Köşeli parantez kullansaydınız bu sorun oluşmayacaktı.
     }
 ```
 
-Bu durumda, `return "Hata";` asla ve hiçbir koşulda çalışmayacaktı.
+Bu örnekte, `birsey` koşulu sağlanıyorsa `if` bloğunun ilk `return` ifadesini çalışacaktır, koşul sağlanmıyorsa fonksiyon `else` bloğunu çalıştıracak ve oradaki `return` ifadesini çalıştıracaktır. `return "Hata";` ifadesi asla ve hiçbir koşulda çalışmayacaktır. 
 
-Bu neden mi önemli? Apple'ın SSL'de çıkardığı meşhur `goto fail;` hatasının sebebi son derece komik.
+Köşeli parantez kullanmak bu yüzden son derece önemlidir. `Apple`'ın `SSL`'de çıkardığı meşhur `goto fail;` güvenlik açığının sebebi budur.
 
 ```c
     err = true; // ilk başta err true oluyor
@@ -1237,9 +1301,15 @@ Sorunu görmediniz mi? Tekrar bakın:
         goto fail;
 ```
 
-Yanlışlıkla 2 tane `goto fail;` yazıldığı için `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)` kontrolü hiçbir zaman zaman erişilemiyor. 2. sıradaki `goto fail;` daima çalışacağı için script `fail`'e düşüyor ancak burada hatanın dönmesi yerine `true` değeri dönüyor. Yani en alttaki `if` kontrolü yok sayılıyor, ve bu kontrol yok sayıldığı için bu bölüm üzerinden bir exploit ortaya çıkmış oluyor.
+Yanlışlıkla 2 tane `goto fail;` yazıldığı için `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)` if bloğu hiçbir zaman zaman erişilemiyor. 2. sıradaki `goto fail;` daima çalışacağı için script `fail`'e düşüyor ancak burada hatanın dönmesi yerine `true` değeri dönüyor. Yani en alttaki `if` kontrolü yok sayılıyor, ve bu kontrol yok sayıldığı için bu bölüm üzerinden bir exploit ortaya çıkmış oluyor.
 
-Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son derece komik olmakla beraber, sadece düzgün şekilde köşeli parantez kullanılsaydı kendiliğinden çözülmüş olacaktı. Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor. Bu yüzden "Ben dikkatliyim, hiçbirşeyi gözden kaçırmam." demeyin. Bu yüzden mümkün olduğunca köşeli parantezleri doğru kullanmaya çalışın ve gereksiz `else` ifadelerini kullanmaktan kaçının.
+Dünyanın belkide en büyük teknoloji firmasının yaptığı bu hata son derece komik olmakla beraber, sadece düzgün şekilde köşeli parantez kullanılsaydı kendiliğinden çözülmüş olacaktı. Demekki, dünyanın en iyi yazılım mühendisleri bile bu tür hataları gözden kaçırabiliyor.
+
+Toparlarsak, bu bölümde şu konulara değindik.
+
+1. Kodlarımızı sağa doğru uzatmamalıyız.
+2. Köşeli parantezleri doğru kullanmalıyız.
+3. Gereksiz `else` ifadelerini silebiliriz.
 
 ### - Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
