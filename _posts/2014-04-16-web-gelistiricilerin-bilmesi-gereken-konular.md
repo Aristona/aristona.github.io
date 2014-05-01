@@ -808,11 +808,11 @@ Ancak, bu bilgiler `SQL Injection` veya diğer saldırılar için geçerli deği
 
 Bu yüzden, altın kuralımız şudur:
 
-** Input (Girdi) esnasında veri filtrelenmelidir.**
+**Input (Girdi) esnasında veri filtrelenmelidir.**
 
 Filtremele, genellikle `Validation` (Doğrulama) adıyla da tanınır. Verilerin doğruluğu bu esnada kontrol edilmelidir. Örneğin, veritabanına bir tc kimlik numarası eklenecekse, onun gerçekten bir tc kimlik numarası olduğu doğrulandıktan sonra veritabanına eklenmelidir.
 
-** Output (Çıktı) escape edilmelidir.**
+**Output (Çıktı) escape edilmelidir.**
 
 Bunun her saldırı için farklı olacağını söylemiştik, ancak bu bölümde bu konuyu biraz açalım.
 
