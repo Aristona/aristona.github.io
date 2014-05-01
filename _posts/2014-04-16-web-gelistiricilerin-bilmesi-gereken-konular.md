@@ -996,11 +996,11 @@ Ama... `PHP` dünyası böylemi. Bir ev yaparlar, evin pencereleri olmaz, çatı
 
 ### - ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
 
-`OOP` kullanmak istemeyenlerin, frameworklere "Çok hantal çalışıyor." diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa?`
+`OOP` (Nesne Yönelimli Programlama) kullanmak istemeyenlerin, frameworklere "Çok hantal çalışıyor." diyenlerin, modern tekniklerin uygulamayı yavaşlatacağını düşünenlerin klasik problemi. `Ya yavaşlarsa?`
 
 Kısa cevap: Hiçbirşey olmaz.
 
-Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır vs.
+Uzun cevap: Yakında yazarım. Bootleneckler, opcode caching nedir, scalability nedir, mikrooptimizasyonlar niye günü kurtarır, HHVM nedir vs.
 
 ### - Kaptan gemiyi terk etmişse, o gemide kalmanın fazla bir anlamı yok. ###
 
@@ -1008,11 +1008,11 @@ Son birkaç yılda açık kaynak adına son derece büyük adımlar atıldı. Ar
 
 Dezavantajlarından biri, `PHP`'in çok fazla açık kaynaklı projeye sahip olması. Bir `Mail` sınıfı arıyorsunuz ve karşınıza binlerce `Github repository`si çıkıyor.
 
-Bir diğer dezavantajı da, insanlar haklı olarak en çok gelecek vaadeden projelere yönelmesi. Bazen bir projeyi geliştiren yazılımcı, tekerleği tekrar icat etmektense, farklı bir yazılımcının projesinin daha iyi konumda olduğunu düşünüyor ve o projeye destek olmaya başlıyor. Kendi projesini ise geliştirmeyi bırakıyor veya başka birinin devralmasını istiyor. (Devredilen projelerden çoğu zaman hayır çıkmıyor.)
+Bir diğer dezavantajı da, insanların haklı olarak en çok gelecek vaadeden projelere yönelmesi. Bazen bir projeyi geliştiren yazılımcı, tekerleği tekrar icat etmektense, farklı bir yazılımcının projesinin daha iyi konumda olduğunu düşünebilir ve o projeye destek olmaya başlayabilir. Kendi projesini ise geliştirmeyi bırakabilir veya başka birinin devralmasını isteyebilir. (Devredilen projelerden çoğu zaman hayır çıkmaz, not edelim.)
 
-Buna örnek olarak `Code Igniter` framework projesi gösterilebilir. Bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `Code Igniter` projesininden sorumlu olan `EllisLab` firması, projeyi devralacak birini arıyor. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
+Buna örnek olarak `Code Igniter` framework projesi gösterilebilir. Bir zamanlar iyiydi, herkes kullandı, ancak bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `Code Igniter` projesininden sorumlu olan `EllisLab` firması projeyi devralacak birini aramaya başladı. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
 
-Geminin kaptanı atladıysa, mürettebatı atladıysa, filikalar indirildiyse ve yolcuların birçoğu tahliye edilmeye başlandıysa, o gemide kalmanın mantıklı olduğunu savunamazsınız.
+Kısacası, geminin kaptanı atladıysa, mürettebatı atladıysa, filikalar indirildiyse ve yolcuların birçoğu tahliye edilmeye başlandıysa, o gemide kalmanın mantıklı olduğunu düşünmemelisiniz. Siz de çok geç olmadan atlamalısınız.
 
 Bu durum sadece `Code Igniter` projesiyle ilgili değil. Hertürlü açık kaynaklı ileride bu tür sorunlarla karşılaşılabilir. Bu yüzden, projenizde o günün şartlarındaki en popüler ve en gelecek vaadeden frameworkleri, komponentleri, sınıfları ve kütüphaneleri kullanmaya çalışın.
 
@@ -1020,15 +1020,13 @@ Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
 
 ### - DRY kuralına uyun ve akıllı çalışın. ###
 
-`DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz.
+`DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz. (Aslında bu bir kural değil, bir tavsiyedir.)
 
-Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o işlem için fonksiyon oluşturuyorsa DRY için bir adım atmış olur. Üst düzey bir yazılımcı her projesinde kullanabileceği bir komponent yazmış ve bunu package managerlar tarafından yönetiyorsa DRY için bir adım atmış olur.
+Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o işlem için fonksiyon oluşturuyorsa `DRY` için bir adım atmış olur. Üst düzey bir yazılımcı her projesinde kullanabileceği bir komponent yazmış ve bunu package managerlar tarafından yönetiyorsa `DRY` için bir adım atmış olur.
 
 // Salt PHP ve L4 konusunda DRY örnekleri gelecek buraya.
 
-`DRY`ın sonu yoktur ve sadece programlama dilleriyle ilgili değildir. Proje geliştirirken sık sık yaptığınız işlemleri bilgisayara yaptırmakta bu kural için atılmış adımlar olacaktır.
-
-Örneğin, veritabanı yedeği mi alınacak? Veritabanı yönetici paneline gir, veritabanını seç, tabloları seç, exporta tıkla, yol olarak bir path belirle, çıktıyı oluştur, o klasöre gir, çıktıyı zip içerisine koy, sonra ismini "x dbsi yedeği" yap... Bu tür işlemlerle kaybettiğiniz zamanı hesaplayın ve o kaybolan zaman içerisinde kaç tane proje geliştirebileceğinizi düşünün.
+`DRY`ın sonu yoktur ve sadece programlama dilleriyle ilgili değildir. Proje geliştirirken sık sık yaptığınız işlemleri bilgisayara yaptırmakta bu kural için atılmış adımlar olacaktır. Örneğin, veritabanı yedeği mi alınacak? Veritabanı yönetici paneline gir, veritabanını seç, tabloları seç, exporta tıkla, yol olarak bir path belirle, çıktıyı oluştur, o klasöre gir, çıktıyı zip içerisine koy, sonra ismini "x dbsi yedeği" yap... Bu tür işlemlerle kaybettiğiniz zamanı hesaplayın ve o kaybolan zaman içerisinde kaç tane proje geliştirebileceğinizi düşünün.
 
 Bunun yerine:
 
@@ -1040,25 +1038,25 @@ Veya:
 
     grunt backup:veritabani --push
 
-yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz?
+yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem de sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz?
 
 Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın. 
 
-Her seferinde `public function` yazmak zor mu geliyor? Kullandığınız IDE içerisinde `Snippet` oluşturun. (ya da daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
+Her seferinde `public function` yazmak zor mu geliyor? Kullandığınız IDE içerisinde `Snippet` oluşturun. `pub` yazınca otomatik tamamlasın. (Daha iyi ihtimalle, zaten birileri oluşturmuş ve Github'da paylaşmıştır, araştırın.)
 
 Uzun terminal komutlarını zor mu geliyor? `Alias` oluşturun, hatta gerekiyorsa bunları script haline getirin.
 
-Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para) kazanabileceğinin farkına varabilirsin. 
+Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para, çünkü zaman === para) kazanabileceğinin farkına varabilirsin. 
 
-Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kaybetme. İyi olmak kadar hızlı olmakta önemli.
+Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kaybetme, iyi olmak kadar hızlı olmakta önemli.
 
-> Not: Geliştirici ortamında yapabileceğiniz iyileştirmelerden `Geliştirici Ortamı` bölümünde bahsedilecektir.
+> Not: Geliştirici ortamında yapabileceğiniz iyileştirmelerden `Geliştirici Ortamı` bölümünde bahsedeceğim ve nasıl hızlanabileceğinizi açıklayacağım.
 
 ### - Daima tutarlı olun. ###
 
 Indenting için tab kullanıyorsanız, tab kullanarak devam edin. Methodları `_` kullanarak ayırıyorsanız, `_` kullanarak devam edin. CSS'lerinizi yazarken ayraç olarak - kullanıyorsanız, heryerde - kullanın. Yaptığınız herşey tutarlı olsun.
 
-Tutarsızlığın en güzel örneği PHP çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`? Veya niye tam tersi değil? Niye bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Bu tutarsızlıklar neden var?
+Tutarsızlığın en güzel örneği `PHP` çekirdeği. `strpos` ve `str_replace` fonksiyonlarını ele alalım. Niye `str_position` değil de `strpos`? Veya niye tam tersi değil? Niye bazı fonksiyonlar önce diziyi, sonra stringi alırken diğerleri önce stringi, sonra diziyi alıyor? Bu tutarsızlıkların hepsini hatırlamak zorundamıyız? Bu tutarsızlıklar neden var?
 
 Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine çevirir. PHP'de bu ne tahmin edin bakalım?
 
@@ -1066,11 +1064,15 @@ Mesela neredeyse tüm programlama dillerinde `reverse()` verilen stringi tersine
 
 Hepsi de olabilir, ama doğrusu `strrev`.
 
-Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin! Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın.
+`PHP`'nin çekirdek geliştiricileri de bunun farkında ama `backwards compatibility` (Geriye Dönük Uyumluluk) bozulmasın diye şimdilik böyle devam ediyorlar.
 
-> Not: Tutarsızlığı yüzünden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta.
+Siz kendi projelerinizde bunu asla yapmayın. `TAB` kullanmayı bırakıp `4 boşluk` kullanmaya karar verdiyseniz, ya tüm uygulamayı buna uyarlayın, ya da eski şekil devam edin! Uygulamanın yarısı `TAB`, kalan yarısı `4 boşluk` olmasın. (Yeni öğrendiğim her şey için projeyi düzeltmeye kalksaydım, tek satır kod yazmadan optimize etmeye çalışıyor olurdum.)
 
-> Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var.
+Evini sarı renge boyarken yarı yolda fikrini değiştirip evin kalanını yeşil renge boyayan birini gördünüz mü? Ben görmedim, ama projenin yarısını farklı, kalan yarısını farklı geliştiren insanları tanıyorum.
+
+> Not: Tutarsızlığı yüzünden PHP sosyal platformlarda çok ağır eleştirilere maruz kalmakta. (hatta artık kabak tadı verdi)
+
+> Not: Eğer PHP'de `Ruby` ve `Javascript` gibi dillerdeki `reverse()` methodunu kullanmak istiyorsanız, PHP'in `scalar objects` özelliğini kullanabilirsiniz ancak birçok eksikliği/limitasyonu var. Kullanmanızı tavsiye etmem, ama bilginiz olsun diye yazıyorum.
 
 ### - Gerekmedikçe else ve uzun if blokları kullanmayın. Daima köşeli parantez kullanın. ###
 
