@@ -780,11 +780,15 @@ Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
 
 `Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir. İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
 
-### - Kullanıcıya güvenmeyin ama aşırı paranoyak olmayın. Ne gerekiyorsa onu temizleyin. ###
+### - Kullanıcıya güvenmeyin. Aşırı paranoyak olmayın. Input filtrelenir, output escape edilir. ###
 
-Sosyal platformlarda gördüğüm en büyük yanlışlardan biri bu konu. `XSS` veya `SQL Injection` koruması sağlamak için kullanıcıdan gelen veriler `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi birçok fonksiyondan geçirilip veritabanına ekleniyor. Bu son derece yanlıştır.
+Sosyal platformlarda gördüğüm en büyük yanlışlardan biri bu konu. `XSS` veya `SQL Injection` koruması sağlamak için kullanıcıdan gelen veriler `strip_tags`, `htmlspecialchars` ve `htmlentities` gibi birçok fonksiyondan geçirilip veritabanına ekleniyor. Bu son derece yanlıştır ve size yarardan çok zarar verecektir.
 
-Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` saldırıları veritabanında bir zarara yol açmayacağı için veritabanına girmesinin, veya veritabanında tutulmasının bir sakıncası yoktur. Ancak, bu veriler ekrana basılırken (output) mutlaka filtrelenmesi veya escape edilmesi gerekmektedir.
+Öncelikle, `Input` ve `Output` nedir bunu öğrenelim. `Input` (Girdi), `PHP`'ye gelen verilerin tamamıdır. Örneğin, diskten bir veri okumak, kullanıcının formdan veri yollaması, veritabanının bize veri döndürmesi gibi konuların hepsi `Input` sayılmaktadır. Bazı geliştiriciler bunu sadece kullanıcıların formdan gönderdiği veri ile karıştırmaktadır. `Output` (Çıktı) ise, `PHP`'den çıkan verilerdir. Örneğin, `echo` ile ekrana veri bastırmak, `SQL` sorguları, 3. parti uygulamalara istek göndermek, shell üzerinde komut çalıştırmak vb. `Output` olarak tanımlanır.
+
+Şimdi, neden `Input` verilerinin `htmlspecialchars`, `htmlentities`, `strip_tags` gibi fonksiyonlardan geçirilmelerinin gereksiz olduğundan bahsedelim.
+
+Öncelikle, kullanıcıdan gelen verinin bozulmadan veritabanında saklanması önemlidir. `XSS` ve benzeri saldırılar veritabanında bir zarara yol açmayacağı için veritabanına girmesinin, veya veritabanında tutulmasının bir sakıncası yoktur. Ancak, bu veriler ekrana basılırken mutlaka escape edilmesi gerekmektedir.
 
 **a. Verilerin bozulmadan saklanmasını sağlanmalıdır.**
 
@@ -792,39 +796,86 @@ Kullanıcının gönderdiği veri ham haliyle veritabanında saklanmalıdır, bu
 
 **b. Potansiyel uzunluk hatalarının önüne geçmiş olursunuz.**
 
-Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bunlar `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk doğrulaması yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. Bu tür hatalara genellikle `overflow` hataları denmektedir.
+Bir ` ` karakteri süzgeç fonksiyonlardan geçtiğinde `&nbsp;` veya  `&#160;` haline dönüşüebilmektedir. Bunlar `6 harf`ten oluşmaktadır ve daha öncesinde uzunluk doğrulaması yapmış olsanız bile, veritabanına girecekleri zaman hücrenin maksimum uzunluğu aşabilirler. Sonuç olarak bu veri ya hücreye eksik şekilde girecektir, ya da veritabanı hata verip sorguyu kesecektir. (Bu tür hatalara genellikle `overflow` hataları denmektedir.)
 
 **c. Zararlı kod bir şekilde veritabanına sızmışsa, çıktı esnasında bu temizlenir.**
 
-Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı kod yazsanız bile, ekrana bastırma esnasında filtreleme yapacağınız için bu sorun olmaktan çıkar.
+Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına direkt olarak bağlanıp zararlı bir kod yazsanız bile, ekrana bastırma esnasında escape işlemi uygulayacağınız için bu sorun olmaktan çıkar.
 
-Bu yüzden, altın kuralımız şunlar.
+Ancak, bu bilgiler `SQL Injection` veya diğer saldırılar için geçerli değildir. Bu yüzden her saldırının escape işlemi farklı olmaktadır.
 
-`İstek` (Input) esnasında:
+Örneğin, bir `SQL Injection` saldırısını önlemek için uygulamamız gereken escape işlemi farklıdır. `Shell Injection`'ın önlemi farklıdır, `XSS`'in önlemi farklıdır. Bunların hepsi farklı şekilde escape edilmelidir. 
 
-1. İstek geldiğinde veritabanına eklemeden önce düzgün şekilde escape edin ve `SQL Injection`'dan koruyun. İstek shell içine girecekse, o zaman shell içine girecek veriyi düzgün şekilde escape edin.
-2. Verileri daima doğrulamadan geçirin. Veritabanı hücresi bir tarih istiyorsa, veriyi eklemeden önce bir tarih olduğundan emin olun, yoksa veritabanınız ileride çöplüğe dönebilir.
+Bu yüzden, altın kuralımız şudur:
 
-`Çıktı` (Output) esnasında:
+** Input (Girdi) esnasında veri filtrelenmelidir.**
 
-1. Kullanıcıdan gelen tüm verileri süzerek ekrana bastırın. Örneğin, kullanıcı Javascript kodları yazmışsa bunların çalışmasını engelleyin. Kullanıcı `</div></div></div>` yazıp HTML'yi bozmaya kalkmışsa bunu engelleyin. Kullanıcı özel CSS oluşturup sayfa arkaplanını değiştirmeye kalkmışsa bunu engelleyin.
+Filtremele, genellikle `Validation` (Doğrulama) adıyla da tanınır. Verilerin doğruluğu bu esnada kontrol edilmelidir. Örneğin, veritabanına bir tc kimlik numarası eklenecekse, onun gerçekten bir tc kimlik numarası olduğu doğrulandıktan sonra veritabanına eklenmelidir.
 
-Şu örneği ele alalım. Kullanıcı bilgilerini güncellemek istiyor. Bu yüzden HTML formunu doldurdu.
+** Output (Çıktı) escape edilmelidir.**
 
-1. Doğrulamanızı yapın. Eski şifre doğru mu? Yeni şifre 3-12 karakter arasında mı? Yeni şifre özel karakterleri barındırıyor mu? İsmi doğru mu? Email adresi düzgün yazılmış mı?
-2. Prepared statements kullanarak veritabanını güncelleyin.
-3. Verileri ekrana basarken `htmlspecialchars` veya `strip_tags` gibi fonksiyonlardan geçirin.
+Bunun her saldırı için farklı olacağını söylemiştik, ancak bu bölümde bu konuyu biraz açalım.
 
-Bunu yaptığınız zaman;
+`SQL Injection` saldırısını ele alalım. Bu saldırıyı escape etmek için  veriyi `mysql_real_escape_string` (daha önce kötü olduğundan bahsetmiştik, ancak çok kullanıldığı için mantığını anlamanız için örnekte kullanıyorum) gibi fonksiyonlardan geçirebilirsiniz ya da veritabanı driverlarının `prepared statements` özelliğini kullanıp bu işin sizin yerinize yapılmasını sağlarsınız.
 
-1. Veritabanınızı çöplüğe döndürmemiş olursunuz.
-2. Veritabanınızda orjinal içeriği tutmuş olursunuz.
-3. Input esnasında yapılabilecek saldırılardan korunmuş olursunuz.
-4. Output esnasında çalışabilecek zararlı kodlardan korunmuş olursunuz.
+`Shell Injection` saldırısını önlemek için, veriyi komut içerisine geçirmeden önce `escapeshellcmd` gibi fonksiyonları kullanarak escape edersiniz.
+
+`XSS` saldırısını önleyecekseniz, veriyi `strip_tags`, `htmlspecialchars` gibi fonksiyonlardan geçirirsiniz. Ancak bu işlem veri, veritabanına girerken yapılmaz, çıktı verirken yapılır. Sebebini yukarıda açıklamıştık.
+
+Bu yüzden, makalelerde bolca gördüğünüz şunun gibi örnekler son derece yanlıştır.
+
+```php
+<?php
+
+    $username = mysql_real_escape_string(trim(strip_tags(htmlspecialchars($_POST['username'])));
+
+```
+
+Bunun adı, bana göre `paranoyak`lıktır, ve evin arka kapısı ağzına kadar açık kalmışken, ön kapının tankla, tüfekle, bir yığın askerle korunmasına benzer.
+
+Şimdi gerçek bir dünya örneği ile bu öğrendiğimiz bilgiyi test edeşim. Örneğimiz basit olsun, bir kullanıcı sitemize kayıt olmak istiyor, bu yüzden HTML formunu doldurdu ve gönder butonuna tıkladı. (Ne kadar sıradışı bir fikir, değil mi?)
+
+1. İstek geldi. Doğrulamamızı yapalım. Kullanıcı adı alfa karakterleri mi barındırıyor? Daha önce alınmış mı? Şifre 3-12 karakter arasında mı? Yeni şifre özel karakterleri barındırıyor mu? Seçilen 3-12 karakter arasında mı? TC kimlik no doğru mu? Email adresi düzgün yazılmış mı?
+2. Eğer herşeye cevabımız evet ise, `Prepared statements` kullanarak veritabanını güncelleyelim. Daha önce ne demiştik, prepared statements escape işlemini bizim yerimize yapıyor. Ama kullanıcıdan gelen verileri veritabanına eklemeseydik, ve örneğin shell sorgusunda kullansaydık, `escapeshellcmd` kullanarak escape edecektik
+3. Kullanıcının verisini veritabanına ekledik. Şimdi, başarı sayfasında bu verilerin bazılarını çekeceğiz ve kullanıcıya "Aristona, üyeliğiniz başarıyla alındı." yazdıracağız. Burada, `XSS` saldırısı yapılabileceği için, veriyi ekrana bastırırken escape edip bastıracağız. Örneğin;
+
+```php
+<?php
+
+     // Kullanıcının doğrulama ve kayıt işlemleri
+
+     $username = "Aristona"; //Kullanıcı adı "Aristona" olsun.
+
+     echo 'Başarıyla kayıt oldun,' . $username . '; //Yanlış
+     echo 'Başarıyla kayıt oldun,' . strip_tags($username) . '; // Doğru
+```
+
+Bu kurallara uyduğunuz zaman;
+
+1. Paranoyaklığı bırakırsınız.
+2. Veritabanınızı çöplüğe döndürmemiş olursunuz.
+3. Veritabanınızda orjinal içeriği daima tutmuş olursunuz.
+4. Güvenli ve kullanışlı bir uygulamanız olur.
+
+Yazılımda paranoyak olmak iyi birşeydir ama azlığı veya fazlalığı hem size, hem de uygulamanıza zarar verir. Siz daima yapmanız gerekeni yapmalısınız. Gece yatarken nasıl pencerelerin kapalığı olduğunu kontrol edip yatıyorsanız, uygulama geliştirirken de böyle olun. Ne penceresiz bir evde yaşayın, ne de penceleri açık bırakıp uyuyun.
+
+### - Kullanıcı giriş işlemleri için alfanumerik verileri kontrol etmeye çalışın. ###
+
+Kullanıcının giriş işlemleri için asla isim/soyisim gibi bilgileri kontrol etmeyin. Kontrol edeceğiniz bilgiler daima alfanümerik harflerden oluşmalı. Aksi takdirde veritabanının karakter seti, kullanılan doğrulama fonksiyonları çok büyük hatalara yol açabilir.
+
+Örneğin, bazı veritabanı karakter setleri, alfanümerik olmayan karakterlere izin vermezler. Bu durumda Türkçe karakterlerden olan Ç, Ş, İ, Ğ, Ü gibi karakterler görünmezler, veya `?` halinde çıkabilirler. Bazı karakter setleri büyük küçük harf duyarlı, bazıları duyarsızdır. Veritabanı karakter setlerine veritabanı bölümünde değineceğiz ama şimdilik bunu bilmeniz yeter.
+
+Şimdi tekrar konumuza dönelim. Neden isim/soyisim gibi bilgiler kontrol edilmemeli? Çünkü birçoğumuzun isminde alfanümerik olmayan harfler var. Mesela benim adım `Anıl ÜNAL`, ve küçük `ı` harfi ile `ü` harfi alfanümerik değil. Benim durumumda olan milyonlarca Türk kullanıcı var. Bizden hariç japonlar, çinliler, koreliler, araplar vb. insanlar ve herkesin kullandığı karakter seti farklı olabiliyor. Ancak, birçoğumuz alfanümerik email adreslerini kullanıyoruz, veya alfanümerik bir kullanıcı almaya zorlanıyoruz. Bu daima iyi birşeydir. Alfanümerik karakterleri ne kadar çok kontrol ederseniz (özellikle giriş işlemlerinde) o kadar avantajlı olursunuz.
+
+Bunun neden önemli olduğunu daha önce tecrübe etmiş olduğum bir örnekle açıklayayım. Son derece büyük bir MMORPG oyununda, başka insanların hesaplarını çalmak için kullanıcı adlarını bilmek yeterli oluyordu. Ama nasıl?
+
+Bir kullanıcının kullanıcı adı `anıl123456` olsun. Bir başka kullanıcı da gidip `anil123456` kullanıcı adını alsın. Uygulama daima alfanümerik karakterlerin olacağını düşünüyordu, ama veritabanı hücresi alfanümerik olmayan karakterleri kabul ediyordu. `latin1_swedish_ci` gibi veritabanı collationları, `anıl123456` ile `anil123456` aynı sayıyordu. Binlerce insanın hesaplarının çalınmasına sebep olan hata buydu. Hesaplarında Türkçe karakter geçen kullanıcıların hesap isimleri, Türkçe karakterler değiştirilerek tekrar alınıyordu. (Anıl ise, Anil. Şener ise Sener gibi.) Bu yapıldığı zaman eski hesaplar giriş yapamıyordu ve yeni hesaplar giriş yaptığında eski hesabın içeriğine ulaşabiliyordu.
+
+Eğer kullanıcınızın isminin görünmesini istiyorsanız (örneğin yorumlarda Anıl ÜNAL yazmasını istiyorsunuz) kullanıcıya alfanümerik bir kullanıcı adı aldırın ve bu kullanıcı adını sadece giriş/çıkış işlemlerinde kullanın. Geri kalan bölümlerde kullanıcının gerçek ismini gösterin.
 
 ### - Black list (kara liste) fonksiyonlarına güvenmeyin. ###
 
-Kara liste oluşturan tüm fonksiyonlar çöptür. Örneğin, `XSS`'i engellemek için aşağıdaki fonksiyonun kullanılması size hiçbir yarar sağlamaz.
+Kara liste oluşturan neredeyse tüm fonksiyonlar çöptür. Örneğin, `XSS`'i engellemek için aşağıdaki fonksiyonun kullanılması size hiçbir yarar sağlamaz.
 
 ```php
 <?php
@@ -836,7 +887,7 @@ Kara liste oluşturan tüm fonksiyonlar çöptür. Örneğin, `XSS`'i engellemek
     }
 ```
 
-Sen burada `script` kelimesini engellediğini düşünebilirsin, ama saldırgan `s/**/cript` gibi bir yöntem kullanarak bunu aşabilir. Bu yüzden kara liste oluşturan fonksiyonlar işe yaramazlar.
+Siz burada `script` kelimesini engellediğini düşünebilirsiniz, ama saldırgan `s/**/cript` gibi bir yöntem kullanarak bunu aşabilir. Bu yüzden kara liste oluşturan fonksiyonlar çoğu zaman işe yaramazlar.
 
 Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonksiyona güvenmeyin.
 
@@ -844,17 +895,17 @@ Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonks
 
 Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. `TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
 
-Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak sizin yararınızadır.
+Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak size yarar sağlayacaktır.
 
 ### - Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
 İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir. 
 
-İngilizce yazılım dünyasında hemen hemen heryerde karşınıza çıkacaktır. Örneğin, ullandığımız programlama dillerindeki methodlar İngilizce'dir. Takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşmaktadır. Takip edebileceğiniz bloglar ve websiteleri İngilizce'dir. Github üzerindeki açık kaynaklı projeler İngilizce olarak dökümanta edilmiştir. Projelerin kaynak kodları İngilizce'dir.
+İngilizce yazılım dünyasında hemen hemen heryerde karşınıza çıkacaktır. Örneğin, kullandığımız programlama dillerindeki methodlar İngilizce'dir. Takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşmaktadır. Takip edebileceğiniz bloglar ve websiteleri İngilizce'dir. Github üzerindeki açık kaynaklı projelerin dökümantasyonu İngilizce olarak yazılmıştır. Projelerin kaynak kodlarında kullanılan değişken isimleri, sınıflar, yorum satırları vb. hep İngilizce'dir.
 
-Özellikle Github ve açık kaynaklı projeler içerisinde, İngilizce kullanmayan, değişkenlerin ve sınıfların yazılımcının kendi anadilinde tanımlandığı projeler, ne kadar iyi olurlarsa olsunlar asla kullanılmayacaklardır, asla destek görmeyeceklerdir ve asla yeterince popüler olamayacaklardır. Bu durum sizin `amatör` olduğunuz algısı yaratır.
+Özellikle Github ve açık kaynaklı projeler içerisinde İngilizce kullanmayan, değişkenlerin ve sınıfların yazılımcının kendi anadilinde tanımlandığı projeler, ne kadar iyi olurlarsa olsunlar başkaları tarafından genellikle kullanılmaz, destek görmez ve yeterince popüler olamazlar. Ayrıca bu durum sizin `amatör` olduğunuz algısı yaratır.
 
-Buna Türkçe kullanmakta dahildir ve aşağıdaki örnek sınıf Türkçe olarak geliştirilmeye çalışılmıştır.
+Örneğin, aşağıdaki sınıf Türkçe olarak geliştirilmeye çalışılmıştır.
 
 ```php
 <?php
@@ -870,7 +921,7 @@ class AssetYukleyici
 
     public function style_ekle()
     {
-        $stilDosyalari = Directory::get('*', 'css');
+        $stilDosyalari = Klasor::al('*', 'css');
         if( !empty($stilDosyalari) return $stilDosyalari;
     }
 
@@ -885,40 +936,63 @@ class AssetYukleyici
 
 Bu sınıf son derece çirkin ve amatörce duruyor. Türkçe desen tam olarak Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz birşey. Zira PHP unicode desteklemediği için Türkçe karakterleri de kullanamıyoruz, bu yüzden ortaya Türkçe karakterlerin kullanılmadığı bir garip Türkçe çıkıyor.
 
-Sorun sadece bununla kalmıyor. İleri de bir sorun çıktığını farzedelim ve siz saatlerce uğraşmanıza rağmen bunu çözemiyorsunuz. Monitörü kırmak istiyorsunuz ancak bunun sorunu çözmeyeceğinin farkındasınız.
+Sorun sadece bununla kalmıyor. İleri de bir sorun çıktığını farzedelim ve siz saatlerce uğraşmanıza rağmen bunu çözemiyorsunuz. Bu durumda, eğer İngilizce kullandıysanız `Stackoverflow`, kullandığınız dilin `irc kanalları` veya forumlarında hatalı scripti kopyala yapıştır yaparak sorununuzu kolayca dile getirebilirsiniz. Türkçe kullanırsanız kod parçacıklarını koyarken bunları İngilizce'ye çevirmeniz gerekecek aksi takdirde büyük çoğunluğu İngilizce konuşan insanlar sizin ne yapmak istediğinizi anlayamayacaktır.
 
-Bu durumda, eğer İngilizce kullandıysanız `Stackoverflow` ve kullandığınız dilin `irc kanalları` veya forumlarında sorununuzu kolayca dile getirebilirsiniz. Türkçe kullanırsanız kod parçacıklarını koyarken bunları İngilizce'ye çevirmeniz gerekecek aksi takdirde büyük çoğunluğu İngilizce konuşan insanlar sizin ne yapmak istediğinizi anlayamayacaktır.
+Buna ek olarak, Türkçe karakterleri kullanmak ayrıca son derece sakıncalıdır. Bunun sebeplerinden bazılarını daha önceki bölümlerde anlatmıştık, ancakk `SSH` üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. (Bu yazıyı yazarken bile Türkçe karakterler yüzünden birçok sıkıntı çektim ve neredeyse yarım günümü bu hataları çözmek için harcadım.)
 
-Türkçe karakterleri kullanmak ayrıca son derece sakıncalıdır. `SSH` üzerinden sunucuya bağlanıp Türkçe karakter yüzünden dosyanın açılmadığı veya komutları giremediğiniz zaman zaten kendinize kızacaksınız. 
-
-Bu yazıyı yazarken bile Türkçe karakterler yüzünden birçok sıkıntı çektim ve neredeyse yarım günümü bu hataları çözmek için harcadım.
+Birinin size Ankara İstanbul arası kaç `mil` diye sormasını ister misiniz, veya trafiğin sağdan aktığı ülkelerde ben soldan gideceğim diye inat eder misiniz? Her iyi yazılımcı gibi kendinizi İngilizce kullanmaya alıştırın. Bilmiyorsanız da öğrenmeye çalışın, çünkü İngilizce öğrenmek bile sizi İngilizce bilmeyen yazılımcıların birkaç ışık yılı ötesine taşıyacaktır.
 
 > Not: Tartıştığım yazılımcıların karşı argümanı bazen İngilizce bilmeyen yazılımcılarla çalıştıkları, bu yüzden Türkçe kullanmayı tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemli olabilir.
 
 ### - Kimin yazdığını bilmediğiniz bloglardan ve eğitim setlerinden uzak durun. ###
 
-Kötü eğitim yarardan sağlamaktan çok zarar verir. Bu tür bloglarda yazılan yazıların %90'ı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. (İstisnaları ayrı tutuyorum ancak ayrı tutacak istisnaya denk gelmedim şuana kadar.)
+Kötü eğitim yarar sağlamaktan çok zarar verir. Özellikle Google aramalarında bazen üstlerde çıkan Türkçe bloglar ve bu bloglardaki makaleler ve eğitim setleri; çoğu zaman eksik, demode ve yanlış bilgiler içermektedir. Bu tür bloglardaki içeriklerin çok büyük bir kısmı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık tecrübesiz yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. (İstisnaları ayrı tutuyorum, ancak ayrı tutacak istisnalar yok denecek kadar az malesef.)
 
-Bu tür bloglar bazen `Google aramalarında` en üstte çıkmaktalar ve ister istemez sitelerine girmek zorunda kalabilmektesiniz. Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara göz gezdiririm. (Bilmiyorum siz de böylemisiniz.) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöplükten fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırıyorum. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bile bahsetmiş. Sonra bir kaç blog yazısı daha yazmış `PHP'de echo kullanarak ekrana yazı bastırmak.`, `mysql_query() ile veritabanından veri çekmek.`
+Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara bir göz gezdiririm. (Bilmiyorum siz de böylemisiniz?) Yazdıları makelelerin kalitesi bana blogun kalitesi hakkında ipucu verir, ancak bazı bloglar varki gerçekten bir çöp yığınından fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırırsınız. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bahsetmiş, yazılım mimarileri falan havada uçuşuyor. Sanırsınız Google'da baş mühendis. Sonra bir kaç blog yazısı daha yazmış "PHP'de echo kullanarak ekrana yazı bastırmak.", "mysql_query() ile veritabanından veri çekmek."
 
-Hatta PHP geliştiricilerin blogları en kötüleri. PHP bloglarının kötü olmasının sebepleri bana göre;
+Sihirli kürem yok, bu yüzden gerçekte neler olup bittiğini kanıtlayamıyorum, ancak bu tür bloglardaki makaleler bana biryerden alınmış ve çevirilmeye çalışlışmış gibi geliyor. Kaynak belirterek çeviri yapmalarında bir sorun yok, ama çeviri yaparken birçok konsept ve terim çoğu zaman yanlış çevriliyor. Böylece insanlar yanlış bilgilendiriliyor. Öğrendiğiniz şeylerin yanlış veya yalan olduğunun birgün farkına varsanız tepikiniz ne olurdu?
 
-1. PHP ile birşeyler yapabilmenin çok kolay olması bu yüzden amatör yazılımcılar tarafından sıkça tercih edilmesi,
-2. WordPress ve Joomla gibi son derece ilkel yöntemlerle geliştirilen projelerin son derece popüler olması,
-3. Birkaç yıl öncesine kadar Github ve Composer'in olmayışı bu yüzden zbilyon tane sınıf ve kod örneklerinin internette dolaşması gibi sebepler sıralabilir.
+Özellikle bu durum `PHP blogları` için artık son derece vahim bir hale geldi. Wordpress ile websitesi kurup kendine web geliştirici diyenler, Dreamweaver'de form oluşturup kendini web tasarımcı sananlar, `PHP`'in temelini bile almadan bu işi ticarete dökmek için eğitim seti hazırlayanlar... bu işin ucu gerçekten kaçtı.
 
-Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksektir. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
+PHP bloglarının kötü olmasının bana göre birkaç sebebi var.
 
-Bunların dışında, bir de Türkçe bloglarda göze çarpan genel eksikliklerden bahsetmek istiyorum;
+1. PHP ile birşeyler geliştirebilmenin diğer dillere göre daha kolay olması, bu yüzden amatör yazılımcılar tarafından sıkça tercih ediliyor olması. (Muhtemelen en büyük amatör/yeni yazılımcı kitlesi bizde.)
+2. `WordPress` ve `Joomla` gibi son derece eski ve ilkel yöntemlerle geliştirilen projelerin son derece popüler olması. (malesef)
+3. Birkaç yıl öncesine kadar Github ve Composer'in olmayışı, bu yüzden binlerce kötü, eski, güvenli olmayan, demode sınıf ve kod örnekleri internette dolaşıyor ve halen Google arama sonuçlarında çıkıyor olması.
+4. PHP'nin 5.3 versiyonuna kadar modernlikten çok uzak bir dil olması.
+5. Kurumsallıktan uzak firmaların kullanıyor olması. İşimizi nasıl modernleştirebiliriz yerine nasıl asgari ücrete çalışacak PHP'ci buluruz arayışı.
+6. Sosyal Ağ filmini izleyip etkilenmiş, geleceğin `Mark Zuckerberg`'i olmak isteyen, 2 aylık bilgisiyle kendini `Linus Torvalds` sanan kitle.
 
-1. Öncelikle açık kaynaklı değiller. Başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler.)
+Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtimali son derece düşükken, `PHP` dünyasında bu ihtimal son derece yüksek. `Basic` dünyasında bile bu kadar yanlış ve hatalı bilgi olacağını sanmıyorum.
+
+Bunların dışında, bir de özellikle Türkçe bloglarda göze çarpan genel eksikliklerden bahsetmek istiyorum.
+
+1. Öncelikle bloglar açık kaynaklı değiller. Neredeyse hepsi `Wordpress` üzerine kurulmuş, bu yüzden başkaları düzeltmede bulunamıyor. (Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler, ve bunlar bir sertifikasyon veren bir eğitim kurumu.)
 2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor. Çok az kişi eleştiriyi kabullenebiliyor.
-3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor.
-4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. (Ben bunun bir marketing stratejisi olduğunu düşünüyorum.)
+3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor. (İngilizce öğrenin dememin sebebi bu.)
+4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. Ben bunun bir marketing stratejisi olduğunu düşünüyorum, ama emin olun o bloglarda yazanlar hiçbirşey değil.
 
-Bu yüzden, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden ve doğru kitaplardan alın. Bir eğitim setindeki videoları izliyorsanız, o eğitim setini kim yazmış? Ne zaman yazmış? PHP'in hangi sürümü kullanılmış? Yorumları nasıl? gibi konuları araştırın, yoksa bunlar size hiçbirşey kazandırmaz.
+Gecekondu dikip üst düzey inşaat mühendisliği, geleceğin mimarisi diye anlatan, böbürlenen başka bir topluluk var mı acaba dünyada? PHP blogları hep böyle.
 
-> Not: Bu yazdıklarım genellikle Türkçe blog yazanlar için. İngilizce makeleler nispeten daha iyi durumda.
+Bir `ASP.NET`'çi veya `C#`'çı, bankalarda veya kurumsal bir firmada çalışırken baş mühendis tarafından ağzının payını alır. Tecrübe kazanana kadar biraz sessiz kalayım der.
+
+Bir `Ruby`'ci, starbucksta elinde kahve kod yazarken bu tür işlere zaten bulaşmaz. Yolunu bulmuştur.
+
+Bir `Haskell`'ci veya `Lisp`'çi zaten blog yazmaz. Çünkü ne yazdıklarını kimse anlamaz.
+
+Bir `Java`'cı, en azından bu işlere okulda aldığı temel mühendislik eğitimiyle başlar. Yazılım mimarilerini, tasarım desenlerini falan kullanamasa da bilir. Arada tek tük söyler.
+
+Bir `C`'ci veya `C++`'cının zaten iyi veya kötü derdi olmaz. İyisi ve kötüsü arasındaki fark çoğu zaman ayırt edilemez.
+
+Bir `Assembly`'cinin zaten blog yazacak bir interneti olmaz.
+
+Bir `NodeJS`'ci, genellikle daha önceden `Javascript`'i tecrübe ettiği için biraz bilgilidir. Yeni başlayan "Soket, asekron falan bişey diyorlar anlamadım ben." der bırakır. 
+
+Ama... `PHP` dünyası böylemi. Bir ev yaparlar, evin pencereleri olmaz, çatısı aşağıda olur, kapıyı açtığında bütün bina çöker ve kapıyı açtığınızda binayı yıktınız diye size kızarlar. Adam bir köpek kulübesi yapar, öyle bir havalara girer ki sanırsın Burj Dubai'yi yapmış. (ama o köpek kulübesini almak isteyen birçok insan çıkar, böyle de bir avantajı var.)
+
+`PHP`'nin böyle garip bir komunitesi var. Bu yüzden konuyu çok dağıtmadan toparlayalım. Kısacası böyle bir durumda olduğumuz için, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden, doğru bloglardan ve doğru kitaplardan alın. Bir eğitim setindeki videoları izliyorsanız, o eğitim setini kim yazmış? Ne zaman yazmış? PHP'in hangi sürümü kullanılmış? Yorumları nasıl? gibi konuları araştırın, yoksa bunlar size hiçbirşey kazandırmaz. Youtube'dan 10 yıl eskisinin videolarını izleyip PHP öğrenmeye çalışmayın. "Bunu dosyayı al, her projenin başında include et, ne SQL Injection kalır ne birşey, güven sen bana." diyen insanlara gözü kapalı güvenmeyin. Kendinizi iyi eğitirseniz otobana çıkar hız denemesi yaparsınız, kötü eğitirseniz uçurumdan aşağı yuvarlanırsınız. Bu konuda son derece dikkatli olmalısınız.
+
+> Not: Bu yazdıklarım genellikle Türkçe bloglar için geçerli. İngilizce bloglar nispeten daha iyi durumda, ama onların da kötüsü çok fazla.
 
 ### - ...ya performanslı olmazsa? ...ya çok include uygulamayı yavaşlatırsa? ###
 
