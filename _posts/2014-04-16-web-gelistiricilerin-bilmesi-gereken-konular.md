@@ -1482,6 +1482,8 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 ### - Statik fonksiyon kullanmayın. ###
 
+Statik
+
 // Yakında
 
 ### - PHP asenkron çalılabilir. ReactPHP'i tanıyın. ###
@@ -1494,7 +1496,58 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 ### - PSR standartlarına uyun. ###
 
-// PHP-FIG nedir? PSR nedir? Tüm standartlar açıklanacak
+`PSR` standartları, `PHP-FIG` ekibinin, `framework`ler (Çatılar) arası kod düzenini ve uyumluluğu sağlamak için oluşturduğu yazılım geliştirme standartlardır. `PHP-FIG`'in açılımı, `Framework Interop Group` olmakla beraber, frameworkler arasında birlikte çalışabilirliği desteklemek için kurulmuş bir oluşumdur. Bu oluşum sonrasında birçok popüler PHP projesi `PSR` standartlarına uyma kararı almıştır. Günümüzde son derece popüler olan `PSR` standartlarına uymak sizin için büyük avantaj sağlayacaktır.
+
+`PSR` standartları [https://github.com/php-fig/fig-standards]() reposu üzerinde tutulmaktadır. Kabul edilen standartlar `accepted` klasörü içerisinde bulunabilir.
+
+Bu yazıyı yazdığım sırada kabul edilmiş `5` tane `PSR standardı` bulunmaktadır. Bunlar `PSR-0`, `PSR-1`, `PSR-2`, `PSR-3` ve `PSR-4`'tür.
+
+**PSR'a girmeden...**
+
+`PSR` standartları oluşturulurken bazı terimler kullanılmıştır. Standartları Türkçe'ye çevirirken kuralların yanına parantez içerisinde terimlerini yazacağım için önce bu terimlerin ne anlama geldiğini inceleyelim.
+
+* "MUST", "SHALL" ve "REQUIRED": Mutlaka yapılması gereken maddeleri belirten kurallardır.
+* "MUST NOT" ve "SHALL NOT": Asla yapılmaması gereken maddeleri belirten kurallardır.
+* "SHOULD" ve "RECOMMENDED": Yapılması tavsiye edilen, ama bazı durumlarda şart koşulmayan kurallardır.
+* "SHOULD NOT": Yapılması tavsiye edilmeyen, ama bazı durumlarda göz yumulabileceği belirtilen kurallardır.
+* "OPTIONAL" ve "MAY": Tamamen geliştiricinin opsiyonuna sunulan kurallardır.
+
+Örneğin, bir kuralın başında `(MUST)` yazıyorsa, o kurala uyma mecburiyetiniz bulunmaktadır. `(MAY)` yazıyorsa, o kurala uyup uymama seçimi size bırakılmıştır. Diğerlerini yukarıda bulabilirsiniz.
+
+**PSR-0 - Autoloading (Otomatik Yükleme) Standardı**
+
+Bu standart, sınıflardan otomatik yüklenmesi amacıyla oluşturulmuştur.
+
+Maddelerimiz:
+
+- `(MUST)`: Her sınıf ve namespace `\<Sağlayıcı Adı>\(<Namespace>\)*<Sınıf Adı>` yapısına uymalıdır.
+- `(MUST)`: En üst seviye namespace daima `Sağlayıcı Adı` olmalıdır.
+- `(OPTIONAL)`: Her namespace istediği kadar çocuk namespaceye sahip olabilir.
+- `(Bilgi)`: Her namespace ayırıcı (`\`), `DIRECTORY_SEPARATOR` (Klasör Ayırıcı) anlamına gelmektedir.
+- `(Bilgi)`: Sınıf adındaki her `_` karakteri, `DIRECTORY_SEPARATOR` (Klasör Ayırıcı) anlamına gelmektedir. `_` karakterinin namespace içerisinde bir anlamı yoktur.
+- `(Bilgi)`: Tam namespace ve sınıf yapısı, yükleme esnasında sonuna `.php` eklenerek yüklenmektedir.
+- `(OPTIONAL)`: Sağlayıcı adı, namespace ve sınıflardaki alfabetik karakterler, istenilen her türlü küçük veya büyük harf kombinasyonuyla yazılabilir.
+
+Örnekler:
+
+* \Doctrine\Common\IsolatedClassLoader => /proje/klasoru/lib/vendor/Doctrine/Common/IsolatedClassLoader.php
+* \Symfony\Core\Request =>/proje/klasoru/lib/vendor/Symfony/Core/Request.php
+* \Zend\Acl => /proje/klasoru/lib/vendor/Zend/Acl.php
+* \Zend\Mail\Message => /proje/klasoru/lib/vendor/Zend/Mail/Message.php
+* \namespace\package\Class_Name => /path/to/project/lib/vendor/namespace/package/Class/Name.php
+* \namespace\package_name\Class_Name => /path/to/project/lib/vendor/namespace/package_name/Class/Name.php
+
+**PSR-0 - Basic Coding (Temel Kodlama) Standardı**
+
+* Files MUST use only <?php and <?= tags.
+* Files MUST use only UTF-8 without BOM for PHP code.
+* Files SHOULD either declare symbols (classes, functions, constants, etc.) or cause side-effects (e.g. generate output, change .ini settings, etc.) but SHOULD NOT do both.
+* Namespaces and classes MUST follow an "autoloading" PSR: [PSR-0, PSR-4].
+* Class names MUST be declared in StudlyCaps.
+* Class constants MUST be declared in all upper case with underscore separators.
+* Method names MUST be declared in camelCase.
+
+Örneğin, `\Symfony\Core\Request` isim uzayı `PSR-0` uyumlu bir yapıdadır, ve `vendor/Symfony/Core/Request.php` sınıfını temsil eder.
 
 ---
 # Frontend #
