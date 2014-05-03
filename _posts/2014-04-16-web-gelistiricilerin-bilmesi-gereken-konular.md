@@ -1537,17 +1537,47 @@ Maddelerimiz:
 * \namespace\package\Class_Name => /path/to/project/lib/vendor/namespace/package/Class/Name.php
 * \namespace\package_name\Class_Name => /path/to/project/lib/vendor/namespace/package_name/Class/Name.php
 
-**PSR-0 - Basic Coding (Temel Kodlama) Standardı**
+**PSR-1 - Basic Coding (Temel Kodlama) Standardı**
 
-* Files MUST use only <?php and <?= tags.
-* Files MUST use only UTF-8 without BOM for PHP code.
-* Files SHOULD either declare symbols (classes, functions, constants, etc.) or cause side-effects (e.g. generate output, change .ini settings, etc.) but SHOULD NOT do both.
-* Namespaces and classes MUST follow an "autoloading" PSR: [PSR-0, PSR-4].
-* Class names MUST be declared in StudlyCaps.
-* Class constants MUST be declared in all upper case with underscore separators.
-* Method names MUST be declared in camelCase.
+**a. Genel bakış**
 
-Örneğin, `\Symfony\Core\Request` isim uzayı `PSR-0` uyumlu bir yapıdadır, ve `vendor/Symfony/Core/Request.php` sınıfını temsil eder.
+* `(MUST)`: Dosyalar sadece `<?php` ve `<?=` taglarını kullanabilir.
+* `(MUST)`: Dosyalar, PHP kodu için sadece `UTF-8 (BOMSUZ)` seçeneğini kullanabilir.
+* `(SHOULD)`: Dosyalar, ya sembol oluşturabilir (örn. sınıflar, fonksiyonlar, constantlar vb.) veya yan etki yaratabilirler (örn. çıktı vermek, .ini ayarlarını değiştirmek, vb.) ancak ikisini birden YAPAMAZLAR.
+* `(MUST)`: Namespaceler ve sınıflar mutlaka bir autoloading standardına uymak zorundadır. (Örn. PSR-0 veya PSR-4).
+* `(MUST)`: Sınıf isimleri mutlaka `StudlyCaps` şeklinde yazılmak zorundadır. (örn. KdvHesaplayici)
+* `(MUST)`: Sınıf constantları mutlaka büyük harflerle ve ayraç olarak `_` şeklinde yazlmak zorundadır. (örn. const BIR_CONSTANT)
+* `(MUST)`: Method isimleri mutlaka `camelCase` şeklinde yazılmak zorundadır. (örn birFonksiyonAdi())
+
+**b. Dosyalar**
+
+* `(MUST)`: PHP kodları ya uzun olan `<?php ?>` yapısını, ya da `<?= ?>` olan kısa echo yapısını kullanabilir. Başka her türlü varyasyon yasaklanmıştır.    
+
+**c. Karakter encoding**
+
+* `(MUST)`: Dosyalar, PHP kodu için sadece `UTF-8 (BOMSUZ)` seçeneğini kullanabilir.
+
+**d. Yan Etkiler**
+
+// Yakında
+
+**e. Constantlar**
+
+// Yakında
+
+**f. Propertyler**
+
+// Yakında
+
+**g. Methodlar**
+
+// Yakında
+
+**PSR-2 - Coding style (Kodlama Stilleri) Standardı**
+
+`PSR-2`, `PSR-1`'in devamı niteliğindedir.
+
+// Yakında
 
 ---
 # Frontend #
