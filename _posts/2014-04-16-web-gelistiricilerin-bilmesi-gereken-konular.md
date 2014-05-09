@@ -18,7 +18,7 @@ Bu yazımda web geliştiricilerin bilmesi gereken konulardan ve good practice ku
 
 Bu yazı, açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu için kolayca güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konuları da `issue` oluşturarak belirtebilirsiniz.
 
-Bu yazı, [https://github.com/Aristona/aristona.github.io]() üzerindeki `repository` (ambar) üzerinde tutulmaktadır. Format olarak `Markdown (Redcarpet)` kullanılmıştır, bu yüzden `pull request` attığınızda, yazılarınızın bu formata uygun olması gerekmektedir.
+Bu yazı, [https://github.com/Aristona/aristona.github.io](https://github.com/Aristona/aristona.github.io) üzerindeki `repository` (ambar) üzerinde tutulmaktadır. Format olarak `Markdown (Redcarpet)` kullanılmıştır, bu yüzden `pull request` attığınızda, yazılarınızın bu formata uygun olması gerekmektedir.
 
 Bu yazıdan hiçbir ticari beklentim yoktur, ancak bağış yapmak isterseniz `PayPal` hesabım üzerinden bağış yapabilirsiniz.
 
@@ -623,7 +623,7 @@ Dependency Injection konteynerlerinin, genel olarak aşağıdaki gibi bir kullan
 
 Bu örnekte, `return new MandrillMailer` bölümünü değiştirmemiz yeterli olacaktır.
 
-Bazı konteyner sınıflar, `Singleton` kullanımını gibi diğer kullanımları da destekler. (`Singleton` kullanılan sınıflar sadece tek bir instanceye sahip olabilirler, 2. defa instanceleri oluşturulamaz.) Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı olmamakla beraber, detaylı bilgiye sahip olmak isteyen arkadaşlar daha fazla araştırma yapabilirler.
+Bazı konteyner sınıflar, `Singleton` kullanımı gibi diğer kullanımları da destekler. (`Singleton` kullanılan sınıflar sadece tek bir instanceye sahip olabilirler, 2. defa instanceleri oluşturulamaz.) Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı olmamakla beraber, detaylı bilgiye sahip olmak isteyen arkadaşlar daha fazla araştırma yapabilirler.
 
 **d. Inversion of Control**
 
@@ -637,7 +637,7 @@ Yazımız boyunca birçok defa bahsettiğimiz `SOLID İlkeleri`'nin sonuncusudur
 
 ### - mysql_real_escape_string() sizi SQL Injection'dan korumaz. ###
 
-Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek `SQL Injection` saldırılarından korunduğunu sanmaktadır. Bu klasik bir yanlıştır ve sizi anca temel düzeydeki `SQL Injection` saldırılarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında bu fonksiyon hiçbir işe yaramaz ve sizi koruyamaz.
+Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek `SQL Injection` saldırılarından korunduğunu sanmaktadır. Bu klasik bir yanlıştır ve sizi ancak temel düzeydeki `SQL Injection` saldırılarından koruyabilir. Üst düzey ve komplex bir enjeksiyon yapıldığında bu fonksiyon hiçbir işe yaramaz ve sizi koruyamaz.
 
 `SQL Injection`'dan korunmak için, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. Prepared statements özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
 
@@ -714,7 +714,7 @@ Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlam
 
 Bu konuyu öğrendiğimize göre, artık `DBAL` ve `ORM` konularına girebiliriz.
 
-Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğidir. Popüler bir `DBAL` örneği olarak `Doctrine DBAL`'ı gösterilebilir.
+Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstraction Layers` (DBAL), yani Veritabanı Soyutlama Katmanları adıyla anılmaktadır. Yukarıda vermiş olduğumuz örnek bir `DBAL` örneğidir. Popüler bir `DBAL` örneği olarak `Doctrine DBAL` gösterilebilir.
 
 `Object Relational Mapping` (İlişkisel Obje Eşleme) ise, veritabanı yapınızın objeler şeklinde tutulmasını sağlar. `ORM` araçları olarak `Doctrine ORM`, `Propel ORM`, `ActiveRecord ORM` gösterilebilir. Ben anlaşılması en basit olan, `Laravel`'in (framework) geliştirdiği `Eloquent ORM` ile bir örnek vererek anlatacağım.
 
@@ -778,7 +778,7 @@ Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
 
 `Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, şifrenin bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
 
-`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir. İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat]() adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
+`Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir. İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat](https://github.com/ircmaxell/password_compat) adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
 
 ### - Kullanıcıya güvenmeyin. Aşırı paranoyak olmayın. Input filtrelenir, output escape edilir. ###
 
@@ -833,7 +833,7 @@ Bu yüzden, makalelerde bolca gördüğünüz şunun gibi örnekler son derece y
 
 Bunun adı, bana göre `paranoyak`lıktır, ve evin arka kapısı ağzına kadar açık kalmışken, ön kapının tankla, tüfekle, bir yığın askerle korunmasına benzer.
 
-Şimdi gerçek bir dünya örneği ile bu öğrendiğimiz bilgiyi test edeşim. Örneğimiz basit olsun, bir kullanıcı sitemize kayıt olmak istiyor, bu yüzden HTML formunu doldurdu ve gönder butonuna tıkladı. (Ne kadar sıradışı bir fikir, değil mi?)
+Şimdi gerçek bir dünya örneği ile bu öğrendiğimiz bilgiyi test edelim. Örneğimiz basit olsun, bir kullanıcı sitemize kayıt olmak istiyor, bu yüzden HTML formunu doldurdu ve gönder butonuna tıkladı. (Ne kadar sıradışı bir fikir, değil mi?)
 
 1. İstek geldi. Doğrulamamızı yapalım. Kullanıcı adı alfa karakterleri mi barındırıyor? Daha önce alınmış mı? Şifre 3-12 karakter arasında mı? Yeni şifre özel karakterleri barındırıyor mu? Seçilen 3-12 karakter arasında mı? TC kimlik no doğru mu? Email adresi düzgün yazılmış mı?
 2. Eğer herşeye cevabımız evet ise, `Prepared statements` kullanarak veritabanını güncelleyelim. Daha önce ne demiştik, prepared statements escape işlemini bizim yerimize yapıyor. Ama kullanıcıdan gelen verileri veritabanına eklemeseydik, ve örneğin shell sorgusunda kullansaydık, `escapeshellcmd` kullanarak escape edecektik
@@ -854,7 +854,7 @@ Bu kurallara uyduğunuz zaman;
 
 1. Paranoyaklığı bırakırsınız.
 2. Veritabanınızı çöplüğe döndürmemiş olursunuz.
-3. Veritabanınızda orjinal içeriği daima tutmuş olursunuz.
+3. Veritabanınızda daima orjinal içeriği tutmuş olursunuz.
 4. Güvenli ve kullanışlı bir uygulamanız olur.
 
 Yazılımda paranoyak olmak iyi birşeydir ama azlığı veya fazlalığı hem size, hem de uygulamanıza zarar verir. Siz daima yapmanız gerekeni yapmalısınız. Gece yatarken nasıl pencerelerin kapalığı olduğunu kontrol edip yatıyorsanız, uygulama geliştirirken de böyle olun. Ne penceresiz bir evde yaşayın, ne de penceleri açık bırakıp uyuyun.
@@ -986,7 +986,7 @@ Bir `C`'ci veya `C++`'cının zaten iyi veya kötü derdi olmaz. İyisi ve köt�
 
 Bir `Assembly`'cinin zaten blog yazacak bir interneti olmaz.
 
-Bir `NodeJS`'ci, genellikle daha önceden `Javascript`'i tecrübe ettiği için biraz bilgilidir. Yeni başlayan "Soket, asekron falan bişey diyorlar anlamadım ben." der bırakır. 
+Bir `NodeJS`'ci, genellikle daha önceden `Javascript`'i tecrübe ettiği için biraz bilgilidir. Yeni başlayan "Soket, asenkron falan bişey diyorlar anlamadım ben." der bırakır. 
 
 Ama... `PHP` dünyası böylemi. Bir ev yaparlar, evin pencereleri olmaz, çatısı aşağıda olur, kapıyı açtığında bütün bina çöker ve kapıyı açtığınızda binayı yıktınız diye size kızarlar. Adam bir köpek kulübesi yapar, öyle bir havalara girer ki sanırsın Burj Dubai'yi yapmış. (ama o köpek kulübesini almak isteyen birçok insan çıkar, böyle de bir avantajı var.)
 
@@ -1010,11 +1010,11 @@ Dezavantajlarından biri, `PHP`'in çok fazla açık kaynaklı projeye sahip olm
 
 Bir diğer dezavantajı da, insanların haklı olarak en çok gelecek vaadeden projelere yönelmesi. Bazen bir projeyi geliştiren yazılımcı, tekerleği tekrar icat etmektense, farklı bir yazılımcının projesinin daha iyi konumda olduğunu düşünebilir ve o projeye destek olmaya başlayabilir. Kendi projesini ise geliştirmeyi bırakabilir veya başka birinin devralmasını isteyebilir. (Devredilen projelerden çoğu zaman hayır çıkmaz, not edelim.)
 
-Buna örnek olarak `Code Igniter` framework projesi gösterilebilir. Bir zamanlar iyiydi, herkes kullandı, ancak bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `Code Igniter` projesininden sorumlu olan `EllisLab` firması projeyi devralacak birini aramaya başladı. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
+Buna örnek olarak `CodeIgniter` framework projesi gösterilebilir. Bir zamanlar iyiydi, herkes kullandı, ancak bu projeyi geliştiren çekirdek yazılımcıların birçoğu farklı projelere geçtiler, ve `CodeIgniter` projesininden sorumlu olan `EllisLab` firması projeyi devralacak birini aramaya başladı. (Bu yazıyı yazdığım esnada birkaç ay geçmiş olmasına rağmen kimse projeyi devralmak istemedi.)
 
 Kısacası, geminin kaptanı atladıysa, mürettebatı atladıysa, filikalar indirildiyse ve yolcuların birçoğu tahliye edilmeye başlandıysa, o gemide kalmanın mantıklı olduğunu düşünmemelisiniz. Siz de çok geç olmadan atlamalısınız.
 
-Bu durum sadece `Code Igniter` projesiyle ilgili değil. Hertürlü açık kaynaklı ileride bu tür sorunlarla karşılaşılabilir. Bu yüzden, projenizde o günün şartlarındaki en popüler ve en gelecek vaadeden frameworkleri, komponentleri, sınıfları ve kütüphaneleri kullanmaya çalışın.
+Bu durum sadece `CodeIgniter` projesiyle ilgili değil. Hertürlü açık kaynaklı ileride bu tür sorunlarla karşılaşılabilir. Bu yüzden, projenizde o günün şartlarındaki en popüler ve en gelecek vaadeden frameworkleri, komponentleri, sınıfları ve kütüphaneleri kullanmaya çalışın.
 
 Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
 
