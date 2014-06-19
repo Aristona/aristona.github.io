@@ -170,7 +170,7 @@ Artık `MySQL` sınıfı, `Database` sınıfındaki `public` olan `isConnected()
 
 Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz. `$kdvOrani` adında bir değişken belirlediniz ve değer olarak `0.18` float değerini verdiniz. Eğer siz `$kdvOrani` değişkenini dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? `100` liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz. (Kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep.)
 
-Ancak, `MySQL` örnediğinde anlattığım gibi, bazı durumlarda `$kdvOrani` değişkenine erişmeniz gerekebilir. Belki bir ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyorsunuz. Kim bilir? Bu durumda biraz önce bahsettiğimiz `public fonksiyon`  üzerinden gizli değişkenlere erişme mantığı giriyor. Bu tür erişim sağlayıcı fonksiyonlara `gettler fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkenin değerini döndürmekten ibarettir.
+Ancak, `MySQL` örnediğinde anlattığım gibi, bazı durumlarda `$kdvOrani` değişkenine erişmeniz gerekebilir. Belki bir ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyorsunuz. Kim bilir? Bu durumda biraz önce bahsettiğimiz `public fonksiyon`  üzerinden gizli değişkenlere erişme mantığı giriyor. Bu tür erişim sağlayıcı fonksiyonlara `getter fonksiyonlar` denmekle beraber, yaptıkları iş gizli değişkenin değerini döndürmekten ibarettir.
 
 ```php
 <?php
@@ -180,14 +180,14 @@ class KDVHesaplayici
 
     private $kdvOrani = 0.18;
 
-    public function getKdvOrani() // bir gettler örneği
+    public function getKdvOrani() // bir getter örneği
     {
         $this->kdvOrani; // 0.18 dönüyor
     }
 }
 ```
 
-Bir de bunun tam tersi mantıkla çalışan `settler fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirmekle yükümlüdürler.
+Bir de bunun tam tersi mantıkla çalışan `setter fonksiyonlar` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirmekle yükümlüdürler.
 
 Bir örnekle gösterelim;
 
@@ -199,12 +199,12 @@ class KDVHesaplayici
 
     private $kdvOrani = 0.18;
 
-    public function getKdvOrani() // bir gettler örneği
+    public function getKdvOrani() // bir getter örneği
     {
         return $this->kdvOrani;
     }
 
-    public function setKdvOrani($input) // bir settler örneği
+    public function setKdvOrani($input) // bir setter örneği
     {
         $this->kdvOrani = $input;
     }
@@ -215,12 +215,12 @@ $kdv->setKdvOrani(3);
 $kdv->getKdvOrani(); // 3.00
 ```
 
-`Settler` fonksiyonların iyi yanı, kendi içlerinde bir kontrol mekanizması kurabilmeleridir. Mesela `setKdvOrani()` fonksiyonu içerisinde vergi oranının `0.20`'den fazla olamayacağını kontrol ettirebilirsiniz.
+`Setter` fonksiyonların iyi yanı, kendi içlerinde bir kontrol mekanizması kurabilmeleridir. Mesela `setKdvOrani()` fonksiyonu içerisinde vergi oranının `0.20`'den fazla olamayacağını kontrol ettirebilirsiniz.
 
 ```php
 <?php
 
-    public function setKdvOrani($input) // bir settler örneği
+    public function setKdvOrani($input) // bir setter örneği
     {
         if( (float) $input > 0.20)
         {
@@ -235,28 +235,28 @@ Artık dışarıdan müdahele edilerek bozulamayacak bir sınıf yapısına sahi
 
 > Biliyor musunuz?
 
-`Csharp` dilinde `gettler` ve `settler` methodlar kolayca oluşturulabilmektedir.
+`Csharp` dilinde `getter` ve `setter` methodlar kolayca oluşturulabilmektedir.
 
 ```php
 public class Database
 {
-    public string info { get; set; } //gettler ve settler oluşturuldu
+    public string info { get; set; } //getter ve setter oluşturuldu
 }
 ```
 
 > Biliyor musunuz?
 
-`Ruby` dilinde `gettler` ve `settler` oluşturmak çok basittir.
+`Ruby` dilinde `getter` ve `setter` oluşturmak çok basittir.
 
 ```php
 class Database
-    attr_accessor :info //gettler ve settler oluşturuldu
+    attr_accessor :info //getter ve setter oluşturuldu
 end
 ```
 
-`attr_accessor`, Ruby dilinde `info` değişkeninin gettler ve settler fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz gettler ve settler fonksiyonlarımızı çoğu zaman elle yazmak zorundayız.
+`attr_accessor`, Ruby dilinde `info` değişkeninin getter ve setter fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz getter ve setter fonksiyonlarımızı çoğu zaman elle yazmak zorundayız.
 
-Bilmeniz gereken bir başka konu daha var. `PHP`'de eğer `gettler` ve `settler` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler.
+Bilmeniz gereken bir başka konu daha var. `PHP`'de eğer `getter` ve `setter` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler.
 
 // Buraya `__get` ve `__set()` hakkında örnekler gelecek.
 
