@@ -34,7 +34,7 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 
 **25.07.2014**
 
-- Javascript bölümüne **; prefixini kullanın** alanı eklendi.
+- Javascript bölümüne **; prefixini kullanın.** alanı eklendi.
 - Javascript bölümündeki **Assetleri yüklerden http veya https kullanmayın.** alanı geliştirildi.
 
 ---
@@ -1701,13 +1701,13 @@ b. Object notation'da method tanımlanamaz, object literal'de tanımlanabilir. Y
 
 c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
 
-### ; prefixini kullanın ###
+### ; prefixini kullanın. ###
 
-Oluşturduğunuz ilk anonim fonksiyondan önce, `;` prefixini kullanmak daima iyi bir kullanımdır. Bunun sebebine ise, Javascript dilinde semicolonların (noktalı virgül) çoğu zaman önemsenmemesinden kaynaklanmaktadır.
+Oluşturduğunuz ilk anonim fonksiyondan önce, `;` prefixini kullanmak daima iyi bir kullanımdır. Bunun sebebi ise, Javascript dilinde `semicolon`ların (noktalı virgül) çoğu zaman önemsenmemesinden kaynaklanmaktadır.
 
-Örneğin, siz noktalı virgül kullanmadığınızda kodlarınız çalışmaya devam edecektir. Ancak, sizden önceki anonim fonksiyon noktalı virgül kullanmadıysa, uygulamanız hatalı çalışacaktır.
+Örneğin, siz noktalı virgül kullanmadığınızda kodlarınız çalışmaya devam edecektir. Ancak, sizden önceki anonim fonksiyon noktalı virgül kullanmadıysa, uygulamanız scope sorunları yaşayabileceği için hatalı çalışacaktır.
 
-Bunun neden kaynaklandığını örnek vererek hemen açıklayayım. Örneğin, çok basit bir anonim fonksiyon oluşturduk ve bunu `2.js` olarak kaydettik.
+Bunun neden kaynaklandığını örnek vererek hemen açıklayayım. Örneğin, çok basit bir anonim fonksiyon oluşturdunuz ve bunu `2.js` olarak kaydettiniz.
 
 ```js
 // 2.js
@@ -1716,13 +1716,13 @@ Bunun neden kaynaklandığını örnek vererek hemen açıklayayım. Örneğin, 
 })();
 ```
 
-ve bunu sayfamıza ekledikten sonra test edelim.
+Bunu sayfanıza eklediniz ve test ettiniz:
 
 ```html
 <script type="text/javascript" src="//2.js"></script>
 ```
 
-Şuan sayfaya girdiğimizde ekrana `2` yazısı gelecektir. Şimdi, `1.js` dosyamızı oluşturalım ve bunda noktalı virgül kullanmayalım.
+Şuan sayfaya girdiğinizde, ekranda `2` yazısını göreceksiniz. Şimdi, `1.js` dosyanızı oluşturun ve bu dosyada noktalı virgül kullanmayın:
 
 ```js
 // 1.js
@@ -1731,29 +1731,29 @@ ve bunu sayfamıza ekledikten sonra test edelim.
 })() //<-- Burada noktalı virgül olmalıydı.
 ```
 
-`1.js`'yi sayfamıza dahil edelim ve çalıştıralım:
+Aynı şekilde, `1.js`'yi sayfanıza dahil edin ve çalıştırın:
 
 ```html
 <script type="text/javascript" src="//1.js"></script>
 <script type="text/javascript" src="//2.js"></script>
 ```
 
-Ekrana sadece `1` yazdı, değil mi? Ancak siz muhtemelen `1 ve 2` bekliyordunuz. Bunun sebebi, anonim fonksiyon kapanmadığı için, Javascript'in çalışırken scriptimizi şu şekilde algılaması:
+Ekrana sadece `1` yazısı geldi, değil mi? Ancak siz muhtemelen `1 ve 2` bekliyordunuz. Bunun sebebi, anonim fonksiyon düzgün kapanmadığı için, Javascript'in çalışırken scriptimizi şu şekilde algılamasından kaynaklandı.
 
 ```js
 // 1.js
 (function() {
     alert("1");
-})()(function() {
+})()(function() { //<-- Aslında 1. scope içerisinde sayılırız halen.
     alert("2");
 });
 ```
 
-Yani daha 1. anonim fonksiyon kapanmadan 2.si başlatılmaya çalışılıyor.
+Sorun şu ki, daha 1. anonim fonksiyon kapanmadan 2.si başlatılmaya çalışılıyor.
 
-Şunu diyebilirsiniz: "Ama ben hep noktalı virgül kullanıyorum?". Evet, kullanıyor olabilirsiniz. Ancak, sizden önce sayfaya yüklenen bir kütüphane kullanmıyorsa? Siteye yüklediğiniz slider plugini noktalı virgül alışkanlığı olan birisi değilse?
+Şunu diyebilirsiniz: "Ama ben hep noktalı virgül kullanıyorum?". Evet, kullanıyor olabilirsiniz. Ama sizden önce sayfaya yüklenen bir kütüphane kullanmıyorsa? Siteye yüklediğiniz slider pluginini yazan kişi noktalı virgül alışkanlığı olan birisi değilse?
 
-Sonuç olarak, ilk başa yazdığınız `;` prefixi, aslında sizden önce gelen bir anonim fonksiyonun düzgün olarak kapatılmasını sağlar.
+Sonuç olarak, ilk başa yazdığınız `;` prefixi, aslında sizden önce gelen bir anonim fonksiyonun düzgün olarak kapatılmasını sağlıyor.
 
 ```js
 // 1.js
