@@ -38,6 +38,7 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 - Javascript bölümündeki **Assetleri yüklerden http veya https kullanmayın.** alanı geliştirildi.
 - Javascript bölümüne **Daima 'use strict'; kullanın.** alanı eklendi.
 - Javascript bölümüne **Javascript hataları izlenebilir. İzleyin.** alanı eklendi.
+- Javascript bölümüne **Asenkron, deferred ve DOM eventlerinden bağımsız yüklemeler yapın.** alanı eklendi.
 
 ---
 # Backend (Arka yüz) #
@@ -1806,6 +1807,104 @@ Bunu yapmaktaki amacımız çok basit. Client tarafında alınan hataları, daha
 Eminim bu işlemi yapan birçok açık kaynaklı kütüphane vardır ancak ben şahsen `Bugsnag`'ın Javascript özelliğini kullanıyorum. Kullanımı çok basit. Size verdiği javascript dosyasını sitenize koyuyorsunuz ve herhangi bir hata oluştuğunda, Bugsnag dashboard ekranınızda bu hata çıkıyor. `Bugsnag`, dilerseniz `Github` üzerinde otomatik issue oluşturabiliyor, veya `Hipchat` üzerinden size bildirim gönderebiliyor, veya SMS atabiliyor. [https://bugsnag.com/platforms/javascript](https://bugsnag.com/platforms/javascript) adresinden inceleyebilirsiniz.
 
 Geliştirme yapmak kadar, geliştirdiğiniz projeleri izlemekte önemli. İzleyin, hataları algılayın, çözüm üretin.
+
+### Asenkron, deferred ve DOM eventlerinden bağımsız yüklemeler yapın. ###
+
+Yazıya başlamadan önce, başlıktaki terimlerin ne olduğunu anlatmak istiyorum. Kendimi en rahat ifade edebildiğim anlatım şekli olan örneklendirme ile anlatmaya devam edeceğim.
+
+Farzedelim ki, sayfamızda 10 tane javascript plugini olsun.
+
+```html
+<script type="text/javascript" src="//jquery.js">
+<script type="text/javascript" src="//1.js">
+<script type="text/javascript" src="//2.js">
+<script type="text/javascript" src="//3.js">
+<!-- ... -->
+<script type="text/javascript" src="//10.js">
+```
+
+Bu örnekte, tüm dosyalar, blocking/senkron olarak yükleniyor. Blocking dediğimiz olay, birşeyin yüklenirken, diğerinin bekliyor olması. (Bu programcılıkta daima aynıdır. Birşey olurken birşeyin onu beklemesine `blocking` denir. Mesela PHP blocking bir dildir. Çünkü bir satırdaki işlem yapılırken alt satır yukarıdaki işlemin bitmesini bekler.) Tarayıcı her seferinde tek bir dosyayı yüklüyor. Daha sonra sıradakine geçiyor. Buna CSS ve diğer assetler de dahil, ancak bazı akıllı tarayıcılar resimler gibi önemsiz şeyleri otomatik olarak `asenkron `indirebiliyorlar.
+
+Burada, şu avantajımız var. Birincisi, `1.js` ve diğer javascript dosyaları, `jQuery`'nin yüklenmiş olduğundan emin olabiliyorlar, bu yüzden kendi içlerinde direkt olarak `jQuery` özelliklerini kullanabiliyorlar. Ancak şu dezavantajımız da var. Birincisi, sayfa açılış süresi uzuyor, ikincisi `DOM Eventlerine` bağlı kalıyoruz.
+
+`DOM Eventleri` dediğimiz olay, `sayfanın` (Document Object Model) duruma göre olay ateşlemesidir. Örneğin, herşey yüklendiğinde otomatik olarak `DOMContentLoaded` (İçerik Yüklendi) olayını ateşler. Bu ateşleme yapıldığında, artık sayfanın tamamen yüklendiğini anlarsınız.
+
+Şöyle bir `pseudo` örnek verebiliriz:
+
+```js
+on('DOMContentLoaded', function() {
+    alert("Herşey yüklendi.");
+}
+```
+
+Burada bir sorun yok, ancak en çok bilinen, `jQuery`'nin `ready` eventi, direkt olarak `DOM`'a bağlıdır. Yani, aşağıdaki gibi bir kod yazdıysanız: (bahse girerim yazdınız)
+
+```js
+$(document).on('ready', function() {
+    
+    $('.birsey').html('<span>Merhaba dünya!</span>');
+
+});
+
+```
+
+bunun anlamı şudur: "Önce sayfanın yüklenmesini bekle. Sayfa yüklenmesi tamamlandığında Merhaba Dünya yazdır."
+
+> Bilgi: jQuery kullanıyorsanız, "$(document).on('ready', function() { });" yerine daha kısa olarak "$(function() { });" yazabilirsiniz. İkisi aynı şeydir.
+
+Bu işlem için sayfa yüklemesini beklemek bence mantıklı değil. İşte burada devreye `asenkron` yüklemeler giriyor.
+
+Yukarıdaki verdiğimiz örneğe, aşağıdaki gibi `async` ibaresini eklediğimizde, dosyalarımız `asenkron` yüklenmeye başlayacaktır.
+
+```html
+<script async type="text/javascript" src="//jquery.js">
+<script async type="text/javascript" src="//1.js">
+<script async type="text/javascript" src="//2.js">
+<script async type="text/javascript" src="//3.js">
+<!-- ... -->
+<script async type="text/javascript" src="//10.js">
+```
+
+`Asenkron` yükleme ne işe yarar? Artık yüklemelerimiz `non-blocking` olur, yani birini yüklemek için, tarayıcı diğerlerinin yüklenmesini beklemez. Tarayıcı birçok bağlantı açar ve hepsini birden yüklemeye başlar. Dolayısıyla, sayfa açılış süresi muazzam ölçüde artar.
+
+Ama hemen sevinmeyin, bunun getirdiği bir sıkıntı var. Sıkıntı şu: uygulamanızdaki dosyaların yükleme sırası karışır. Yani `10.js` ilk başta, `jQuery` ise en sonda yüklenebilir - ve sen `10.js` içerisinde `jQuery` özelliklerini kullandıysan, geçmiş olsun, kendini `undefined object` hatalarına hazırla.
+
+> Not: Maksimum anlık bağlantı sayısı, tarayıcıdan tarayıcıya değişmektedir. Bu sayı, tarayıcılarda genellikle öntanımlı olarak 4-6 arasındadır. İsterseniz tarayıcı ayarlarından bunu değiştirebilirsiniz.
+
+Bu sorunu `deferred` yüklemeler çözmektedir. `async` yerine `defer` yazılarak `deferred` yüklemeler yapılabilir. `Deferred` yüklemeler de, aynı `asenkron` yüklemeler gibi, `non-blocking` olarak çalışır. Tek farkı, `asenkron` yüklenen dosyalar, mümkün olan ilk anda çalışırlar, ancak `deferred` yüklenen dosyalar, yükleme sırasına sadık kalırlar.
+
+Ancak, ben size Hem asenkron yükleme yapmayı, hem yüklemelerin birbirinden haberdar olmasını, hem de yükleyiciye tam hükmetmenin yolunu anlatmak istiyorum.
+
+> Not: Aslında bunu sağlayan birçok kütüphane var, ancak ben kendim `$script.js` kullandığım için mantığı onun üzerinden anlatacağım.
+
+Biz, `DOM` gibi, birşeyler yüklendiğinde kendi `eventlerimizi` ateşleyebiliriz. Daha sonra, ateşlenen `eventlere` göre işlemlerimizi yapabiliriz. Örneğin, `$script.js` ile, aşağıdaki gibi yüklemeler yapabiliriz.
+
+```js
+;(function() {
+
+    // Bir $script.js asenkron yükleme ve event örneği
+
+    $script('//jquery.js', 'jquery');
+    $script(['//plugin1.js', '//plugin2.js'], 'plugins')
+
+    $script.ready('jquery', function() {
+        // jQuery yüklendiği anda çalıştırılacak callback
+        alert("jQuery yüklendi!");
+    });
+
+    $script.ready('plugins', function() { 
+        // 2 plugin de yüklendiği anda çalıştırılacak callback
+        alert("2 plugin de yüklendi.");
+    });
+
+})();
+```
+
+Bu durumda, neyin ne zaman yüklendiğinden `eventlar` aracılığıyla haberdar olabildiğimiz için, yükleme sırasını düşünmeden kodlarımızı yazabiliriz. Mesela, pluginleri çalıştırmadan önce, `jQuery`'nin yüklenmiş olduğu olayını bekleyebiliriz. Böylece, `DOM`'un yüklenmesini gerektiren işlemler için onu beklerken, `DOM` ile ilgisi olmayan (örneğin, bir üst makalede yazdığımız Bugsnag izleyicisi) sayfa yüklenmeden çalışmaya başlayabilir.
+
+Bu bölümdeki en güzel kullanımlardan biri, `<script>` tagı içerisinde tek bir `loader.js` scripti tutmak, ve bu script içerisinde `asenkron` olarak diğer scriptlerin yüklenmesini sağlamaktır.
+
+Not: `$script.js` kütüphanesi [https://github.com/ded/script.js/](https://github.com/ded/script.js/) adresindeki repoda bulunmaktadır.
 
 ### Debug için alert kullanmayın, lütfen! ###
 
