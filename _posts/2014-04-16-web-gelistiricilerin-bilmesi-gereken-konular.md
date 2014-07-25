@@ -10,6 +10,10 @@ comments: true
 share: true
 ---
 
+---
+# Giriş #
+---
+
 Merhaba,
 
 Uzun zamandır bloguma yazı yazmıyordum, ancak neredeyse hergün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm için bu yazıyı yazmaya karar verdim.
@@ -21,6 +25,17 @@ Bu yazı, açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır
 Bu yazı, [https://github.com/Aristona/aristona.github.io](https://github.com/Aristona/aristona.github.io) üzerindeki `repository` (ambar) üzerinde tutulmaktadır. Format olarak `Markdown (Redcarpet)` kullanılmıştır, bu yüzden `pull request` attığınızda, yazılarınızın bu formata uygun olması gerekmektedir.
 
 Bu yazıdan hiçbir ticari beklentim yoktur, ancak bağış yapmak isterseniz `PayPal` hesabım üzerinden bağış yapabilirsiniz.
+
+---
+# Değişiklikler #
+---
+
+Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemediklerini söylemişlerdi. Bu yüzden bu bölümde, bir güncelleme yaptığımda nelerin değiştiğini/eklendiğini belirteceğim. Buradaki değişiklikler 24.07.2014 tarihi sonrasını kapsayacaktır.
+
+**25.07.2014**
+
+- Javascript bölümüne **; prefixini kullanın** alanı eklendi.
+- Javascript bölümündeki **Assetleri yüklerden http veya https kullanmayın.** alanı geliştirildi.
 
 ---
 # Backend (Arka yüz) #
@@ -1611,7 +1626,15 @@ Maddelerimiz:
 
 ### Assetleri yüklerden http veya https kullanmayın. ###
 
-// //link şeklinde olmalı.
+Uygulamanızda kullanacağınız assetleri yüklerken, http veya https kullanmayıp, neyin kullanılacağına tarayıcının karar vermesini sağlamak iyi bir kullanım sayılmaktadır.
+
+Bu yüzden, assetlerinizi yüklerken, aşağıdaki şekilde yüklemeye özen gösterin:
+
+```html
+
+<script type="text/javascript" src="//assets/app.js">
+
+```
 
 ### YAZILARINIZI BÜYÜK HARFLE yazmayın! ###
 
@@ -1619,9 +1642,7 @@ Maddelerimiz:
 
 ### Linkleri doğru şekilde yazın. ###
 
-Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır.
-
-Örneğin `http://www.anilunal.com` hatalıyken, doğru olan `http://anilunal.com/`'dur.
+Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır. Örneğin `http://www.anilunal.com` hatalıyken, doğru olan `http://anilunal.com/`'dur.
 
 ### Tarayıcı uyumluluğunu test edin. ###
 
@@ -1679,6 +1700,73 @@ var user = { "name": "Anıl" }  // Object notation (Json)
 b. Object notation'da method tanımlanamaz, object literal'de tanımlanabilir. Yukarıdaki örnekte `isOld()` bir methoddur.
 
 c. JSON'lar genellikle veri taşımak (API'lerde) ve veri saklamak için kullanılırken, object literaller genellikle OOP amacıyla kullanılır.
+
+### ; prefixini kullanın ###
+
+Oluşturduğunuz ilk anonim fonksiyondan önce, `;` prefixini kullanmak daima iyi bir kullanımdır. Bunun sebebine ise, Javascript dilinde semicolonların (noktalı virgül) çoğu zaman önemsenmemesinden kaynaklanmaktadır.
+
+Örneğin, siz noktalı virgül kullanmadığınızda kodlarınız çalışmaya devam edecektir. Ancak, sizden önceki anonim fonksiyon noktalı virgül kullanmadıysa, uygulamanız hatalı çalışacaktır.
+
+Bunun neden kaynaklandığını örnek vererek hemen açıklayayım. Örneğin, çok basit bir anonim fonksiyon oluşturduk ve bunu `2.js` olarak kaydettik.
+
+```js
+// 2.js
+(function() {
+    alert("2");
+})();
+```
+
+ve bunu sayfamıza ekledikten sonra test edelim.
+
+```html
+<script type="text/javascript" src="//2.js"></script>
+```
+
+Şuan sayfaya girdiğimizde ekrana `2` yazısı gelecektir. Şimdi, `1.js` dosyamızı oluşturalım ve bunda noktalı virgül kullanmayalım.
+
+```js
+// 1.js
+(function() {
+    alert("2");
+})() //<-- Burada noktalı virgül olmalıydı.
+```
+
+`1.js`'yi sayfamıza dahil edelim ve çalıştıralım:
+
+```html
+<script type="text/javascript" src="//1.js"></script>
+<script type="text/javascript" src="//2.js"></script>
+```
+
+Ekrana sadece `1` yazdı, değil mi? Ancak siz muhtemelen `1 ve 2` bekliyordunuz. Bunun sebebi, anonim fonksiyon kapanmadığı için, Javascript'in çalışırken scriptimizi şu şekilde algılaması:
+
+```js
+// 1.js
+(function() {
+    alert("1");
+})()(function() {
+    alert("2");
+});
+```
+
+Yani daha 1. anonim fonksiyon kapanmadan 2.si başlatılmaya çalışılıyor.
+
+Şunu diyebilirsiniz: "Ama ben hep noktalı virgül kullanıyorum?". Evet, kullanıyor olabilirsiniz. Ancak, sizden önce sayfaya yüklenen bir kütüphane kullanmıyorsa? Siteye yüklediğiniz slider plugini noktalı virgül alışkanlığı olan birisi değilse?
+
+Sonuç olarak, ilk başa yazdığınız `;` prefixi, aslında sizden önce gelen bir anonim fonksiyonun düzgün olarak kapatılmasını sağlar.
+
+```js
+// 1.js
+(function() {
+    alert("1");
+})()
+
+;(function() { //<-- Buradaki ;, aslında üstteki anonim fonksiyonu kapatıyor düzgünce.
+    alert("2");
+});
+```
+
+Ne kadar hoş ve mantıklı bir kullanım, değil mi?
 
 ### Debug için alert kullanmayın, lütfen! ###
 
