@@ -36,6 +36,8 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 
 - Javascript bölümüne **; prefixini kullanın.** alanı eklendi.
 - Javascript bölümündeki **Assetleri yüklerden http veya https kullanmayın.** alanı geliştirildi.
+- Javascript bölümüne **Daima 'use strict'; kullanın.** alanı eklendi.
+- Javascript bölümüne **Javascript hataları izlenebilir. İzleyin.** alanı eklendi.
 
 ---
 # Backend (Arka yüz) #
@@ -1767,6 +1769,43 @@ Sonuç olarak, ilk başa yazdığınız `;` prefixi, aslında sizden önce gelen
 ```
 
 Ne kadar hoş ve mantıklı bir kullanım, değil mi?
+
+### Daima 'use strict'; kullanın. ###
+
+`'use strict';`, Javascript dilinde, yazdığınız scope içerisinde sıkı kurallara uyulacağını belirtmektedir. Örneğin, oluşturduğunuz anonim fonksiyon içerisinde yazabilirsiniz:
+
+```js
+;(function() {
+
+    'use strict'; //Artık bu scope içerisinde sıkı kurallara uyuyoruz.
+
+})();
+
+```
+
+veya, sadece kullandığınız ufak fonksiyonu kapsamasını da sağlayabilirsiniz:
+
+```js
+function merhaba() {
+    'use strict'; //Artık bu fonksiyon içerisinde sıkı kurallara uyuyoruz.
+}
+```
+
+Peki, nedir bu sıkı kurallar? Sıkı kurallar, `Ecmascript5` ile gelen özelliklerden birisidir. Sizin yapabileceğiniz bazı yanlışlıkları önleyerek sizi uyaran, ve bu yüzden daha fazla exception fırlatılmasına sebep olan bir ibaredir. Bu ibare, `güvensiz` sayılabilecek bazı işlemleri engeller (Örneğin, global objeye erişim sağlanması.) veya yapılabilecek bazı basit kod hatalarını (Örneğin, bir değişkeni declare etmeden değer atamaya kalkmak) algılayarak exception fırlatır.
+
+Benim tavsiyem, daima tüm kodlarınızı kapsayacak şekilde (ilk örnekteki gibi anonim fonksiyon açıldığı anda olabilir) `'use strict';` ibaresini yazın. Bu sizi biraz daha sıkı çalışmanıza ve dolayısıyla daha az hata yapmanıza yardımcı olur.
+
+Unutmadan, birçok `linter` (Kod analizi yapan uygulamalar), bu ibarenin tanımlanmasını mecburi kılmaktadır. Size büyük avantajlar sağladığı için, `'use strict';` ibaresini kullanmak good practice (iyi kullanım) sayılmaktadır ve kullanmanız şiddetle tavsiye edilir.
+
+### Javascript hataları izlenebilir. İzleyin. ###
+
+Birçok geliştirici, yazdığı Javascriptlerin ne durumda olduğunu izlemiyor. Geliştirme ortamında kendi testlerini yapıyor ve production sunucusuna atıyor. Bu doğru, ama scriptin ne durumda nasıl çalıştığını nasıl anlayabilirsin ki? Belki belirli iPhone ve iOS versiyonlarında çalışmıyor? Belki belirli jQuery versiyonlarında, veya sayfada belirli bir plugin varken, veya belli bir tarayıcıda çalışmıyor? Belki kullanıcının tarayıcısında bir eklenti varken bile çalışmıyor olabilir. Özellikle, Javascript pluginleri geliştiriyor ve diğer sitelerde kullanıma sunuyorsanız, yazdığınız koddaki exceptionları veya hataları izleyen bir monitoring sistemi geliştirmek ve kullanmak size büyük avantaj sağlayacaktır.
+
+Bunu yapmaktaki amacımız çok basit. Client tarafında alınan hataları, daha sonra incelemek üzere kaydedeceğiz. Örneğin, Javascript'te bir exception fırlatıldığında, bu exceptionu bir API üzerinden kendi veritabanımıza kaydedebiliriz. Daha sonra bu hataların neden kaynaklandığını analiz edip çözüm üretebiliriz. Eğer yazdığımız Javascript'i izlemiyorsak, bir hata olduğundan nasıl emin olabiliriz?
+
+Eminim bu işlemi yapan birçok açık kaynaklı kütüphane vardır ancak ben şahsen `Bugsnag`'ın Javascript özelliğini kullanıyorum. Kullanımı çok basit. Size verdiği javascript dosyasını sitenize koyuyorsunuz ve herhangi bir hata oluştuğunda, Bugsnag dashboard ekranınızda bu hata çıkıyor. `Bugsnag`, dilerseniz `Github` üzerinde otomatik issue oluşturabiliyor, veya `Hipchat` üzerinden size bildirim gönderebiliyor, veya SMS atabiliyor. [https://bugsnag.com/platforms/javascript](https://bugsnag.com/platforms/javascript) adresinden inceleyebilirsiniz.
+
+Geliştirme yapmak kadar, geliştirdiğiniz projeleri izlemekte önemli. İzleyin, hataları algılayın, çözüm üretin.
 
 ### Debug için alert kullanmayın, lütfen! ###
 
