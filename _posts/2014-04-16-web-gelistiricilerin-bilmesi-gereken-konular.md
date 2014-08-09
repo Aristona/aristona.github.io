@@ -32,6 +32,13 @@ Bu yazıdan hiçbir ticari beklentim yoktur, ancak bağış yapmak isterseniz `P
 
 Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemediklerini söylemişlerdi. Bu yüzden bu bölümde, bir güncelleme yaptığımda nelerin değiştiğini/eklendiğini belirteceğim. Buradaki değişiklikler 24.07.2014 tarihi sonrasını kapsayacaktır.
 
+**09.08.2014**
+
+- Deployment bölümüne **FTP kullanmayın** alanı eklendi.
+- Deployment bölümüne **DeployHQ ve türevi servisler** alanı eklendi.
+- Deployment bölümüne **Capistrano** alanı eklendi.
+- Javascript bölümüne **Debug için alert kullanmayın, lütfen!** alanı eklendi.
+
 **25.07.2014**
 
 - Javascript bölümüne **; prefixini kullanın.** alanı eklendi.
