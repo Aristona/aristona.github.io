@@ -1908,15 +1908,25 @@ Not: `$script.js` kütüphanesi [https://github.com/ded/script.js/](https://gith
 
 ### Debug için alert kullanmayın, lütfen! ###
 
-// Rly.
+Eğer kullanıyorsanız da, işiniz bittiğinde silmeyi unutmayın! Bazı geliştiriciler `alert();` kullanarak debug yapıyor ve işi bittiğinde silmeyi unuturup sunucuya atıyorlar.
+
+`alert` yerine, `console.log` veya Firebug/Web Inspector gibi araçların debugging özelliklerini kullanmaya çalışın.
 
 ### Hoisting hakkında bilgi sahibi olun. ###
 
-// Nedir?
+Javascript, dolayısıyla jQuery'de çok az bilinen (sadece uzun süre vakit geçiren geliştiriciler biliyor gözlemlediğim kadarıyla) bir olay hoisting. Hoistingi anlatmadan önce Javascript'in temeline inip nasıl çalıştığını anlatmak istiyorum.
 
-### Lambda kullanın. ###
+> Not: Eğer Javascript'i gerçek anlamda öğrenmek istiyorsanız, tam bir Javascript Ninja olan Stoyan Stefanov'ın kitaplarını tavsiye ederim.
 
-// jQuery örneklerinden
+// Javascript, nasıl çalışıyor?
+
+// Javascriptin nasıl çalıştığını anladıysak, o zaman hoistingin gerekliliğini de anlamışızdır.
+
+// Nelere dikkat etmeliyiz, good practice kullanımlar nedir.
+
+### Object.observe ve Obverver pattern. ###
+
+// Ecmascript 7 ile gelen object.observe özelliği ve Observer pattern
 
 ### Bir selector kullandığınız zaman onu önbellekte tutun. ###
 
@@ -1930,17 +1940,9 @@ Not: `$script.js` kütüphanesi [https://github.com/ded/script.js/](https://gith
 
 ### GruntJS ###
 
-**a. Ayak işlerimizi Grunt'a yaptıralım.**
+// Nedir?
 
-**b. Kendi Grunt modülümüzü yazalım.**
-
-### Kullanabileceğiniz diğer araçlar. ###
-
-// Yakında
-
-### Kullanmamanız gereken araçlar. ###
-
-// DreamWeaver!!1
+// Kendi Grunt modülümüzü yazalım.
 
 ### Gözlerinizi koruyun. ###
 
@@ -1962,32 +1964,77 @@ Not: `$script.js` kütüphanesi [https://github.com/ded/script.js/](https://gith
 
 ## Deployment ##
 
+Deployment, yazdığınız kodların sizin bilgisayarınzdan çıkıp sunucuya ulaşması ve çalışmasının sağlanması arasında geçen süreçtir. (FTP'den dosyaları upload edip phpmyadmin'den güncel db yedeğini import ediyorsunya, o deployment işte.) Biz bu bölümde deployment konusunda bize yarar sağlayacak araçları tanıyacağız.
+
+> Bu bölümdeki yazıları okumadan önce Versiyon Kontrol hakkında bilgi sahibi olunması büyük avantaj sağlayacaktır.
+
+### FTP kullanmayın ###
+
+FTP kullanmamanızı gerektiren aslında birçok sebep var. Örneğin:
+
+1. FTP kullandığınız zaman dosyalarınız ve FTP bilgileriniz şifrelenmemiş bir protokol üzerinden iletilir. Çalınma ihtimali vardır.
+2. Reponuzla sunucunuzu senkron halde tutmak zorlaşır, çoğu zaman versiyon kontrolü bozarsınız.
+3. Şifrelerle çalışmak çok ilkelcedir.
+4. Sadece FTP bağlantısına izin veren sunucularda çalışmak zordur.
+
+Şimdi bunları biraz açalım. Öncelikle şifrelenmeme konusuna değinelim. Bildiğiniz gibi, FTP protokolü şifresiz bir protokoldür, yani gönderdiğiniz dosyalar sizin bilgisayarınızla sunucu arasındaki herhangi bir noktada erişilebilir. Daha da ötesi, FTP şifreniz de `plain text` (Düz yazı) olarak gönderilir. Bu bilgiler başka birinin eline geçerse uygulamanız çok büyük zarar görebilir. Ayrıca, FTP üzerinde direkt düzenleme yaparsanız uygulamanız versiyon kontrolü bozacağı için (Bu aşamada versiyon control FTP üzerinde çalışan kodlarda değişiklik yapıldığını algılayacaktır.) kesinlikle önerilmemektedir. Son olarak, FTP şifresi gibi gereksiz işlerle vakit kaybedersiniz.
+
+Shared hosting, yapıları gereği çoğu zaman SFTP/SSH yetkisi vermezler. Bu durumda, sunucuda yapmanız gereken en temel işlemleri de yapamazsınız. (Örneğin bir servise restart atmak gibi) Böyle bir durumda, ya o firmaya email gönderirsiniz, ya da kontrol panellerinde böyle özellikler olsun diye dua edersiniz.
+
+FTP'ye daha güvenli alternatif olarak SSH/SFTP kullanmanızı tavsiye ederim. Bu tür protokoller FTP'ye göre çok güvenlidirler. Bilgisayarınız ve hedef sunucu arasındaki veri akışı şifrelenmiş bir protokol üzerinden yapılacağı asla izlenemezler. Ayrıca, parmak izini andıran bir şekilde çalıştıkları için (şifre de kullanabilirsiniz dilerseniz ama gereği var?) sunucu sizin bilgisayarınızı tanıyacaktır. Çoğu zaman sadece `ssh sunucu` yazarak giriş yapabilirsiniz.
+
+Bu durumda, isterseniz kullandığınız FTP uygulamasını (FileZilla gibi) SFTP üzerinden bağlatıp aynı işlemleri gerçekleştirebilirsiniz. Veya terminal üzerinden SSH bağlantısı gerçekleştirip, sunucu tarafında `git pull` komutunu çalıştırabilirsiniz. Size kalmış... ama bu işlemleri otomatik olarak yaptıramaz mıyız? Tabi ki yaptırırız. Yazının başından beri hep ne diyoruz? Bilgisayarın yapabileceği işlerle sen neden uğraşasın ki? Şansızlıyız, deployment için de işimizi kolaylaştıracak araçlar mevcut.
+
+### DeployHQ ve türevi servisler ###
+
+Deployment işlemi için kullanabileceğiniz bazı 3. parti servisler bulunmaktadır. Bu tür servisler genellikle aylık bir ücret karşılığı çalışırlar. Bu servislere örnek olarak DeployHQ ve Dploy.io'yu verilebilir.
+
+Peki ne işe yarar bu servisler? Aslında çalışma mantıkları çok basit. Senin FTP'den yükleyeceğin dosyaları, onlar analiz edip otomatik olarak yükler. Bunu da senin versiyon kontrol repositoryine okuma yetkisiyle bağlanarak yaparlar. Sen versiyon kontrol uygulamanla bir commiti repo üzerine pushladığında, otomatik olarak değişen dosyalar sunucuna aktarılır. Böyle bir kullamın birçok avantajı var, mesela:
+
+1. İki iş yapmış olmazsın.
+2. Deployment öncesi için komut girebilirsin. (örn bakım modunu aç)
+3. Deployment sonrası için komut girebilirsin. (veritabanını güncelle, composer update komutunu çalışır, bakım modunu kapat gibi)
+4. Deployment işlemini birden çok sunucuya yapabilirsin.
+5. İşlemlerin durumuyla ilgili otomatik bildirimler alabilirsin.
+
+Bu servisleri kullanmak çok basit çünkü sana bir GUI sunuyorlar ve sen işlemlerini bir websitesi kullanırmış gibi yapıyorsun. Ancak aylık ücretleri olduğu için bazı geliştiriciler tarafından tercih edilmeyebilir. Bu durumda, yardımımıza Capistrano koşuyor. Capistrano, bu tür servislerin bize sağladığı özellikleri (ve daha fazlasını) bize sağlayan yardımcı bir araç. Ne olduğunu bir sonraki bölümde öğrenelim.
+
 ### Capistrano ###
 
-// Yakında
+Capistrano'nun ne olduğunu, sitesindeki kısa açıklama ile özetlemeye çalışalım: "A remote server automation and deployment tool written in Ruby." yani Türkçesiyle, "Capistrano, Ruby ile yazılmış  bir sunucu otomasyon ve deployment aracıdır." (Yeri gelmişken, şu deployment lafını Türkçe'ye birtürlü çeviremedim. Böyle idare edin.)
 
-### FTP kullanmayın! ###
+Çalışma mantığı basit, ancak DeployHQ gibi bir servisi kullanmak kadar kolay değil. Capistrano ile scriptlerinizi kendiniz yazacaksınız. Şimdi biraz flashback yapalım, `DRY` ile ilgili makalede ne demiştik?
 
-// Sebepleri ve alternatif kullanımları
+> bir komut yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem de sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz? Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın.
+
+İşte orada kastettiğim araçlardan biri `Capistrano`'ydu. Capistrano'ya [https://github.com/capistrano/capistrano](https://github.com/capistrano/capistrano) adresinden ulaşabilirsiniz.
+
+// Yakında buraya Capistrano ile ilgili örnekler gelecek
 
 ## Versiyon kontrol ##
 
-### Sus ve git kullan. ###
+// Versiyon kontrol nedir, onun tanımı yapılacak.
 
-// Kaçışın yok
+### Git kullanın. ###
+
+// Git hangi konularda avantajlı SVN gibi alternatiflere göre?
 
 ### Commit mesajlarınız açıklayıcı olsun. ###
 
 // Niye?
 
-## Hosting ve sunucu ##
+## Hosting ve Sunucu ##
 
-### Shared hostingler artık öldü. ###
+### Shared hostingleri unutun. ###
 
-// Yakında
+// Shared hosting bad practice kullanımları - FTP gibi ilkel yöntemler anlatılacak
 
-### Neden PaaS? ###
+### PaaS? ###
 
-// Yakında
+// Fortrabbit - Appfog - Heroku vb. ve avantajları
+
+### Cloud sunucular ve provisionerlar ###
+
+// Laravel Forge - Serverpilot - Aylık 5 dolara nasıl taş gibi sunuculara sahip olabileceğiniz
 
 > Not: Bu makaleyi vakit buldukça güncelleyeceğim.
