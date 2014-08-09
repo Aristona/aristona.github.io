@@ -34,8 +34,8 @@ bing_verify:
 # Links to include in top navigation
 # For external links add external: true
 links:
-- title: İş İstekleri
-  url: "http://anilunal.com/?page=contact"
+- title: Bana Ulaşın
+  url: "http://anilunal.com/contact"
   external: true
 
 
