@@ -14,17 +14,35 @@ share: true
 # Giriş #
 ---
 
-Merhaba,
+### Çıkış noktası ###
 
-Uzun zamandır bloguma yazı yazmıyordum, ancak neredeyse hergün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm için bu yazıyı yazmaya karar verdim.
+Neredeyse hergün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm, ve hep aynı şeyleri söylemekten sıkıldığım için bu yazıyı yazmaya karar verdim.
 
-Bu yazımda web geliştiricilerin bilmesi gereken konulardan ve good practice kullanımlardan bahsedeceğim. Yazı boyunca web geliştirme süreçlerinin tamamına değinmek istiyorum. Bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. konularda bilmeniz gerekenleri anlatmaya çalışacağım. Anlattığım bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir. Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayabilir.
+### Kapsam ###
 
-Bu yazı, açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu için kolayca güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konuları da `issue` oluşturarak belirtebilirsiniz.
+Bu yazımda web geliştiricilerin bilmesi gereken konuları, yapılan yanlışları, bu yanlışların nasıl düzeltebileceğini ve genel olarak yazılım dünyasında kabul görmüş `good practice ` (İyi kullanım) kullanımlardan bahsedeceğim.
+
+Yazı boyunca web geliştirme süreçlerinin tamamına değineceğim. Bu yüzden geliştirme ortamı, veritabanları, backend, frontend, css, otomasyon, deployment, versiyon kontrol vb. konularda bilmeniz gerekenleri anlatmaya çalışacağım. Anlattığım bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir. Herşeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayabilir.
+
+### Kaynak ###
+
+Bu yazı açık kaynaklı olarak `Github` hesabım üzerinde yayınlanmaktadır. Açık kaynaklı olduğu için kolayca güncel tutmayı planlamaktayım. Eğer herhangi bir yanlışlık görürseniz veya eklemek istedikleriniz olursa `pull request` atabilirsiniz. Merak ettiğiniz konuları da `issue` oluşturarak belirtebilir veya bu sayfaya yorum bırakabilirsiniz.
 
 Bu yazı, [https://github.com/Aristona/aristona.github.io](https://github.com/Aristona/aristona.github.io) üzerindeki `repository` (ambar) üzerinde tutulmaktadır. Format olarak `Markdown (Redcarpet)` kullanılmıştır, bu yüzden `pull request` attığınızda, yazılarınızın bu formata uygun olması gerekmektedir.
 
+### Anlaşma ###
+
+1. Bu yazıda hatalar bulunabilir. Yazım hataları bulunabilir. Çalışmayan örnekler olabilir. Benim de doğru bildiğim yanlışlar olabilir. Bu durumda yapmanız gereken, "Bu yanlış! Ne kötü bir yazı bu!" demek yerine; eğer yapabiliyorsanız, gerekli düzeltmeleri yapıp `Pull Request` atmanızdır. Eğer yapamıyorsanız, araştırmam için gerekli kaynakları ve hatalı bölümü `Issue` oluşturarak bana bildirebilirsiniz.
+
+2. Bu bir kitap veya akademik bir yazı olmayıp, sadece yıllardır tecrübe ettiğim bilgilere dayanarak tuttuğum notların makale haline getirilmesinden ibarettir. Yazı tamamlandığında okunmasının kolay olması amacıyla ekitap olarak yayınlanabilir.
+
+3. Çoğu konuda "5 yaşındaki birine anlatır gibi" yüzeysel bir anlatım yapacağım. Örneğin, ben `GruntJS` adlı uygulamayı ve alternatiflerini tanıtacağım ve size nasıl bir yarar sağlayacağını birkaç basit örnekle anlatacağım. Size özel Grunt modülü yazmayacağım. Çünkü amacım kimseye balık vermek değil, balık tutmayı öğretmek. Burada yüzeysel olarak öğrendiklerinizi araştırıp kendinizi geliştirmek size büyük yarar sağlayacaktır.
+
+### Destek ve Beklenti ###
+
 Bu yazıdan hiçbir ticari beklentim yoktur, ancak bağış yapmak isterseniz `PayPal` hesabım üzerinden bağış yapabilirsiniz.
+
+Kendiniz bir yazı göndermek isterseniz (web geliştirme ile ilgili olmalı ve mutlaka kabul görmüş bir good practice olmalı) `Pull Request` atarak yazınızı gönderebilirsiniz.
 
 ---
 # Değişiklikler #
