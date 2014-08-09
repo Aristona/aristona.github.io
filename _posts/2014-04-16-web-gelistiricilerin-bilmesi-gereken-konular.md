@@ -1505,11 +1505,9 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 // Yakında
 
-### - Statik fonksiyon kullanmayın. ###
+### - Statik fonksiyonları kullanırken dikkatli olun. ###
 
-Statik
-
-// Yakında
+// Aslında kullanılması gereken durumlar var, bu yüzden hem neden iyi, hem neden kötü ikisini de anlatalım.
 
 ### - PHP asenkron çalılabilir. ReactPHP'i tanıyın. ###
 
@@ -1604,6 +1602,34 @@ Maddelerimiz:
 
 // Yakında
 
+## API Geliştirme ##
+
+// API geliştirme hakkında kısa bir yazı, niye kullanıyoruz.
+
+### Kullanılabilir extensionlar ve araçlar. ###
+
+// Yakında
+
+### Versiyon prefixi kullanın. ###
+
+// Yakında
+
+### API anahtarı, URI'e eklenmemeli ve HTTP Auth ile gönderilmeli. ###
+
+// Eskiden nasıl yapılıyor, yeni şekilde nasıl yapılmalı.
+
+### URI düzenine uyun. ###
+
+// Resourceful? type/identifier/subtype/identifier kuralına uyulmalı
+
+### Doğru status kodları kullanılmalı ve response mesajı 2. planda olmalı. ###
+
+// { message } ek bilgiye sahip olmalı. Hatayı asıl anlatacak kısım header kodudur.
+
+### Hit izinleri ###
+
+// Yakında
+
 ---
 # Frontend #
 ---
@@ -1669,6 +1695,10 @@ Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır. Örneğin `h
 ### CSS selectorlerinizi kısa tutun. ###
 
 // Yeah
+
+### Auto prefixing ###
+
+// Auto prefix grunt modülü, PrefixR API vs.
 
 ## Javascript ##
 
@@ -1935,6 +1965,18 @@ Javascript, dolayısıyla jQuery'de çok az bilinen (sadece uzun süre vakit ge�
 
 // Ecmascript 7 ile gelen object.observe özelliği ve Observer pattern
 
+### var x || {} ###
+
+// Yakında
+
+### js- prefix on class selectors ###
+
+// Yakında
+
+### Global window objesini kirletmeyin ###
+
+// Yakında
+
 ### Bir selector kullandığınız zaman onu önbellekte tutun. ###
 
 // Sebep?
@@ -2038,10 +2080,14 @@ Capistrano'nun ne olduğunu, sitesindeki kısa açıklama ile özetlemeye çalı
 
 ### PaaS? ###
 
-// Fortrabbit - Appfog - Heroku vb. ve avantajları
+// Fortrabbit - Appfog - Heroku gibi servislerin ve avantajları
 
 ### Cloud sunucular ve provisionerlar ###
 
 // Laravel Forge - Serverpilot - Aylık 5 dolara nasıl taş gibi sunuculara sahip olabileceğiniz
+
+## Scalability ##
+
+// Uygulama tanıtımları: Varnish - Redis - HAProxy - Resque - Iron - CDN vsvs. 
 
 > Not: Bu makaleyi vakit buldukça güncelleyeceğim.
