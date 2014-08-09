@@ -1068,15 +1068,15 @@ Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o i
 
 Bunun yerine:
 
-    grunt backup:veritabani
+    grunt backup:veritabani_adi
 
 yazdığınızda bu işlemlerin sizin yerinize yapılması daha hoş olmaz mı?
 
 Veya:
 
-    grunt backup:veritabani --push
+    cap production deploy
 
-yazdığınızda hem veritabanı yedeğinin alınıp, hem csslerin optimize edilip, hem de sunucuya veritabanını yedeğinin yüklenmesini sağlamak istemez misiniz?
+yazdığınızda sunucuya veritabanını yedeğinin yüklenmesini sağlayıp, Apache/MySQL (artık ne kullanıyorsanız) restart atılmasını istemez misiniz?
 
 Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği herşeyi bilgisayara yaptırın. 
 
