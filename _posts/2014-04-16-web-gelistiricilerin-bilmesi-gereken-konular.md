@@ -52,6 +52,7 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 
 **09.08.2014**
 
+- Giriş bölümü düzenlendi.
 - Deployment bölümüne **FTP kullanmayın** alanı eklendi.
 - Deployment bölümüne **DeployHQ ve türevi servisler** alanı eklendi.
 - Deployment bölümüne **Capistrano** alanı eklendi.
@@ -71,7 +72,7 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 
 Backend için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
 
-Bu bölümdeki örneklerin bazıları, temel veya orta düzeyde `PHP` bilgisi gerektirmektedir.
+> Not: Bu bölümdeki örneklerin bazıları, temel veya orta düzeyde `PHP` bilgisi ile Nesne Yönelimli Programlama (OOP) bilgisi gerektirmektedir.
 
 ### - Global scopeyi asla kirletmeyin. ###
 
@@ -303,7 +304,7 @@ Bilmeniz gereken bir başka konu daha var. `PHP`'de eğer `getter` ve `setter` m
 
 // Buraya `__get` ve `__set()` hakkında örnekler gelecek.
 
-> Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlardır. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlardır.
+> Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlara denir. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlara denir.
 
 ### - Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
@@ -396,7 +397,7 @@ Bu koşul için mutlaka `===` kullanmamız gerekmekteydi. Böylece `0` değeri `
 ```php
 <?php
     if ( strpos('abcde', 'ab') === false)
-         return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten.";
+         return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten."; //doğru
 ```
 
 Artık `0` değeri `false` olmadığı için, yazdığımız ufak scriptimiz doğru çalışacaktır.
@@ -417,7 +418,7 @@ PHP'de, `boolean` verileri şunlardır:
 
 ### - Dependency Injection, Dependency Injection Container, Inversion of Control, Liskov's Substitution Principle ve Dependency inversion principle. ###
 
-**a. Dependency Injection**
+**a. Dependency Injection (Bağımlılık Enjeksiyonu)**
 
 Kendisine üst düzey bir `PHP geliştirici` diyen herkesin mutlaka bilgi sahibi olması gereken konular olduğu için bu terimlerin ne olduğunu ve hangi amaçla kullanıldıklarını anlatma ihtiyacı hissediyorum.
 
@@ -933,12 +934,6 @@ Kara liste oluşturan neredeyse tüm fonksiyonlar çöptür. Örneğin, `XSS`'i 
 Siz burada `script` kelimesini engellediğini düşünebilirsiniz, ama saldırgan `s/**/cript` gibi bir yöntem kullanarak bunu aşabilir. Bu yüzden kara liste oluşturan fonksiyonlar çoğu zaman işe yaramazlar.
 
 Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonksiyona güvenmeyin.
-
-### - Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
-
-Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. `TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
-
-Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak size yarar sağlayacaktır.
 
 ### - Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
@@ -2028,6 +2023,12 @@ Javascript, dolayısıyla jQuery'de çok az bilinen (sadece uzun süre vakit ge�
 ### Neden `utf8mb4_unicode_ci?` ###
 
 // Yakında
+
+### - Veritabanında eksi değerde olmayacak hücreler UNSIGNED olmalıdır. ###
+
+Veritabanında oluşturduğunuz bir `TINYINT` hücre, öntanımlı olarak `negatif` ve `pozitif` değerleri alacaktır. `TINYINT`'in alabileceği değerler `-128` ile `127` arasındaki rakamlardır. Ancak, bu hücre `UNSIGNED` olarak tanımlanırsa, `0` ve `255` arasındaki değerleri kabul edecektir.
+
+Bu yüzden, daima pozitif olacağından emin olduğunuz hücreler için (örneğin `auto increment`) hücrelerinizi `UNSIGNED` olarak tanımlamak size yarar sağlayacaktır.
 
 ## Deployment ##
 
