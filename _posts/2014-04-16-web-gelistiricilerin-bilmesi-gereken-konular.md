@@ -345,7 +345,7 @@ class HomeController
 
 Burada, `HomeController` sınıfının 3 `bağımlılığı` bulunmaktadır.
 
-1. `DatabaseInterface` interfacesine sadık kalmış herhangi bir sınıfa bağımlıdır.
+1. `DatabaseInterface` `interface`'sine sadık kalmış herhangi bir sınıfa bağımlıdır.
 2. `Image` sınıfına bağımlıdır.
 3. Global `uzaydaki` (namespace) `Logger` sınıfına bağımlıdır.
 
@@ -358,7 +358,7 @@ Eğer bu sayı `4`'ün üzerine çıkarsa, sınıfınız gereğinden fazla iş y
 1. Kullanıcıdan gelen `$_POST` verilerini alıyoruz VE
 2. Bu verileri oluşturduğumuz `Validation` (Doğrulama) kontrollerinden geçiriyoruz VE
 3. Kullanıcı avatar resmi yüklediyse, avatar resmini boyutlandırıyoruz VE
-4. Boyutlandırılam avatarı isimlendirip bir klasör içerisine yerleştiriyoruz VE
+4. Boyutlandırılan avatarı isimlendirip bir klasör içerisine yerleştiriyoruz VE
 5. Veritabanına bağlanıp kayıt olacak kullanıcının bilgilerini ekliyoruz VE
 6. Eğer veritabanı false döndürmüş veya exception fırlatmışsa bunu yakalıyoruz VE
 7. Ekrana başarılı veya başarısız olacak bir sayfa çıktısı veriyoruz.
@@ -484,7 +484,7 @@ Hatırlarsanız yukarıdaki örneğimizde tür dayatmayı şu şekilde yapmışt
 
 Burada tür dayatma `Mailer` olduğu için, sadece `Mailer` sınıfı enjekte edilebilir olacaktır. Ancak, biz `Mailer` sınıfı yerine, belli bir `Interface`'e sadık kalan her sınıfı kullanabilmeliyiz.
 
-Bu konuyu bir örnekle açıklayalım. Öncelikle `Interface`mizi oluşturalım ve bu interfaceye uyacak her sınıfta hangi methodların bulunması gerektiğini belirleyelim.
+Bu konuyu bir örnekle açıklayalım. Öncelikle `Interface`'mizi oluşturalım ve bu `interface`'e uyacak her sınıfta hangi methodların bulunması gerektiğini belirleyelim.
 
 ```php
 <?php
@@ -498,7 +498,7 @@ interface MailerInterface {
 
 ```
 
-Daha sonra `Mailer` sınıfımızın bu interfaceye uymasını sağlayalım.
+Daha sonra `Mailer` sınıfımızın bu `interface`'e uymasını sağlayalım.
 
 ```php
 <?php
@@ -524,7 +524,7 @@ class Mailer implements MailerInterface // Dikkat ettiyseniz implements MailerIn
 }
 ```
 
-Şuan bu `Mailer` sınıfı, `MailerInterface` interfacesine sadık kaldığı için çalışabilecektir. Ancak, örneğin `Mailer` sınıfında `setTo()` methodu olmasaydı, sınıfımız `MailerInterface` içerisinde şart koşulan `setTo()` methoduna sahip olmadığı için çalışamayacaktı. Kısacası, kullandığımız interface, sınıfımızın sahip olması gereken methodları şart koşmaktadır. Interface içerisinde belirtilen 4 methodun hepsi bulunmayan sınıflar bu `Interface`'ye sadık kalamazlar.
+Şuan bu `Mailer` sınıfı, `MailerInterface` `interface`'sine sadık kaldığı için çalışabilecektir. Ancak, örneğin `Mailer` sınıfında `setTo()` methodu olmasaydı, sınıfımız `MailerInterface` içerisinde şart koşulan `setTo()` methoduna sahip olmadığı için çalışamayacaktı. Kısacası, kullandığımız `interface`, sınıfımızın sahip olması gereken methodları şart koşmaktadır. `Interface` içerisinde belirtilen 4 methodun hepsi bulunmayan sınıflar bu `Interface`'ye sadık kalamazlar.
 
 `Liskov'un İkame Kuralı`'na uymak istediğimiz için, öncelikle tür dayatmamızı `Interface` olarak değiştirelim. (`Interface`'ler de birer soyutlama katmanı sayılırlar.)
 
@@ -542,7 +542,7 @@ class Deneme
 }
 ```
 
-Artık `Deneme` sınıfımız, `MailerInterface` interfacesine sadık kalan herhangi bir sınıfı kabul edecektir.
+Artık `Deneme` sınıfımız, `MailerInterface` `interface`'sine sadık kalan herhangi bir sınıfı kabul edecektir.
 
 Anlamadınız mı? Sorun değil, bu durumu hemen dünyevi bir örnekle anlatayım. 
 
@@ -551,11 +551,11 @@ Aracınızla uzun bir yola gittiğinizi farzedelim ve benzininiz bitmek üzere. 
 1. Eğer benzinliğe (sınıfa) bağlı olsaydınız, Türkiye'deki tek benzinciden benzin alabilirdiniz.
 2. Depoya benzin yerine mezot doldurulmadığından emin olamazdınız.
 
-Ne kadar saçma değil mi? O kadar yolu aynı benzinciye gitmek için geri dönmemiz gerekecek. Ama biz Türkiye'deki herhangi bir benzinliğe girip benzin alabilmek istiyoruz. `Interface`lere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin alabiliyor olmamızı sağlar. Çünkü, biz eminiz ki her benzinlikteki benzin pompası bizim aracımızın benzin deposuna uygun. Biz eminiz ki, pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (interface) Her benzinlik istasyonu bu tür standartlara sadık kaldığı için istediğimiz benzinliğe girebiliriz.
+Ne kadar saçma değil mi? O kadar yolu aynı benzinciye gitmek için geri dönmemiz gerekecek. Ama biz Türkiye'deki herhangi bir benzinliğe girip benzin alabilmek istiyoruz. `Interface`lere bağlı kalmak, bizim Türkiye'deki tüm benzincilerden benzin alabiliyor olmamızı sağlar. Çünkü, biz eminiz ki her benzinlikteki benzin pompası bizim aracımızın benzin deposuna uygun. Biz eminiz ki, pompadan çıkan şey (benzin) bizim aracımızın kabul ettiği birşey. (`interface`) Her benzinlik istasyonu bu tür standartlara sadık kaldığı için istediğimiz benzinliğe girebiliriz.
 
 Şimdi yukarıda verdiğimiz örneği yazılımsal bir örnekle anlatalım.
 
-Mail göndermek için tek bir `Mailer` sınıfı yerine, `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` gibi sınıfları kullanabiliriz. Oluşturduğumuz interfaceye uygun oldukları canımız hangisini isterse o sınıfı kullanabiliriz.
+Mail göndermek için tek bir `Mailer` sınıfı yerine, `SwiftMailer`, `SMTPMailer`, `AWSMailer` veya `MandrillMailer` gibi sınıfları kullanabiliriz. Oluşturduğumuz `interface`'e uygun oldukları canımız hangisini isterse o sınıfı kullanabiliriz.
 
 Peki bu bize ne avantaj sağlar? Belki çalıştığımız işyeri artık maillerin `Mandrill API`'si kullanılarak gönderilmesini istedi. Tüm mail gönderme sistemini baştan mı yazacağız? Hayır. Bir `Interface`'e sadık kaldığı sürece her mail sınıfını kullanabiliriz.
 
@@ -601,12 +601,12 @@ $mailer = new Mailer(new BenzinPompasi); // çalışmaz!!
 
 Yukarıdaki örneği inceleyelim.
 
-1. Deneme sınıfı, `SwiftMailer` sınıfını kabul edecek mi? Evet. Çünkü interfacemize sadık kalmış.
-2. Deneme sınıfı, `MandrillMailer` sınıfını kabul edecek mi? Evet. Çünkü interfacemize sadık kalmış.
-3. Deneme sınıfı, `AWSMailer` sınıfını kabul edecek mi? Evet. Çünkü interfacemize sadık kalmış.
-4. Deneme sınıfı, `BenzinPompasi` sınıfını kabul edecek mi? Hayır! Çünkü interfacemize sadık kalmış. Ne olduğu belirsiz birşey bu!
+1. Deneme sınıfı, `SwiftMailer` sınıfını kabul edecek mi? Evet. Çünkü `interface`'mize sadık kalmış.
+2. Deneme sınıfı, `MandrillMailer` sınıfını kabul edecek mi? Evet. Çünkü `interface`'mize sadık kalmış.
+3. Deneme sınıfı, `AWSMailer` sınıfını kabul edecek mi? Evet. Çünkü `interface`'mize sadık kalmış.
+4. Deneme sınıfı, `BenzinPompasi` sınıfını kabul edecek mi? Hayır! Çünkü `interface`'mize sadık kalmış. Ne olduğu belirsiz birşey bu!
 
-Sonuç olarak, `Liskov'un İkame İlkesi`'ne artık uyabiliyoruz. Artık bir sınıfa bağlı olmak yerine, bir `Interface`e bağlıyız!
+Sonuç olarak, `Liskov'un İkame İlkesi`'ne artık uyabiliyoruz. Artık bir sınıfa bağlı olmak yerine, bir `Interface`'e bağlıyız!
 
 Peki bu bize ne avantaj sağlayacak? Artık işyerindeki patronunuz mail göndermek için `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edebiliriz. `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e dönebiliriz.
 
@@ -636,7 +636,7 @@ Hepsine tek tek `new Mandrill();` mi diyeceğiz? Hayır. Daha önce ne anlatmı�
 
 `Dependency Injection Containers` (Dependency Injection Konteynerleri), Dependency Injection (kısaca DI) konusunda bize yardımcı olan konteyner sınıflardır. Hangi sınıfın nereye bağımlı olduğuna, nereye enjekte edileceğine çoğu zaman bu konteyner sınıflar karar verir ve bize yardımcı olur.
 
-Interface kullanırken, şöyle bir sorunla karşı karşıya kalabiliriz. Interfaceler, sınıflar gibi instantiate edilemezler. (Yani `new` kullanarak onları çalıştıramayız.)
+`Interface` kullanırken, şöyle bir sorunla karşı karşıya kalabiliriz. `Interface`'ler, sınıflar gibi instantiate edilemezler. (Yani `new` kullanarak onları çalıştıramayız.)
 
 Şimdi, çok basit bir algoritma geliştirip Dependency Injection konteynerimizi oluşturacağız. Bu konteyner, `MailerInterface` tür dayatmasını gördüğü yere, bizim belirlediğimiz sınıfı çalıştıracak ve enjekte edecek.
 
@@ -754,7 +754,7 @@ $database->getQueryCount(); // 1
 
 Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz. 
 
-Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar da `MySQL` üzerine çekilmiş birer soyutlama katmanlarıydı.
+Şuana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar `MySQL` üzerine çekilmiş birer soyutlama katmanıydı.
 
 Bu konuyu öğrendiğimize göre, artık `DBAL` ve `ORM` konularına girebiliriz.
 
@@ -803,7 +803,7 @@ Her `ORM` aracı, `Eloquent` kadar kolay olmamakla beraber, bu tür kullanımı 
 
 Kullanıcı şifrelerini `md5()` gibi zayıf ve asıl amacı şifreleme olmayan bir algoritma ile şifrelediğinizde, bu şifreler çok kolay şekilde kırılabilir. Orta seviye bir bilgisayarın bile birkaç dakika içerisinde `md5()` şifrelerini kırabilmektedir.
 
-`md5`'in zayıf olduğu bir konu da, birçok stringe aynı md5 karşılığını verebilmesidir. Genellikle md5 şifreleri kıranlar, bu şifreleri kırmaktan çok, aynı md5 çıktısını türeten veren başka bir şifreyi bulmaya çalışırlar.
+`md5`'in zayıf olduğu bir konu da, birçok stringe aynı md5 karşılığını verebilmesidir. Genellikle md5 şifreleri kıranlar, bu şifreleri kırmaktan çok, aynı md5 çıktısını veren başka bir şifreyi bulmaya çalışırlar.
 
 Siz kullanıcı girişi gibi bölümlerde md5 şifreyi karşılaştırdığınız için, saldıran kişiler farklı bir şifreyi kullansa bile, md5 çıktısı aynı olacağı için sisteme giriş yapmış olurlar.
 
@@ -820,7 +820,7 @@ Bu yüzden, kullanıcı şifrelerini kullanırken mutlaka;
 2. Şifreyi birçok defa şifrelemeden geçirir ve kırılmasını çok zorlaştırır.
 3. Tek taraflı şifreleme algoritmasıdır.
 
-`Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, şifrenin bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
+`Bcrypt` ile kriptolanmış şifrelerin çözülebilmesi için, mutlaka kriptolanmış şifrenin, bcrypt tarafından kaç defa kriptolandığının ve salt verinin ne olduğunun bilinmesi gerekir. Böylece şifrenin kırılması neredeyse imkansız hale gelir. Bu şifrenin kırılabilmesi için son derece güçlü bir bilgisayar ordusunun çok uzun süre çalışması gerekmektedir.
 
 `Bcrypt` ve diğer şifreleme algoritmaları, PHP'ye `5.5-dev` versiyonu ile eklenmiştir. PHP'nin eski çekirdek geliştiricilerinden biri olan (Ne yazık ki ayrıldı.) Anthony Ferrara, oluşturduğu `password_compat` kütüphanesi ile bu özelliği `PHP 5.3.7`'ye kadar indirmiştir. İsterseniz bu kütüphaneye [https://github.com/ircmaxell/password_compat](https://github.com/ircmaxell/password_compat) adresinden ulaşabilir ve projelerinizde kullanabilirsiniz.
 
@@ -1446,7 +1446,7 @@ class Controller
 }
 ```
 
-**c. Zayıf controller sınıfları, şişman modeller. **
+**c. Zayıf controller sınıfları, şişman modeller.**
 
 // Yakında
 
