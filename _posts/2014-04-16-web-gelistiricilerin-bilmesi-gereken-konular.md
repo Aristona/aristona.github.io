@@ -604,7 +604,7 @@ Yukarıdaki örneği inceleyelim.
 1. Deneme sınıfı, `SwiftMailer` sınıfını kabul edecek mi? Evet. Çünkü `interface`'mize sadık kalmış.
 2. Deneme sınıfı, `MandrillMailer` sınıfını kabul edecek mi? Evet. Çünkü `interface`'mize sadık kalmış.
 3. Deneme sınıfı, `AWSMailer` sınıfını kabul edecek mi? Evet. Çünkü `interface`'mize sadık kalmış.
-4. Deneme sınıfı, `BenzinPompasi` sınıfını kabul edecek mi? Hayır! Çünkü `interface`'mize sadık kalmış. Ne olduğu belirsiz birşey bu!
+4. Deneme sınıfı, `BenzinPompasi` sınıfını kabul edecek mi? Hayır! Çünkü `interface`'mize sadık kalmamış. Ne olduğu belirsiz birşey bu!
 
 Sonuç olarak, `Liskov'un İkame İlkesi`'ne artık uyabiliyoruz. Artık bir sınıfa bağlı olmak yerine, bir `Interface`'e bağlıyız!
 
