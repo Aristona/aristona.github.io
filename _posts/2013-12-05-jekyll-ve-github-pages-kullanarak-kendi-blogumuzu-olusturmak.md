@@ -69,7 +69,7 @@ komutlarını girerek `Jekyll`'i çalıştırın. Eğer herşeyi doğru yaptıys
 
 ##Bölüm 4: Jekyll için tema indirelim##
 
-[http://jekyllthemes.org/]() adresinde açık kaynaklı `Jekyll` temaları bulabilirsiniz. Bu blog, Michael Rose'ın geliştirdiği `HPSTR` teması üzerine kurulu. İndirmek için:
+[http://jekyllthemes.org/](http://jekyllthemes.org/) adresinde açık kaynaklı `Jekyll` temaları bulabilirsiniz. Bu blog, Michael Rose'ın geliştirdiği `HPSTR` teması üzerine kurulu. İndirmek için:
 
 ```ruby
 cd site_klasoru
@@ -82,7 +82,7 @@ komutunu girerek kendi bilgisayarınıza indirebilirsiniz.
 
 Öncelikle, `_site` klasörü, `Jekyll` tarafından generate edilen statik dosyaların tutulduğu klasördür. Bu klasörü root klasör olarak düşünebilirsiniz. İçerisinde değişiklik yapmamanız gerekiyor çünkü `jekyll build` yazdığınızda bunlar override edilmiş olacak.
 
-`_posts` klasörü `Markdown` formatında yazdığınız yazıları tutacağınız klasör. `Markdown` syntaxı çok kolay ve yüksek ihtimalle daha önce farkında olmadan kullandınız. Popüler siteler (stackoverflow, Reddit, bazı forumlar gibi) `Markdown` formatını kullanıyor. Detaylı bilgiye [http://daringfireball.net/projects/markdown/syntax]() adresinden ulaşabilirsiniz.
+`_posts` klasörü `Markdown` formatında yazdığınız yazıları tutacağınız klasör. `Markdown` syntaxı çok kolay ve yüksek ihtimalle daha önce farkında olmadan kullandınız. Popüler siteler (stackoverflow, Reddit, bazı forumlar gibi) `Markdown` formatını kullanıyor. Detaylı bilgiye [http://daringfireball.net/projects/markdown/syntax](http://daringfireball.net/projects/markdown/syntax) adresinden ulaşabilirsiniz.
 
 Normalde `Markdown` syntaxında yazı yazarken bir yazının kod olduğunu göstermek için soldan 4 boşluk koymak gerekiyor, böylece harfler arasındaki mesafe eşitleniyor ve yazdığınız kod okunabilir oluyor. (HTML'deki `<pre>` mantığı) Ancak, `HPSTR` teması code highlighting için `Kramdown` formatını kullanıyor. Bu yüzden yazdığınız kodların hangi dilde olduğunu belirtip syntax highlighting işlemini kolayca yapabiliyorsunuz. 
 
@@ -123,7 +123,7 @@ Github üzerinde sayfa açmak için birkaç çeşit yol var ancak ben size en ko
     // SSH key kullanmıyorsanız github kullanıcı adı ve şifrenizi isteyecek
 ```
 
-komutlarını girerek dosyaları remote reponuza pushlayın. Birkaç dakika içerisinde `http://githubHesapAdınız.github.io` adresine giriş yapın ve siteniz sizi karşılıyor olacaktır.
+komutlarını girerek dosyaları remote reponuza pushlayın. Birkaç dakika içerisinde [http://githubHesapAdınız.github.io](http://githubHesapAdınız.github.io)  adresine giriş yapın ve siteniz sizi karşılıyor olacaktır.
 
 ##Bölüm 9: Grunt için ayrı bir paragraf.##
 
@@ -143,8 +143,8 @@ Kurulum gibi birçok konuya değinmediğim için kurulum esnasında biraz sıkı
 
 - Jekyll komutlarını girince `Liquid Exception UTF-8 / Special Characters` hatası alabiliyorsunuz. Çözümü terminalde Jekyll komutlarını girmeden önce Windows için `chcp 65001` komutunu, linux tabanlı işletim sistemleri ve Git Bash için `export LANG=en_US.UTF-8` yazarak terminalin dilini runtime esnasında değiştirmek.
 
-- Grunt'un Imagemin modülü windows tabanlı işletim sistemlerinde sıkıntılı çalışıyor. Ben Gruntfile dosyamdan onu kaldırmak zorunda kaldım. Bu konu hakkında bir issue açık durumda: [https://github.com/gruntjs/grunt-contrib-imagemin/issues/109]() Zaten küçük bir site, resimleri optimize etmek bize fazla birşey kazandırmayacak.
+- Grunt'un Imagemin modülü windows tabanlı işletim sistemlerinde sıkıntılı çalışıyor. Ben Gruntfile dosyamdan onu kaldırmak zorunda kaldım. Bu konu hakkında bir issue açık durumda: [https://github.com/gruntjs/grunt-contrib-imagemin/issues/109](https://github.com/gruntjs/grunt-contrib-imagemin/issues/109) Zaten küçük bir site, resimleri optimize etmek bize fazla birşey kazandırmayacak.
 
 Başka yazılarda tekrar görüşmek üzere!
 
-> Yazım yanlışları olabilir. Bu tür yanlışlıkları düzeltip [https://github.com/Aristona/aristona.github.io]() adresine `Pull Request` atabilirsiniz.
+> Yazım yanlışları olabilir. Bu tür yanlışlıkları düzeltip [https://github.com/Aristona/aristona.github.io](https://github.com/Aristona/aristona.github.io) adresine `Pull Request` atabilirsiniz.
