@@ -50,6 +50,18 @@ Kendiniz bir yazı göndermek isterseniz (web geliştirme ile ilgili olmalı ve 
 
 Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemediklerini söylemişlerdi. Bu yüzden bu bölümde, bir güncelleme yaptığımda nelerin değiştiğini/eklendiğini belirteceğim. Buradaki değişiklikler 24.07.2014 tarihi sonrasını kapsayacaktır.
 
+**09.09.2014**
+
+- CSS bölümüne **Temel attributeler dışında diğer HTML attributelerini kullanmayın.** alanı eklendi.
+- CSS bölümüne **Inline stil yazmaktan kaçının.** alanı eklendi.
+- CSS bölümüne **CSS Inheritence** alanı eklendi.
+- CSS bölümüne **height propertyini kullanmayın.** alanı eklendi.
+- CSS bölümüne **`<br>` kullanmayın.** alanı eklendi.
+- CSS bölümüne **`&nbsp;` kullanmayın.** alanı eklendi.
+- CSS bölümüne **Açıkta element bırakmayın.** alanı eklendi.
+- CSS bölümüne **Negatif piksel margini çok kullanmayın.** alanı eklendi.
+- CSS bölümüne **Ayraçları HTML ile yazmayın.** alanı eklendi.
+
 **27.08.2014**
 
 - Genel bir imla ve hata denetimi yapıldı.
