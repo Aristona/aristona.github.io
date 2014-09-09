@@ -1856,13 +1856,13 @@ Eğer bir objeye `height` kullanarak yükseklik ekliyorsan, o obje daima o yüks
 
 Sen kutucuğun altına, 1 paragraf yazı da yazabilirsin, 10 paragraf yazı da. Haliyle, 10 paragraf yazı daha uzun olacaktır. Bu yüzden, çok zorda kalmadıkça `height` kullanmayın.
 
-### <br> kullanmayın. ###
+### `<br>` kullanmayın. ###
 
 Hiçbir istisnası yok. `<br>` kullanma.
 
 ### `&nbsp;` kullanmayın. ###
 
-Bilmeyenler için `&nbsp; ufak bir boşluk oluşturur. Şunun gibi (&nbsp;)
+Bilmeyenler için `&nbsp;` ufak bir boşluk oluşturur. Şunun gibi (&nbsp;)
 
 Paragraf eklemek için `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` yazan adam gördü bu gözler.
 
