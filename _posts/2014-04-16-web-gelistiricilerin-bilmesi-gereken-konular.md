@@ -71,7 +71,7 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 - JavaScript bölümüne **Asenkron, deferred ve DOM eventlerinden bağımsız yüklemeler yapın.** alanı eklendi.
 
 ---
-# Back end (Arka yüz) #
+# Back end (Arka yüz) #	
 ---
 
 Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
@@ -1655,9 +1655,263 @@ Maddelerimiz:
 
 // CSS explosion nedir? Nasıl korunulur?
 
-### Precompiler kullanın. ###
+### Temel attributeler dışında diğer HTML attributelerini kullanmayın. ###
 
-// Popüler CSS precompilerlar, + SASS örneği
+Bildiğiniz gibi HTML inline attibuteleri destekler, örneğin:
+
+```html
+<div height="100" width="100"></div>
+```
+
+yazarak `100x100 pixel` boyutunda bir div oluşturabiliriz, ancak HTML attributeleri yerine CSS propertylerini kullanmak daha sağlıklıdır.
+
+```html
+<div style="height: 100px; width: 100px;"></div>
+```
+
+HTML sadece markup için kullanılmalı ve CSS ile şekillendirilmelidir. Kullanmanız gereken HTML attributeleri class, id ve style olmalıdır. Ancak, class harici tüm attributeler, eninde sonunda bir kötü kullanıma denk gelecektir. Aşağıda bunları detaylıca inceleyeceğiz.
+
+### Inline stil yazmaktan kaçının. ###
+
+Yukarıdaki örnekte kullandığımız CSS `inline CSS` (yani bir CSS dosyasına değil de, direkt HTML içinde style olarak yazmak) olarak geçiyor ve bu son derece yanlış bir kullanım. Inline kullanıma csslerimizi `<style>` içerisinde yazmakta dahildir.
+
+Şimdi bu neden sıkıntılıdır onu inceleyelim. Aslında burada birkaç sıkıntı var, bu yüzden hepsini örneklerle anlatacağım.
+
+Birincisiyle başlayalım. Örneğin, 50x50 boyutunda 3 tane div oluşturalım ve bunlara arkaplan olarak transparan bir renk verelim.
+
+```html
+<div style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
+<div style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
+<div style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
+```
+
+Şuana kadar bu yazıyı okuduysanız sorunu anında anlamışsınızdır. DRY kuralını bozmuş oluyoruz! Arkaplanı yeşil yapmak istesek ne olacaktı? 3 farklı yeri tek tek değiştirmemiz gerekecekti.
+
+İkincisi sıkıntı, peki bu divler çok farklı sayfalarda olsaydı? Hangi sayfalara bunu eklediğini hatırlamak için uğraşacaktın. Sen anasayfa.html üzerindeki divleri elle değiştirdin, ama kayit.html'deki div'i değiştirmeyi unuttun. Bu durumda "Aaaa, unutmuşum onu." diyemezsin. Her zaman, tek yeri değiştirdiğinde tüm uygulamanın değişiyor olması gerekir. Bunu yapmazsan, projeyi yönetmek çok zor olur.
+
+Üçüncü sıkıntı, eğer ileride doğru kullanım olan CSS'ye geçiş yaparsan ve kutucuklarını `classlar` üzerinden yönetirsen, inline `style` attributesi sorun çıkaracaktır çünkü `style` ile belirtilen css propertyleri `daha baskındır`, bu yüzden `class` ile tanımlanan propertyleri override (üzerine yazmak) ederler.
+
+Bunu örnekle anlatayım. Yukarıda bahsettiğimiz yeşil dive "kutucuk" adını verelim ve onun css'ini yazalım.
+
+```css
+.kutucuk {
+    height: 50px;
+    width: 50px;
+    background: green; //Arkaplanı yeşil yaptık
+}
+```
+
+Daha sonra, `class` attributesiyle, oluşturduğumuz divlerin `kutucuk` attributesine sahip olmasını sağlayalım.
+
+```html
+<div class="kutucuk" style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
+<div class="kutucuk" style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
+<div class="kutucuk" style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
+```
+
+Şuan, siz arkaplan olarak yeşil bekliyor olabilirsiniz, ancak arkaplan transparan kalmaya devam edecektir. Sebebini 3. maddede söylemiştim. `style` ile eklenen css propertyleri, daha baskındır. Öncelik daima onlarındır.
+
+Bunu önlemek için `!important` kullanabilirsiniz. Örneğin:
+
+```css
+.kutucuk {
+    background: green !important; //Arkaplanı yeşil yaptık ve baskın hale getirdik
+}
+```
+
+yazsaydık, bu kez öncelik bizde olacaktı ve arkaplan yeşil olacaktı. Ancak, `!important` kullanmak, bazı istisnalar haricinde kötü sayılmaktadır.
+
+Şimdi, doğru olanı yapalım ve inline cssleri silelim.
+
+```css
+.kutucuk {
+    height: 50px;
+    width: 50px;
+    background: green;
+}
+```
+
+```html
+<div class="kutucuk"></div>
+<div class="kutucuk"></div>
+<div class="kutucuk"></div>
+```
+
+Daha güzel, ancak geliştirebileceğimiz noktalar var.
+
+> Not: CSS'de öncelik konusunu biraz açalım.
+
+Ben CSS'i ilk öğrendiğim zamanlarda bu konuyu anlamakta güçlük çekmiştim, ama CSS çok basit bir mantıkla çalışıyor. `!important` ile belirtilen propertyler, daima öncelik kazanıyor. Daha sonra `style` attributesi içerisindekiler geliyor (ama style kullanmak iyi birşey değil demiştik), en son olarak, propertyler belirtiliş derinliğine göre ekleniyor.
+
+Aşağıdaki örneği ele alalım.
+
+```css
+/* Height ve width değerlerinin olduğunu varsayın. Yoksa bu kutucuklar 0 boyutunda olduğu için
+tarayıcıda görünmeyecekler. :) */
+div {
+    background: #111;
+}
+
+.kutucuk {
+    background: #222;
+}
+
+div.baba-kutucuk .kutucuk {
+    background: #333;
+}
+
+.onemli-kutucuk {
+    background: #444 !important;
+}
+```
+
+Sırayla aşağıdaki divlerin ne renk alacağına bakalım.
+
+**<div></div>**
+
+Bu, `#111` rengini alacaktır. Çünkü tüm divler, global olarak #111 rengini alması için ayarlanmış.
+
+**<div class="kutucuk"></div>**
+
+Bu, `#222` rengini alacaktır. Çünkü, üstteki örnekte olmayan biçimde, class değeri eklenmiş.
+
+**<div class="baba-kutucuk"><div class="kutucuk></div></div>**
+
+Derinlik konusu burada başlıyor. Burada kutucuğun alacağı renk `#333` olacaktır. Çünkü "baba kutucuğun altındaki kutucuk" diye belirtilmiş ve bu ona bir derinlik katmış. Herşey kutucuk olabilir, ama her kutucuğun babası, baba kutucuk olmayabilir. :)
+
+Eğer baba kutucuğun üstüne dede kutucuk ekleseydik, o zaman `.dede-kutucuk .baba-kutucuk .kutucuk { }` içerisine yazdığımız css rengi çalışacaktı. Bir elementi, ne kadar derin belirtirseniz, o kadar önem kazanır ve orada yazılan renk değeri öncelik kazanır.
+
+**<div class="baba-kutucuk"><div class="kutucuk style="background: #555"></div></div>**
+
+Bu, `#555` rengini alacaktır. Çünkü `style` ile eklenen değerler, soyağacından daha önemlidir.
+
+**<div class="baba-kutucuk"><div class="onemli-kutucuk style="background: #555"></div></div>**
+
+Bu, `#444` değerini alır, çünkü önemli kutucuğun önemi `!important` kullanarak belirtilmiş.
+
+Peki, tüm divlere global olarak `!important` ekleseydik, sonra `onemli-kutucuk` içine de `!important` ekleseydik? O zaman global olarak `!important` ekleyen tasarımcının kulağını çınlatabilirdiniz. :)
+
+### CSS Inheritence ###
+
+Kutucuk örneğine bir flashback yapalım.
+
+```css
+.kutucuk {
+    height: 50px;
+    width: 50px;
+    background: green;
+}
+```
+
+Peki biz başka arkaplana sahip kutucuklar istersek? Mesela, siyah ve beyaz renklerine sahip kutucuklar oluşturalım.
+
+```css
+.kutucuk-yesil {
+    height: 50px;
+    width: 50px;
+    background: green;
+}
+
+.kutucuk-beyaz {
+    height: 50px;
+    width: 50px;
+    background: white;
+}
+
+.kutucuk-siyah {
+    height: 50px;
+    width: 50px;
+    background: black;
+}
+```
+
+Ding! DRY kuralını yine bozduk. Kutucukları 30x30 boyutuna getirmek istersek ne yapacağız? 3 farklı yeri düzenleyeceğiz. Bunun yerine, `CSS inheritence` kullanıp, ortak kullanılan propertyleri paylaştırsak nasıl olurdu?
+
+```css
+.kutucuk  {
+    height: 50px;
+    width: 50px;
+}
+
+.kutucuk-yesil {
+    background: green;
+}
+
+.kutucuk-beyaz {
+    background: white;
+}
+
+.kutucuk-siyah {
+    background: black;
+}
+```
+
+Artık `<div class="kutucuk kutucuk-yesil"></div>` yazdığımızda, hem kutucuğun boyutları, hem de arkaplan rengi alınmış olacak.
+
+### height propertyini kullanmayın. ###
+
+Yukarıdaki örneklerimi bilerek önce kötü verip daha sonra iyi hale getirmeye çalışıyorum ki anlamak kolay olsun.
+
+Eğer bir objeye `height` kullanarak yükseklik ekliyorsan, o obje daima o yükseklikte kalacaktır. Neredeyse hiçbir zaman (çok ufak istisnalar dışında) `height` değeri verilmez ve elementlerin boyutlandırması otomatik olarak yapılır.
+
+Sen kutucuğun altına, 1 paragraf yazı da yazabilirsin, 10 paragraf yazı da. Haliyle, 10 paragraf yazı daha uzun olacaktır. Bu yüzden, çok zorda kalmadıkça `height` kullanmayın.
+
+### <br> kullanmayın. ###
+
+Hiçbir istisnası yok. `<br>` kullanma.
+
+### `&nbsp;` kullanmayın. ###
+
+Bilmeyenler için `&nbsp; ufak bir boşluk oluşturur. Şunun gibi (&nbsp;)
+
+Paragraf eklemek için `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` yazan adam gördü bu gözler.
+
+Asla `&nbsp;` kullanmayın. Eğer bir elementi kaydırmak istiyorsanız, `margin` veya `padding` kullanarak kaydırın.
+
+### Açıkta element bırakmayın. ###
+
+Aşağıdaki örneğe bakalım.
+
+```html
+<div class="ornek">
+    Merhaba dünya!
+</div>
+```
+
+Merhaba dünya yazısını seçmekte zorlanırsınız. En kötü ihtimalle, yazıyı açıkta bırakmaktansa `<span>` içerisine alın.
+
+```html
+<div class="ornek">
+    <span>Merhaba dünya!</span>
+</div>
+```
+
+### Negatif piksel margini çok kullanmayın. ###
+
+Bugün çok satan bir premium Themeforest teması üzerinde oynama yapmam gerekiyordu ve inanın bu yazıyı yazma sebebim de bu oldu.
+
+Temanın heryeri, ama heryeri negatif margin dolu. `margin: -3px;`, `margin-top: -15px;`
+
+Bu kişinin yaptığı tema şuna benziyordu.
+
+Önce, navigasyon elementine `margin-bottom: 30px` propertysini eklemiş ve içerik elementini biraz aşağıya ittirmiş. (resmini çizmeye çalışırsak, şöyle)
+
+```
+| Navigasyon |
+--------------
+--------------
+--------------
+|   İçerik   |
+```
+
+Daha sonra, içerik elementine `margin-top: -30px;` vermiş ve geri almış.
+
+```
+| Navigasyon |
+|   İçerik   |
+```
+
+...Niye?
 
 ### Semantic HTML yazın. ###
 
@@ -1665,15 +1919,55 @@ Maddelerimiz:
 
 ### Ayraçları HTML ile yazmayın. ###
 
-// CSS pseudo selectorlere bir giriş
+Nefret ettiğim insan türüne bir örnek daha. İnanılmaz derecede sık karşılaşıyorum bu durumla.
 
-### Duplicate HTML yazmayın. ###
+```html
+<a href="/anasayfa.html">Anasayfa</a>
+<span class="divider"> | </span>
+<a href="/hakkimizda.html">Hakkımızda</a>
+<span class="divider"> | </span>
+<a href="/iletisim.html">İletişim</a>
+```
 
-// Kendinizden nefret ettirmenin yolları
+Yapmaya çalıştığı şey çizersek şu:
 
-### Inline stil ve inline JavaScriptten kaçının. ###
+```
+Anasayfa | Hakkımızda | İletişim
+```
 
-// Yakında
+1999'a hoşgeldiniz.
+
+Daha düzgün hale getirelim. CSS pseudo selectorleri destekleyeli yıllar oldu.
+
+```html
+<ul>
+    <li>
+         <a href="/anasayfa.html">Anasayfa</a>
+    </li>
+    <li>
+         <a href="/hakkimizda.html">Hakkımızda</a>
+    </li>
+    <li>
+         <a href="/iletisim.html">İletişim</a>
+    </li>
+</ul>
+```
+
+```
+li {
+    border-right: 1px solid #fff;
+}
+
+li:last-child {
+    border-right: 0;
+}
+```
+
+Alacağın sonuç:
+
+```
+Anasayfa | Hakkımızda | İletişim
+```
 
 ### Assetleri yüklerden http veya https kullanmayın. ###
 
@@ -1687,9 +1981,24 @@ Bu yüzden, assetlerinizi yüklerken, aşağıdaki şekilde yüklemeye özen gö
 
 ```
 
-### YAZILARINIZI BÜYÜK HARFLE yazmayın! ###
+### Yazılarınızı BÜYÜK HARFLE yazmayın! ###
 
-// text-transform: uppercase;
+```
+<p>
+    EVET, HERKES YAZILARINI BÜYÜK HARFLERLE YAZMALI.
+    ÇOK ŞİRİN GÖRÜNÜYORLAR.
+</p>
+```
+
+Mert, al abi, bir snickers ye.
+
+```
+p {
+    text-transform: uppercase;
+}
+```
+
+`text-transform: uppercase;`, propertysi, eklenen elementteki yazıları büyük harfe çevirir.
 
 ### Linkleri doğru şekilde yazın. ###
 
