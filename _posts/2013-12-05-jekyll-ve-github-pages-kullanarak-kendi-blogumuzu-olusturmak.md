@@ -101,7 +101,10 @@ redcarpet:
 
 Unutmamanız gereken konu, site üzerinde herhangi bir değişiklik yaptığınızda `jekyll build` yazarak `_site` klasörü altındaki dosyaların tekrar oluşturulmasını sağlamak. Örneğin `_posts` klasörüne yeni bir yazı yazdığınız zaman bunun görünür olması için `jekyll build` komutunu girmeniz gerekiyor, ki `Jekyll` statik sitenizi generate edebilsin.
 
+ 
 Bunu local sunucunuzda kullanıp deployment öncesinde hata varmı diye bakabilirsiniz. Eğer bununla uğraşmak istemiyorsanız şanslısınız, çünkü `Github Pages` build işlemini bizim yerimize yapabiliyor.
+
+**Güncelleme:** [Jekyll 2.4.0](http://jekyllrb.com/news/2014/09/10/jekyll-2-4-0-released/) yayınlandıktan sonra proje üzerinde çalışırken `jekyll serve` komutu anlık olarak değişiklikleri built ediyor. Bu yüzden `jekyll build` koşmaya gerek kalmıyor. Kısaca eskiden `jekyll serve --watch` ile yaptığımız iş artık default oldu.
 
 ##Bölüm 7: Github pages üzerinde sayfamızı oluşturalım##
 
