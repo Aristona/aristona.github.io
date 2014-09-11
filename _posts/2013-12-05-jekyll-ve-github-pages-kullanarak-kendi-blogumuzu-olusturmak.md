@@ -55,7 +55,7 @@ yazarak `Jekyll` uygulamasını kurun. Aynı şekilde bahsettiğim diğer gereks
 Herşey hazırsa, `Jekyll` ile ilk sitemizi oluşturalım.
 
 ```ruby
-jekyll site_klasoru
+jekyll new site_klasoru
 ```
 
 yazarak `Jekyll`'in `site_klasoru` adlı klasörde oluşturulmasını sağlayın. Daha sonra:
