@@ -1470,7 +1470,7 @@ class Controller
 
 ### - Notice ve Warning'ler birer bugdur ve düzeltilmeleri gerekir. ###
 
-PHP çok katı kurallara sahip değildir. Bu yüzden ufak çaplı, basit hatalar bazen görmezden gelinir. Bu tür hatalar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING` olarak kayıtlara eklenir (hepsine [http://php.net/manual/en/errorfunc.constants.php]() adresinden bakabilirsiniz).
+PHP çok katı kurallara sahip değildir. Bu yüzden ufak çaplı, basit hatalar bazen görmezden gelinir. Bu tür hatalar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING` olarak kayıtlara eklenir (hepsine [http://php.net/manual/en/errorfunc.constants.php](http://php.net/manual/en/errorfunc.constants.php) adresinden bakabilirsiniz).
 
 Ancak, çoğu `PHP` geliştirici bunları fazla umursamıyor. Buradaki hataların düzeltilmesi, projenizin geleceği için son derece önemlidir.
 
@@ -1522,7 +1522,7 @@ Yanlışlıkla sunucu, FTP, veritabanı veya API bilgilerinizin olduğu dosyalar
 
 Aşağıda mükemmel yazılımcıların açık kaynaklı projeleri yer alıyor. Bedava `VPS` isteyen var mı?
 
-[https://github.com/search?q=exec+sudo+%24_GET&type=Code]()
+[https://github.com/search?q=exec+sudo+%24_GET&type=Code](https://github.com/search?q=exec+sudo+%24_GET&type=Code)
 
 Sorunu anlamayanlar varsa anlatmaya çalışayım. Buradaki scriptlerin bazıları, gelen `GET` isteğini kontrol etmeden direkt olarak linux üzerinde yönetici yetkisiyle çalıştırıyorlar. Yani birisi "Hey linux, bana sunucunun şifresini verir misin?" diye sorabilir veya "Hey linux, kendine format atar mısın?" tarzındaki komutları çalıştırabilir.
 
@@ -1548,7 +1548,7 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 `PSR` standartları, `PHP-FIG` ekibinin, `framework`ler (Çatılar) arası kod düzenini ve uyumluluğu sağlamak için oluşturduğu yazılım geliştirme standartlardır. `PHP-FIG`'in açılımı, `Framework Interop Group` olmakla beraber, frameworkler arasında birlikte çalışabilirliği desteklemek için kurulmuş bir oluşumdur. Bu oluşum sonrasında birçok popüler PHP projesi `PSR` standartlarına uyma kararı almıştır. Günümüzde son derece popüler olan `PSR` standartlarına uymak sizin için büyük avantaj sağlayacaktır.
 
-`PSR` standartları [https://github.com/php-fig/fig-standards]() reposu üzerinde tutulmaktadır. Kabul edilen standartlar `accepted` klasörü içerisinde bulunabilir.
+`PSR` standartları [https://github.com/php-fig/fig-standards](https://github.com/php-fig/fig-standards) reposu üzerinde tutulmaktadır. Kabul edilen standartlar `accepted` klasörü içerisinde bulunabilir.
 
 Bu yazıyı yazdığım sırada kabul edilmiş `5` tane `PSR standardı` bulunmaktadır. Bunlar `PSR-0`, `PSR-1`, `PSR-2`, `PSR-3` ve `PSR-4`'tür.
 
