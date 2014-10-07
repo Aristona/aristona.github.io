@@ -904,10 +904,10 @@ Bunun adı, bana göre `paranoyak`lıktır, ve evin arka kapısı ağzına kadar
 
      // Kullanıcının doğrulama ve kayıt işlemleri
 
-     $username = "Aristona"; //Kullanıcı adı "Aristona" olsun.
+     $username = "Aristona"; // Kullanıcı adı "Aristona" olsun.
 
-     echo 'Başarıyla kayıt oldun,' . $username . '; //Yanlış
-     echo 'Başarıyla kayıt oldun,' . strip_tags($username) . '; // Doğru
+     echo 'Başarıyla kayıt oldun, ' . $username; // Yanlış
+     echo 'Başarıyla kayıt oldun, ' . strip_tags($username); // Doğru
 ```
 
 Bu kurallara uyduğunuz zaman;
