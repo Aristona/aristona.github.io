@@ -350,13 +350,13 @@ Eğer bu sayı `4`'ün üzerine çıkarsa, sınıfınız gereğinden fazla iş y
 
 Gördüğünüz gibi bu methodun ne iş yaptığını açıklarken 6 defa `VE` kullandık. Bu yanlış bir kullanımdır. Bu method gereğinden fazla iş yapmaktadır. Burada gerçekleştirilen işlemlerin bazılarını farklı sınıflara veya methodlara dağıtmamız bizim `Tek Amaç İlkesi`'ne sadık kalmamızı sağlayacaktır.
 
-Şimdi biraz düşünelim. Kayıt sınıfı yazdığımıza göre, `Kayıt` sınıfının amacı, kullanıcıyı başarılı bir şekilde veritabanına kayıt ettirmek olmalıdır. `Doğrulama`'ların, avatar resminin yeniden boyutlandırılmasının, yeniden boyutlandırılan resmin bir klasöre yerleştirilmesinin `Kayıt` sınıfıyla bir ilgisi bulunmamaktadır. Bu işlemler farklı sınıflarda yapılmalıdır.
-
 > Not: Bu maddenin bir kural değil, bir görüş olduğunu hatırlatmalıyım. Sayılarda ufak oynamalar olabileceği gibi, çok büyük oynamalar Tek Amaç İlkesi'nden çıktığınız anlamına gelebilir.
+
+Şimdi biraz düşünelim. Kayıt sınıfı yazdığımıza göre, `Kayıt` sınıfının amacı, kullanıcıyı başarılı bir şekilde veritabanına kayıt ettirmek olmalıdır. `Doğrulama`'ların, avatar resminin yeniden boyutlandırılmasının, yeniden boyutlandırılan resmin bir klasöre yerleştirilmesinin `Kayıt` sınıfıyla bir ilgisi bulunmamaktadır. Bu işlemler farklı sınıflarda yapılmalıdır.
 
 ### - Kendinizi == yerine === kullanmaya alıştırın. ###
 
-`==`, `loose comparison` yaptığı için sayı olan `0` ile `false`'ı, sayı olan `1` ile `true`'yu eşit sayar. `Loose comparison` PHP'nin doğasında olmasına rağmen, bazı durumlarda gücü elimize almanız gerekebilir. 
+`==`, `loose comparison` yaptığı için sayı olan `0` ile `false`'ı, sayı olan `1` ile `true`'yu eşit sayar. `Loose comparison` PHP'nin doğasında olmasına rağmen, bazı durumlarda gücü elimize almanız gerekebilir.
 
 Bu durum için hemen bir örnek verelim;
 
@@ -389,7 +389,7 @@ Artık `0` değeri `false` olmadığı için, yazdığımız ufak scriptimiz do�
 
 Açıkcası, ben biraz disiplinli çalışmayı sevdiğim için daima `strict comparison` operatörünü kullanmaktayım. Özellikle `boolean` türündeki değerleri karşılaştırırken mutlaka `strict comparison` operatörünü kullanın.
 
-PHP'de, `boolean` verileri şunlardır: 
+PHP'de, `boolean` verileri şunlardır:
 
 1. Sayı olan `0` ve `1`. (0 false, 1 true)
 2. Float olan `0.0` ve `1.0`.
@@ -529,7 +529,7 @@ class Deneme
 
 Artık `Deneme` sınıfımız, `MailerInterface` `interface`'ine sadık kalan herhangi bir sınıfı kabul edecektir.
 
-Anlamadınız mı? Sorun değil, bu durumu hemen dünyevi bir örnekle anlatayım. 
+Anlamadınız mı? Sorun değil, bu durumu hemen dünyevi bir örnekle anlatayım.
 
 Aracınızla uzun bir yola gittiğinizi farzedelim ve benzininiz bitmek üzere. Benzin almak için bir benzinliğe uğradınız.
 
@@ -640,7 +640,7 @@ Dependency Injection konteynerlerinin, genel olarak aşağıdaki gibi bir kullan
 
     // Yeni bir MandrillMailer instancesi
     $deneme = new Deneme($container->resolve('MailerInterface'));
-    
+
     // Yeni bir MandrillMailer instancesi
     $deneme2 = new Deneme($container->resolve('MailerInterface'));
 
@@ -680,7 +680,7 @@ Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek
     $sth->execute(array($_POST['kalori_degeri'], 'Kırmızı'));
 ```
 
-Artık herhangi bir süzmeye gerek kalmadan, `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bind ettik. 
+Artık herhangi bir süzmeye gerek kalmadan, `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bind ettik.
 
 Artık `PDO driver`'ı, sorguyu oluştururken `?` gördüğü bölümleri bizim verdiğimiz parametrelerle değiştirecek ve `SQL Injection` saldırılarının tamamını bizim yerimize önleyecektir.
 
@@ -737,7 +737,7 @@ $database->getQueryCount(); // 1
 
 ```
 
-Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz. 
+Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz.
 
 Şu ana kadar herhangi bir veritabanı sınıfı kullandıysanız, bu sınıflar `MySQL` üzerine çekilmiş birer soyutlama katmanıydı.
 
@@ -833,7 +833,7 @@ Veritabanına tek erişibim yapabilen uygulamanız değildir. Veritabanına dire
 
 Ancak, bu bilgiler `SQL Injection` veya diğer saldırılar için geçerli değildir. Bu yüzden her saldırının escape işlemi farklı olmaktadır.
 
-Örneğin, bir `SQL Injection` saldırısını önlemek için uygulamamız gereken escape işlemi farklıdır. `Shell Injection`'ın önlemi farklıdır, `XSS`'in önlemi farklıdır. Bunların hepsi farklı şekilde escape edilmelidir. 
+Örneğin, bir `SQL Injection` saldırısını önlemek için uygulamamız gereken escape işlemi farklıdır. `Shell Injection`'ın önlemi farklıdır, `XSS`'in önlemi farklıdır. Bunların hepsi farklı şekilde escape edilmelidir.
 
 Bu yüzden, altın kuralımız şudur:
 
@@ -932,7 +932,7 @@ Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonks
 
 ```php
 <?php
-    
+
 class AssetYukleyici
 {
     private $dosyalar;
@@ -980,7 +980,7 @@ Bu durum, özellikle `PHP blogları` için, artık son derece vahim bir hale gel
 PHP bloglarının kötü olmasının bana göre birkaç sebebi var:
 
 1. PHP ile bir şeyler geliştirebilmenin diğer dillere göre daha kolay olması, bu yüzden amatör yazılımcılar tarafından sıkça tercih ediliyor olması (muhtemelen en büyük amatör/yeni yazılımcı kitlesi bizde).
-2. `WordPress` ve `Joomla` gibi son derece eski ve ilkel yöntemlerle geliştirilen projelerin son derece popüler olması. 
+2. `WordPress` ve `Joomla` gibi son derece eski ve ilkel yöntemlerle geliştirilen projelerin son derece popüler olması.
 3. Birkaç yıl öncesine kadar GitHub (2008) ve Composer (2012)'ın olmayışı. Bu yüzden, binlerce kötü, eski, güvenli olmayan, demode sınıf ve kod örnekleri internette dolaşıyor ve halen Google arama sonuçlarında çıkıyor olması.
 4. PHP'nin 5.3 versiyonuna kadar modernlikten çok uzak bir dil olması.
 5. Kurumsallıktan uzak firmaların kullanıyor olması. İşimizi nasıl modernleştirebiliriz yerine nasıl asgari ücrete çalışacak PHP'ci buluruz arayışı.
@@ -1009,7 +1009,7 @@ Bir `C`'ci veya `C++`'cının zaten iyi veya kötü derdi olmaz. İyisi ve köt�
 
 Bir `Assembly`'cinin zaten blog yazacak bir interneti olmaz.
 
-Bir `NodeJS`'ci, genellikle daha önceden `JavaScript`'i tecrübe ettiği için biraz bilgilidir. Yeni başlayan "Soket, asenkron falan bişey diyorlar anlamadım ben." der bırakır. 
+Bir `NodeJS`'ci, genellikle daha önceden `JavaScript`'i tecrübe ettiği için biraz bilgilidir. Yeni başlayan "Soket, asenkron falan bişey diyorlar anlamadım ben." der bırakır.
 
 Ama... `PHP` dünyası böyle mi? Bir ev yaparlar, evin pencereleri olmaz, çatısı aşağıda olur, kapıyı açtığında bütün bina çöker ve kapıyı açtığınızda binayı yıktınız diye size kızarlar. Adam bir köpek kulübesi yapar, öyle bir havalara girer ki sanırsın Burj Dubai'yi yapmış (ama o köpek kulübesini almak isteyen birçok insan çıkar, böyle de bir avantajı var).
 
@@ -1063,13 +1063,13 @@ Veya:
 
 yazdığınızda sunucuya veritabanını yedeğinin yüklenmesini sağlayıp, Apache/MySQL (artık ne kullanıyorsanız) restart atılmasını istemez misiniz?
 
-Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği her şeyi bilgisayara yaptırın. 
+Proje geliştirirken en çok nelere vakit harcadığınızı düşünün ve bilgisayarın yapabileceği her şeyi bilgisayara yaptırın.
 
 Her seferinde `public function` yazmak zor mu geliyor? Kullandığınız IDE içerisinde `Snippet` oluşturun. `pub` yazınca otomatik tamamlasın. Daha iyi ihtimalle, zaten birileri oluşturmuş ve GitHub'da paylaşmıştır, araştırın.
 
 Uzun terminal komutlarını zor mu geliyor? `Alias` oluşturun, hatta gerekiyorsa bunları script haline getirin.
 
-Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para, çünkü zaman === para) kazanabileceğinin farkına varabilirsin. 
+Özellikle genç arkadaşlar bunun ne kadar önemli olduğunun farkında olmalılar. Günde 8 saat çalışarak 10 birim iş yapacağına 30 birim iş yapabilirsin. Uzun vadede ne kadar çok zaman ve (dolayısıyla para, çünkü zaman === para) kazanabileceğinin farkına varabilirsin.
 
 Bu yüzden, daha `akıllı çalış`. Daima daha fazlasını öğren. Vakit kaybetme, iyi olmak kadar hızlı olmakta önemli.
 
@@ -1107,7 +1107,7 @@ Eğer PHP'de `Ruby` ve `JavaScript` gibi dillerdeki `reverse()` methodunu kullan
             return strrev($this);
         }
     }
-    
+
     register_primitive_type_handler('string', 'StringHandler');
 
     $ornek = "Merhaba!";
@@ -1144,20 +1144,20 @@ Yazdığımız kodlar, bazen sağa doğru yaklaşırlar. Bu genellikle iç içe 
                     {
                         //...
                     }
-               } 
+               }
                else
                {
 
                }
           }
-          else 
+          else
           {
 
           }
      }
 ```
 
-Bu örnekte gördüğünüz gibi iç içe `3` tane `if bloğu` açılmış. Dikkat ettiyseniz her `if` bloğu sağ tarafa biraz daha yaklaşmış. Eğer böyle yaparsanız yazdığınız kodlar okunaklı olmaktan çıkar. Bunun içine `else` blokları da girdiğinde hangi kıvırcık parantezin hangi bloğu kapattığını veya açtığını anlamanız güç olur. Fonksiyon içerisinde genellikle `1` veya `2` seviye if bloğu oluşturmalısınız. `3` ve üzeri çok fazla iş yapıldığına ve kodun okunamaz olacağına işarettir. 
+Bu örnekte gördüğünüz gibi iç içe `3` tane `if bloğu` açılmış. Dikkat ettiyseniz her `if` bloğu sağ tarafa biraz daha yaklaşmış. Eğer böyle yaparsanız yazdığınız kodlar okunaklı olmaktan çıkar. Bunun içine `else` blokları da girdiğinde hangi kıvırcık parantezin hangi bloğu kapattığını veya açtığını anlamanız güç olur. Fonksiyon içerisinde genellikle `1` veya `2` seviye if bloğu oluşturmalısınız. `3` ve üzeri çok fazla iş yapıldığına ve kodun okunamaz olacağına işarettir.
 
 İyi bir kod, bakıldığında aşağıya doğru düz bir çizgiyi andırmalı ve dalgalanmalar az olmalıdır. Burada bizim oluşturduğumuz fonksiyon düz bir çizgi yerine, yassı bir `C` harfini (tersten) andırıyor. Oluşturduğunuz sınıfta bu fonksiyon gibi 10 fonksiyon daha olduğunu hayal ederseniz, dalgalı bir çizgi görüntüsü gözünüzde canlanacaktır.
 
@@ -1194,7 +1194,6 @@ Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya g
         {
             return true;
         }
-  
         return false;
     }
 ```
@@ -1210,7 +1209,6 @@ Devam edelim: `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde
     {
         if(is_array($input)
             return true;
-  
         return false;
     }
 ```
@@ -1292,7 +1290,7 @@ Bu durumdan kurtulmak için kıvırcık parantez kullansaydınız, bu durum soru
     }
 ```
 
-Bu örnekte, `kosul` koşulu sağlanıyorsa `if` bloğunun ilk `return` ifadesini çalışacaktır, koşul sağlanmıyorsa fonksiyon `else` bloğunu çalıştıracak ve oradaki `return` ifadesini çalıştıracaktır. `return "Hata";` ifadesi asla ve hiçbir koşulda çalışmayacaktır. 
+Bu örnekte, `kosul` koşulu sağlanıyorsa `if` bloğunun ilk `return` ifadesini çalışacaktır, koşul sağlanmıyorsa fonksiyon `else` bloğunu çalıştıracak ve oradaki `return` ifadesini çalıştıracaktır. `return "Hata";` ifadesi asla ve hiçbir koşulda çalışmayacaktır.
 
 Kıvırcık parantez kullanmak bu yüzden son derece önemlidir. `Apple`'ın `SSL`'de çıkardığı meşhur `goto fail;` güvenlik açığının sebebi budur.
 
@@ -1354,7 +1352,7 @@ Bu yüzden kendinizi test yazmaya alıştırın. `F5`'e ne zaman basmanız gerek
 
 **Continuous Integration için ayrı bir sayfa açalım...**
 
-Continuous Integration, en basit haliyle yazılan testlerin sıklıkla çalıştırılmasını sağlamaya denmektedir. Yazdığınız testleri saatlik olarak veya versiyon kontrol sistemlerini kullanıyorsanız her commmit sonrası çalıştırılmasını sağlayabilirsiniz. 
+Continuous Integration, en basit haliyle yazılan testlerin sıklıkla çalıştırılmasını sağlamaya denmektedir. Yazdığınız testleri saatlik olarak veya versiyon kontrol sistemlerini kullanıyorsanız her commmit sonrası çalıştırılmasını sağlayabilirsiniz.
 
 Continuous Integration için `Travis CI`, `Hudson CI`, `Jenkins CI` gibi araçları kullanabilirsiniz. Continuous Integration araçlarını kullanmanın size faydası şudur:
 
@@ -1395,7 +1393,7 @@ Bu yüzden sizin, tarayıcıların, arama motorlarının ve diğer araçların a
 
 class Controller
 {
-  
+
     public function test()
     {
         $test = "Bir şey";
@@ -1419,7 +1417,7 @@ Bazen `Controller` sınıfları `View`'a gereğinden fazla veri gönderir ve bu 
 
 class Controller
 {
-  
+
     public function test()
     {
         // yanlış
@@ -1570,7 +1568,7 @@ Maddelerimiz:
 
 **b. Dosyalar**
 
-* `(MUST)`: PHP kodları ya uzun olan `<?php ?>` yapısını, ya da `<?= ?>` olan kısa echo yapısını kullanabilir. Başka her türlü varyasyon yasaklanmıştır.    
+* `(MUST)`: PHP kodları ya uzun olan `<?php ?>` yapısını, ya da `<?= ?>` olan kısa echo yapısını kullanabilir. Başka her türlü varyasyon yasaklanmıştır.
 
 **c. Karakter encoding**
 
@@ -2017,13 +2015,13 @@ Aşağıdaki gibi bir JavaScript object literal tanımlayabiliriz.
 
 //JavaScript object literaller PHP'deki sınıflara benzer, ancak aynı şey değildir.
 var user = {
-  
+
    name           : "Anıl",
    age            : 25,
    isAuthenticated: false,
 
    isOld: function() {
-       return (this.age >= 30) true : false; 
+       return (this.age >= 30) true : false;
    }
 
 }
@@ -2183,7 +2181,7 @@ Burada bir sorun yok, ancak en çok bilinen, `jQuery`'nin `ready` eventi, direkt
 
 ```js
 $(document).on('ready', function() {
-    
+
     $('.birsey').html('<span>Merhaba dünya!</span>');
 
 });
@@ -2234,7 +2232,7 @@ Biz, `DOM` gibi, birşeyler yüklendiğinde kendi `eventlerimizi` ateşleyebilir
         alert("jQuery yüklendi!");
     });
 
-    $script.ready('plugins', function() { 
+    $script.ready('plugins', function() {
         // 2 plugin de yüklendiği anda çalıştırılacak callback
         alert("2 plugin de yüklendi.");
     });
