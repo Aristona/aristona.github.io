@@ -1754,17 +1754,17 @@ Bu, `#111` rengini alacaktır. Çünkü tüm divler, global olarak #111 rengini 
 
 Bu, `#222` rengini alacaktır. Çünkü, üstteki örnekte olmayan biçimde, class değeri eklenmiş.
 
-**<div class="baba-kutucuk"><div class="kutucuk></div></div>**
+**<div class="baba-kutucuk"><div class="kutucuk"></div></div>**
 
 Derinlik konusu burada başlıyor. Burada kutucuğun alacağı renk `#333` olacaktır. Çünkü "baba kutucuğun altındaki kutucuk" diye belirtilmiş ve bu ona bir derinlik katmış. Herşey kutucuk olabilir, ama her kutucuğun babası, baba kutucuk olmayabilir. :)
 
 Eğer baba kutucuğun üstüne dede kutucuk ekleseydik, o zaman `.dede-kutucuk .baba-kutucuk .kutucuk { }` içerisine yazdığımız css rengi çalışacaktı. Bir elementi, ne kadar derin belirtirseniz, o kadar önem kazanır ve orada yazılan renk değeri öncelik kazanır.
 
-**<div class="baba-kutucuk"><div class="kutucuk style="background: #555"></div></div>**
+**<div class="baba-kutucuk"><div class="kutucuk" style="background: #555"></div></div>**
 
 Bu, `#555` rengini alacaktır. Çünkü `style` ile eklenen değerler, soyağacından daha önemlidir.
 
-**<div class="baba-kutucuk"><div class="onemli-kutucuk style="background: #555"></div></div>**
+**<div class="baba-kutucuk"><div class="onemli-kutucuk" style="background: #555;"></div></div>**
 
 Bu, `#444` değerini alır, çünkü önemli kutucuğun önemi `!important` kullanarak belirtilmiş.
 
@@ -1841,11 +1841,9 @@ Hiçbir istisnası yok. `<br>` kullanma.
 
 ### `&nbsp;` kullanmayın. ###
 
-Bilmeyenler için `&nbsp;` ufak bir boşluk oluşturur. Şunun gibi (&nbsp;)
+`&nbsp;`, tarayıcılar tarafından parselenirken ufak bir boşluk oluşturur. Şunun gibi (&nbsp;)
 
-Paragraf eklemek için `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` `&nbsp;` yazan adam gördü bu gözler.
-
-Asla `&nbsp;` kullanmayın. Eğer bir elementi kaydırmak istiyorsanız, `margin` veya `padding` kullanarak kaydırın.
+Siz asla `&nbsp;` kullanmayın. Eğer bir elementi kaydırmak istiyorsanız, `margin` veya `padding` kullanarak kaydırın.
 
 ### Açıkta element bırakmayın. ###
 
@@ -1898,7 +1896,7 @@ Daha sonra, içerik elementine `margin-top: -30px;` vermiş ve geri almış.
 
 ### Ayraçları HTML ile yazmayın. ###
 
-Nefret ettiğim insan türüne bir örnek daha. İnanılmaz derecede sık karşılaşıyorum bu durumla.
+İnanılmaz derecede sık karşılaşıyorum bu durumla.
 
 ```html
 <a href="/anasayfa.html">Anasayfa</a>
@@ -1932,13 +1930,13 @@ Daha düzgün hale getirelim. CSS pseudo selectorleri destekleyeli yıllar oldu.
 </ul>
 ```
 
-```
+```sass
 li {
     border-right: 1px solid #fff;
-}
 
-li:last-child {
-    border-right: 0;
+    &:last-child {
+        border-right: 0;
+    }
 }
 ```
 
@@ -1950,13 +1948,13 @@ Anasayfa | Hakkımızda | İletişim
 
 ### Assetleri yüklerden http veya https kullanmayın. ###
 
-Uygulamanızda kullanacağınız assetleri yüklerken, http veya https kullanmayıp, neyin kullanılacağına tarayıcının karar vermesini sağlamak iyi bir kullanım sayılmaktadır.
+Uygulamanızda kullanacağınız assetleri yüklerken hangi protokolün kullanılacağına tarayıcının karar vermesini sağlamak iyi bir kullanım sayılmaktadır.
 
-Bu yüzden, assetlerinizi yüklerken, aşağıdaki şekilde yüklemeye özen gösterin:
+Bu yüzden belirli bir protokol belirlemek yerine, assetlerinizin hangi protokol üzerinden yüklenmesi gerektiğini tarayıcılara bırakabilirsiniz. Protokol belirtmemek için, sadece `//` yazmanız yeterlidir.
 
 ```html
 
-<script type="text/JavaScript" src="//assets/app.js">
+<script type="text/javascript" src="//assets/app.js">
 
 ```
 
@@ -1969,15 +1967,13 @@ Bu yüzden, assetlerinizi yüklerken, aşağıdaki şekilde yüklemeye özen gö
 </p>
 ```
 
-Mert, al abi, bir snickers ye.
+Asla yazıların HTML'ye yazdığınız şekilde görüneceğini beklemeyin. Ne zaman gerekiyorsa, gerekli CSS attributelerini kullanarak yazılarınızı şekillendirin. Eğer bir yazının büyük harflerle yazılması gerekiyorsa, bunu CSS propertyleri ile belirtin.
 
 ```
 p {
     text-transform: uppercase;
 }
 ```
-
-`text-transform: uppercase;`, propertysi, eklenen elementteki yazıları büyük harfe çevirir.
 
 ### Linkleri doğru şekilde yazın. ###
 
@@ -2397,6 +2393,6 @@ Capistrano'nun ne olduğunu, sitesindeki kısa açıklama ile özetlemeye çalı
 
 ## Scalability ##
 
-// Uygulama tanıtımları: Varnish - Redis - HAProxy - Resque - Iron - CDN vsvs. 
+// Uygulama tanıtımları: Varnish - Redis - HAProxy - Resque - Iron - CDN vsvs.
 
 > Not: Bu makaleyi vakit buldukça güncelleyeceğim.
