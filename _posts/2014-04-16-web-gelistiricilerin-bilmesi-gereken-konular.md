@@ -18,9 +18,13 @@ share: true
 
 Neredeyse her gün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm ve hep aynı şeyleri söylemekten sıkıldığım için bu yazıyı yazmaya karar verdim.
 
+### Amaç ###
+
+Bu yazıyı yazmaktaki amacım yazılım konusunda insanlara farklı bir bakış açısı kazandırmaktır.
+
 ### Kapsam ###
 
-Bu yazımda web geliştiricilerin bilmesi gereken konuları, yapılan yanlışları, bu yanlışların nasıl düzeltebileceğini ve genel olarak yazılım dünyasında kabul görmüş `good practice ` (İyi kullanım) kullanımlardan bahsedeceğim.
+Bu yazımda web geliştiricilerin bilmesi gereken konuları, yapılan yanlışları, bu yanlışların nasıl düzeltebileceğini ve genel olarak yazılım dünyasında kabul görmüş `good practice` (İyi kullanım) durumlardan bahsedeceğim.
 
 Yazı boyunca web geliştirme süreçlerinin tamamına değineceğim. Bu yüzden geliştirme ortamı, veritabanları, back end, front end, css, otomasyon, deployment, versiyon kontrol vb. konularda bilmeniz gerekenleri anlatmaya çalışacağım. Anlattığım bazı konular son derece temel konular olabileceği gibi, bazıları da üst düzey olabilir. Her şeyi bilmeniz şart değil, ancak biliyor olmanız size birçok konuda avantaj sağlayabilir.
 
@@ -34,21 +38,19 @@ Bu yazı, [https://github.com/Aristona/aristona.github.io](https://github.com/Ar
 
 1. Bu yazıda hatalar bulunabilir. Yazım hataları bulunabilir. Çalışmayan örnekler olabilir. Benim de doğru bildiğim yanlışlar olabilir. Bu durumda yapmanız gereken, "Bu yanlış! Ne kötü bir yazı bu!" demek yerine, eğer yapabiliyorsanız, gerekli düzeltmeleri yapıp `pull request` atmanızdır. Eğer yapamıyorsanız, araştırmam için gerekli kaynakları ve hatalı bölümü `issue` oluşturarak bana bildirebilirsiniz.
 
-2. Bu bir kitap veya akademik bir yazı olmayıp, sadece yıllardır tecrübe ettiğim bilgilere dayanarak tuttuğum notların makale haline getirilmesinden ibarettir. Yazı tamamlandığında okunmasının kolay olması amacıyla e-kitap olarak yayınlanabilir.
+2. Bu yazı bir kitap veya akademik bir makale değildir. Sadece, yıllardır tecrübe ettiğim bilgilerin ve tuttuğum notların, insanların kolayca ulaşabileceği, okuyabileceği ve anlayabileceği bir formatta yayınlanmasından ibarettir.
 
-3. Çoğu konuda "5 yaşındaki birine anlatır gibi" yüzeysel bir anlatım yapacağım. Örneğin, `GruntJS` adlı uygulamayı ve alternatiflerini tanıtacağım ve size nasıl bir yarar sağlayacağını birkaç basit örnekle anlatacağım; fakat size özel Grunt modülü yazmayacağım. Çünkü amacım sizlere balık vermek değil, balık tutmayı öğretmek. Burada yüzeysel olarak öğrendiklerinizi araştırıp kendinizi geliştirmek size büyük yarar sağlayacaktır.
+3. Birçok konuyu "5 yaşındaki birine anlatır gibi" anlatıp, genel olarak fazla detaya inmeden yüzeysel bir anlatım yapacağım. Örneğin, ben `GruntJS` isimli uygulamayı ve alternatiflerini tanıtacağım ve size nasıl bir yarar sağlayacağını birkaç basit örnekle anlatacağım; fakat size özel bir Grunt modülü yazmayacağım. Amacım sizlere balık vermek değil, balık tutmayı öğretmek. Burada yüzeysel olarak öğrendiklerinizi araştırıp kendinizi geliştirebilirsiniz.
 
 ### Destek ve Beklenti ###
 
-Bu yazıdan hiçbir ticari beklentim yoktur, ancak bağış yapmak isterseniz `PayPal` hesabım üzerinden bağış yapabilirsiniz.
-
-Kendiniz bir yazı göndermek isterseniz (web geliştirme ile ilgili olmalı ve mutlaka kabul görmüş bir good practice olmalı) `pull request` atarak yazınızı gönderebilirsiniz.
+Bu yazıdan hiçbir ticari beklentim yoktur. Kendiniz bir yazı göndermek isterseniz (web geliştirme ile ilgili olmalı ve mutlaka kabul görmüş bir good practice olmalı) `pull request` atarak yazınızı gönderebilirsiniz.
 
 ---
 # Değişiklikler #
 ---
 
-Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemediklerini söylemişlerdi. Bu yüzden bu bölümde, bir güncelleme yaptığımda nelerin değiştiğini/eklendiğini belirteceğim. Buradaki değişiklikler 24.07.2014 tarihi sonrasını kapsayacaktır.
+Bazı okuyucular yorumlarında yazıda nelerin değiştiğini takip edemediklerini söylemişlerdi. Aslında versiyon kontrol bu sorunu çözüyor olsa da, ben yine de okuma kolaylığı olması açısından bir güncelleme yaptığımda nelerin güncellendiğini bu bölümde belirteceğim. Buradaki değişiklikler 24.07.2014 tarihi sonrasını kapsayacaktır. (Ufak değişiklikler ve yazım hatalarının düzeltilmesi burada belirtilmeyecektir.)
 
 **09.09.2014**
 
@@ -83,7 +85,7 @@ Bazı okuyucular yorumlarında, yazıda nelerin değiştiğini takip edemedikler
 - JavaScript bölümüne **Asenkron, deferred ve DOM eventlerinden bağımsız yüklemeler yapın.** alanı eklendi.
 
 ---
-# Back end (Arka yüz) #	
+# Back end (Arka yüz) #
 ---
 
 Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
@@ -92,9 +94,9 @@ Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, bir
 
 ### - Global scope'u asla kirletmeyin. ###
 
-**a. Değişkenlerinizi global scope içerisinde _tanımlamayın_.**
+**a. Değişkenlerinizi global scope içerisinde tanımlamayın.**
 
-`Global scope` (global etki alan) içerisinde tanımladığınız değişkenler uygulamanızın her yerinden erişilebilir olurlar. `global scope` içerisindeki değişkenlere ne kadar bağımlı olursanız, uygulamanın farklı bir noktasında hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınız zaman, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
+`Global scope` (global etki alanı) içerisinde tanımladığınız değişkenler uygulamanızın her yerinden erişilebilir olurlar. `Global scope` içerisindeki değişkenlere ne kadar bağımlı olursanız, uygulamanın farklı bir noktasında hata yapma olasılığınız o kadar artar. Özellikle 3. parti pluginleri, komponentleri veya kütüphaneleri kullandığınız zaman, onların uygulamanızı kötü etkilemeyeceğinden emin olamazsınız.
 
 İsterseniz başlamadan önce `scope` kavramının ne olduğundan ve `PHP`'de nasıl kullanıldığından kısaca bahsedelim.
 
@@ -104,8 +106,8 @@ Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, bir
 
     function ()
     {
-         $fonksiyon = "Function scope içerisindeki değişken";
-         echo $fonksiyon; // Çıktı: Function scope içerisindeki değişken
+        $fonksiyon = "Function scope içerisindeki değişken";
+        echo $fonksiyon; // Çıktı: Function scope içerisindeki değişken
     }
 
     echo $global; // Çıktı: Global scope içerisindeki değişken
@@ -136,162 +138,129 @@ Bu tür hatalardan korunmak için tanımlayacağınız değişkenleri `class sco
 
 **b. Encapsulation (Kapsülleme) yapın, gizli değişkenlere erişimi kesin.**
 
-`Class scope` içerisinde tanımladığınız değişkenler de dışarıdan erişime açık olurlar. Bu yüzden yukarıdaki örnek tek başına yeterli olmaz. Siz her şeyi `class scope` içerisinde yazmış olabilirsiniz, ancak sınıflar uygulamanın herhangi bir yerinde `instantiate edilebilir` (çalıştırılabilir) ve buradan değişkenlere erişim sağlanabilir.
+`Class scope` içerisinde tanımladığınız değişkenler de, eğer `visibility` (PHP Görünürlük olarak çevirmiş ama bana kalırsa erişilebilirlik olmalı) belirtilmemişse dışarıdan erişime açık olurlar. Siz her şeyi `class scope` içerisinde yazmış olabilirsiniz, ancak uygulamanın herhangi bir yerinde `new` keywordü kullanılarak sınıfların instancesi oluşturulabilir ve buradan değişkenlere erişim sağlanabilir. Özellikle `singleton` (sınıfların sadece bir kopyasının oluşmasına izin veren tasarım deseni) gibi bir `antipattern` (sık sık karşılaşılan bir problemi ileriye dönük zararlı olacak ve inefektif şekilde çözmeye çalışmak) kullanıyorsanız, uzun vadede sorunlarla karşılaşmanız muhtemeldir.
 
-Bunu önlemek için, `OOP`nin (Nesne Yönelimli Programlama) 4 temel ilkesinden biri olan `Encapsulation` (Kapsülleme) özelliğini kullanabiliriz.
+Biliyorum, aklınızda "Nasıl 5 yaşındakilere anlatıyormuş bu makaleyi?" sorusu var, ama terimleri açıklamam gerekiyor. Yukarıda bahsettiğim terimlerin Türkçe çevirilerini bulamadım (sürpriz) bu yüzden elimden geldiğince yazılımsal terimleri İngilizce tutup çevirilerini parantez içinde vermeye çalışacağım.
 
-Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` prefixlerini kullanarak değişkenlerin ve/veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliyoruz. `Kapsülleme` yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` prefixlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz.
+Konumuza dönelim. Oluşturulan bir değişkenin veya nesnenin içeriğinin beklenmedik bir şekilde değiştirilmesi uzun zamandır problem oluşturdu. Siz `$veritabani` diye bir değişken oluşturabilirdiniz, ancak başka birisi onu `NULL` diye değiştirebilirdi, çünkü erişimleri vardı, çünkü siz o değişkeni global scope altında tanımlanmıştınız. Kullandığınız bir yardımcı PHP scripti `$veritabani` adında bir değişken oluşturmuş ve o değişken üzerinden işlem yapıyor olabilir. Bu yüzden global scope üzerinde değişken tanımlamak kullanmak daima kötü bir kullanım sayılır.
 
-Bunu hemen bir örnekle anlatalım. Örneğin, `abstract` (soyut) bir veritabanı sınıfınız var ve bu sınıf bir başka sınıfın onu `extend` etmesiyle çalışacak.
+Sınıf yapısı bu sorunu biraz olsun çözüyor. Sınıf içerisinde oluşturulan bir değişkenin `görünürlüğünü` ayarlamak için, `OOP`ın (Nesne Yönelimli Programlama) 4 temel ilkesinden biri olan `Encapsulation` (Kapsülleme) özelliğini kullanabiliriz.
+
+Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` keywordlerini kullanarak değişkenlerin ve/veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliyoruz. `Kapsülleme` yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` keywordlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz. Örnek olarak basit bir KDV hesaplayıcı sınıf yazalım. 1500 liralık bir ürün ve 0.18 KDV değeri olsun.
 
 ```php
-<?php
+<?php namespace KDV;
 
-abstract class Database
+class Calculator
 {
 
-    public $info;
-    private $isConnected;
+    public $ratio = 0.18;
+    public $price = 1500;
 
-    public function __construct()
+    public function calculate()
     {
-        $this->info = "Son derece gizli bilgi.";
-        $this->isConnected = false;
+       return $this->price + ($this->price * $this->ratio);
+    }
+}
+```
+
+Şimdi, bu sınıfımızın bir instancesini oluşturup hesaplamayı yaptıralım.
+
+```
+$calculator = new KDV\Calculator;
+$calculator->calculate(); // Çıktı 1770
+```
+
+Güzel. İstediğimiz sonucu alabiliyoruz. Ama farzedelim, bir şekilde `$ratio` değişkenine erişim sağlandı ve değer değiştirildi. Bu haliyle erişim sağlanacaktır, çünkü `$ratio` değişkeni `public`, yani herkesin erişebileceği şekilde tanımlanmıştır.
+
+```
+$calculator = new KDV\Calculator;
+$calculator->ratio = 10; // değere erişim yetkimiz var
+$calculator->calculate(); // Çıktı 16500
+```
+
+Tebrikler. 1500 liralık ürün için müşteriye fiyatı 16500 lira olarak gösterdiniz. Her zaman bu olay bu kadar açık şekilde olmayacak, ama sorunu görebiliyor musunuz? Belki yanınıza yeni katılan yazılımcıya "haftasonları kdv değerini düşüren" bir sınıf yaz dediniz. O da haftasonları `$ratio` değerini değiştiren bir sınıf yazdı.
+
+Kendimize soralım. Buradaki `$ratio` değişkeni bizim için önemli mi? Evet! Kimse kafasına göre o veriye erişip değiştirememeli. En azından belli bir kontrolden geçmeli. Bu kontrolü de siz kendiniz oluşturacaksınız. %1000 vergi nerede görülmüş?
+
+Şimdi `$ratio` değişkeninin görünebilirlik değerini `public` yerine `private`, yani sadece kendi sınıfımızdan erişilebilecek şekilde düzenleyelim.
+
+```
+private $ratio = 0.18;
+```
+
+Bu durumda
+
+```
+$calculator = new KDV\Calculator;
+$calculator->ratio = 10; // Exception fırlatacaktır çünkü erişilemez bir veriye ulaşmaya çalışıyoruz
+$calculator->calculate();
+```
+
+yazılımcı arkadaşımız bu değere ulaşmak isterken hata alacaktır. Siz böyle yaparak onun bu değere ulaşmasını engellemiş oldunuz. Bunun bir çözümü olmalı. Şansızlıyız ki var! Şöyle yapsak... değişkeni gizli tutsak, ama o değişkenin içeriğine erişebilen bir `public` fonksiyon oluştursak?
+
+```php
+<?php namespace KDV;
+
+class Calculator
+{
+
+    private $ratio = 0.18;
+
+    public function getRatio()
+    {
+        return $this->ratio;
     }
 
-    public function attempt()
-    {
-        // Veritabanına bağlanmayı dene
-    }
+}
+```
 
-    public function connect()
+Şimdi, public olan fonksiyon üzerinden private olan değişkene erişmeyi deneyelim.
+
+```
+$calculator = new KDV\Calculator;
+$calculator->ratio = 10; // Erişemez
+$calculator->getRatio(); // 0.18
+```
+
+Method üzerinden erişebiliyoruz! Bu tür methodlara `getter` methodlar denmektedir. Daha iyi anlamak adına bu durumu inceleyelim:
+
+1. Global scope içerisinden, sınıf içerisindeki `getRatio()` methoduna erişebilecekmiyiz? Evet, çünkü `public` olarak tanımlanmış.
+2. Sınıf scope içerisindeki `getRatio()` methoudu `private` olan `$ratio` değişkenine erişebilecek mi? Evet, `getRatio()` o sınıfın bir üyesi.
+
+Peki, yazılımcı arkadaşımız bu veriyi değiştirmek isterse ne yapacak? Tekrar bir `public` oluşturacağız ve bu kez, veriyi döndürmek yerine, verinin içeriğini değiştireceğiz.
+
+```php
+<?php namespace KDV;
+
+class Calculator
+{
+
+    private $ratio = 0.18;
+
+    public function setRatio(float $ratio)
     {
-        if ( $this->attempt($this->getConnectionString()) )
+        if( $ratio > 0.20) // 0.20'den fazla veri olamasın
         {
-            $this->info = "Veritabanına bağlandık!";
-            $this->isConnected = true;
-            return true;
+            throw new \RatioException(sprintf("Ratio cannot be higher than 0.20, %s given.", $ratio))
         }
 
-        $this->info "Veritabanına bağlanamadık.";
-        $this->isConnected = false;
-        return false;
+        $this->ratio = $ratio;
     }
 
-    public function isConnected()
-    {
-        return $this->isConnected;
-    }
 }
 ```
 
-Dikkat ettiyseniz `$info` değişkeni `public` olarak, `$isConnected` değişkeni ise `private` olarak yazıldı. Yani, `$isConnected` dışarıdan erişilemez hale getirildi.
+Artık bu method üzerinden istediğimiz değişiklikleri yapabileceğiz. Bu tür fonksiyonlara `setter` fonksiyonlar denmektedir.
 
-Şimdi, bir `MySQL` sınıfı oluşturalım. Bu sınıf `Database` sınıfımızı extend ederek başlatıyor olsun.
-
-```php
-<?php
-
-class MySQL extends Database implements DatabaseConnectorInterface
-{
-
-    public $queryString;
-
-    public function __construct()
-    {
-        $this->queryString = "MySQL query string";
-    }
-     
-    public function getConnectionString()
-    {
-        return $this->connectionString;
-    }
-
-    public function getInfo()
-    {
-        return $this->isConnected; // Hata, erişim yasak.
-        return $this->isConnected(); //Doğru, fonksiyon üzerinden erişebiliyoruz
-    }
-}
+```
+$calculator = new KDV\Calculator;
+$calculator->setRatio(0.20); // Erişemez
+$calculator->getRatio(); // 0.20
+$calculator->calculate(); // 15800
 ```
 
-Şuan `MySQL` sınıfı, `Database` sınıfındaki `$isConnected` değişkenine erişemeyecektir; çünkü değişken `private` olarak tanımlandığı için sadece `Database sınıfı scope'u` içerisinden erişilebilir olacaktır. Biz ise `MySQL sınıfı scope'u` içerisine olduğumuza göre bu değişkene erişme hakkımız bulunmamaktadır.
-
-Ancak, `public` olarak bir `isConnected() methodu` yazmıştık ve bu method içerisinde `$info` değişkeninin değerini döndürmüştük. Prefix olarak `public` kullanıldığı için `MySQL` sınıfı, `Database` sınıfındaki `isConnected()` methoduna erişebilecektir.
-
-Bu durumda;
- 
-1. `MySQL` sınıfı `isConnected()` methoduna erişebilecek mi? Evet. 
-2. `isConnected()` methodunun kendi sınıfı içerisindeki `$isConnected` değişkenine erişim hakkı var mı? Evet. 
-
-Artık `MySQL` sınıfı, `Database` sınıfındaki `public` olan `isConnected()` fonksiyonu üzerinden gizli `$isConnected` değişkenine ulaşabilecektir. Buna `Encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel ilkelerinden biridir.
-
-Şimdi, bu durumu size daha dünyevi bir örnekle anlatmaya çalışayım. 
-
-Örneğin, bir `KDV hesaplayıcı` sınıf yazıyorsunuz. `$kdvOrani` adında bir değişken belirlediniz ve değer olarak `0.18` float değerini verdiniz. Eğer siz `$kdvOrani` değişkenini dışarıdan erişilebilir yaparsanız, başka birisi bunu `3.00` olarak değiştirebilir. Değiştirdiğinde ne olur? `100` liralık ürünü alacak kullanıcıdan `%18` yerine `%300` vergi çekmiş olursunuz (kendinizi şirketin kapısının önünde bulmak için yeterli bir sebep).
-
-Ancak, `MySQL` örnediğinde anlatıldığı gibi, bazı durumlarda `$kdvOrani` değişkenine erişmeniz gerekebilir. Belki bir ürünün KDV'li fiyatının ne olduğunu hesaplattırmak istiyorsunuz. Kim bilir? Bu durumda biraz önce bahsettiğimiz `public fonksiyon`  üzerinden gizli değişkenlere erişme mantığı devreye giriyor. Bu tür erişim sağlayıcı fonksiyonlara `getters` denmekle beraber, yaptıkları iş gizli değişkenin değerini döndürmekten ibarettir.
-
-```php
-<?php
-
-class KDVHesaplayici 
-{
-
-    private $kdvOrani = 0.18;
-
-    public function getKdvOrani() // bir getter örneği
-    {
-        $this->kdvOrani; // 0.18 dönüyor
-    }
-}
-```
-
-Bir de bunun tam tersi mantıkla çalışan `setters` vardır. Bu fonksiyonlar, gelen değeri değişkenin değeri ile değiştirmekle yükümlüdürler.
-
-Bir örnekle gösterelim;
-
-```php
-<?php
-
-class KDVHesaplayici 
-{
-
-    private $kdvOrani = 0.18;
-
-    public function getKdvOrani() // bir getter örneği
-    {
-        return $this->kdvOrani;
-    }
-
-    public function setKdvOrani($input) // bir setter örneği
-    {
-        $this->kdvOrani = $input;
-    }
-}
-
-$kdv = new KDVHesaplayici;
-$kdv->setKdvOrani(3);
-$kdv->getKdvOrani(); // 3.00
-```
-
-`Setter` fonksiyonların iyi yanı, kendi içlerinde bir kontrol mekanizması kurabilmeleridir. Mesela `setKdvOrani()` fonksiyonu içerisinde vergi oranının `0.20`'den fazla olamayacağını kontrol ettirebilirsiniz.
-
-```php
-<?php
-
-    public function setKdvOrani($input) // bir setter örneği
-    {
-        if( (float) $input > 0.20)
-        {
-           return false;
-        }
-
-        $this->kdvOrani = $input;
-    }
-```
-
-Artık dışarıdan müdahele edilerek bozulamayacak bir sınıf yapısına sahibiz, ve biz istemedikçe kimse uygulamamızı bozamaz.
+Eğer `0.20`'den fazla bir oran girilirse, yazdığımız sınıf exception fırlatıp muhtemel hataların önüne geçecektir. Buna `Encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel ilkelerinden biridir.
 
 > Biliyor musunuz?
 
@@ -324,7 +293,7 @@ Bilmeniz gereken bir başka konu daha var. `PHP`'de eğer `getter` ve `setter` m
 
 ### - Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
-Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, genel kanı aşağıdaki altın kurala uymanın bize avantaj sağlayacağı yönündedir. 
+Bu görüş farklı yazılımcılar tarafından farklı algılanmakla beraber, genel kanı aşağıdaki altın kurala uymanın bize avantaj sağlayacağı yönündedir.
 
 1. Bir methodda maksimum `10 satır kod` bulunmalıdır.
 2. Bir sınıfta maksimum `10 method` bulunmalıdır.
