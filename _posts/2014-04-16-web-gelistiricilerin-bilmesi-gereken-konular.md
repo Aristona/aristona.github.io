@@ -2292,10 +2292,6 @@ JavaScript, dolayısıyla jQuery'de çok az bilinen (sadece uzun süre vakit ge�
 
 // Kendi Grunt modülümüzü yazalım.
 
-### Gözlerinizi koruyun. ###
-
-// Yakında
-
 ### Terminale ne kadar yakın, o kadar iyi. ###
 
 // Yakında
