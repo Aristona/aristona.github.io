@@ -1499,6 +1499,18 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 // Yakında
 
+### - Akıllı objeler. ###
+
+// Yakında
+
+### - Anlaşılabilir method isimleri ###
+
+// is|has|can vb.
+
+### - Tekrarlanan şeylerin refactor edilmesi ###
+
+// get[Date]Reports gibi.
+
 ### - Statik fonksiyonları kullanırken dikkatli olun. ###
 
 // Aslında kullanılması gereken durumlar var. Bu yüzden hem neden iyi, hem neden kötü ikisini de anlatalım.
