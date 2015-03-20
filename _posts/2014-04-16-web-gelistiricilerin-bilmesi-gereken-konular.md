@@ -1471,13 +1471,13 @@ Normalde hiçbir PHP kütüphanesinden bu yazımda bahsetmeyecektim, ama bana ka
 
 Bu yüzden, `good practice` (İyi Kullanım), dosya sonundaki kapanış taglarını kullanmamaktır.
 
-### - Short tags kullanmayın. ###
+### - Kısa etiketleri kullanmayın. ###
 
-Bazı yazılımcılar `<?php` yerine `<?` kullanıyor. Bu son derece yanlış. Short tag kullanacaksanız `short_open_tag` mutlaka açık konumda olmalıdır. Kapalı olursa ne olur? Kaynak kodlarınız tarayıcıya çıkabilir.
+PHP'de açılış etkiletleri birçok şekilde yazılabiliyor. Buna `<?` kısa etkiketi de dahil. Hatta bundan başka, PHP'nin ilk zamanlarından kalma ve kimsenin kullanmadığı açılış etkiketleri de var.
 
-Dünya çapında birçok web sitesi bu tür basit dikkatsizliklerin kurbanı olabiliyor. Türkiye'de bildiğim kadarıyla `sahibinden.com` var, kaynak kodu tarayıcıya çıkarmayı başarabilen (!) ender firmalardan.
+Siz `<?php` dışındaki tagları asla kullanmamalısınız. Diğer etiketler durumsal olarak çalışıyorlar. Örneğin, siz eğer kısa etkiketleri kullanmışsanız, PHP ayarlarında kısa etkiket desteği mutlaka açık olmak zorundadır. Kapalı olursa, kaynak kodlarınız olduğu gibi tarayıcıya çıkacaktır.
 
-Bu yüzden, `<?php` dışında hiçbir `açılış etiketini` kullanmayın.
+Bu ufak sorun yüzünden bazı büyük firmalar geçmişte sıkıntı yaşamıştı. Kısa etkiketleri kullanarak kazanabileceğiniz hiçbirşey yok. Bu yüzden, `<?php` dışındaki hiçbir `açılış etiketini` kullanmayın.
 
 > Not: `PHP 5.4` ve üzeri versiyonlarda, `echo` yerine kısa ekrana yazdırma etiketi olan `<?=` kullanılabilir, ancak açılış etiketleri yine `<?php` olarak yazılmalıdır.
 
