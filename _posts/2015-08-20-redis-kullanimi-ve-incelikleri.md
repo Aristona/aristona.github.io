@@ -14,4 +14,4 @@ share: true
 
 #Redis kullanımı ve incelikleri#
 
-
+Uzun zamandır Redis hakkında bir yazı yazmak istiyordum, çünkü Redis son zamanlarda öğrendiğim en yararlı araçlardan birisi. Fazla Türkçe kaynak bulamadım, bu yüzden Redis'i yine aynı tarzda, yeni başlayanların da anlayabileceği bir şekilde anlatmayı planlıyorum.
