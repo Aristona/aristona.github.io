@@ -47,44 +47,6 @@ Bu yazı, [https://github.com/Aristona/aristona.github.io](https://github.com/Ar
 Bu yazıdan hiçbir ticari beklentim yoktur. Kendiniz bir yazı göndermek isterseniz (web geliştirme ile ilgili olmalı ve mutlaka kabul görmüş bir good practice olmalı) `pull request` atarak yazınızı gönderebilirsiniz.
 
 ---
-# Değişiklikler #
----
-
-Bazı okuyucular yorumlarında yazıda nelerin değiştiğini takip edemediklerini söylemişlerdi. Aslında versiyon kontrol bu sorunu çözüyor olsa da, ben yine de okuma kolaylığı olması açısından bir güncelleme yaptığımda nelerin güncellendiğini bu bölümde belirteceğim. Buradaki değişiklikler 24.07.2014 tarihi sonrasını kapsayacaktır. (Ufak değişiklikler ve yazım hatalarının düzeltilmesi burada belirtilmeyecektir.)
-
-**09.09.2014**
-
-- CSS bölümüne **Temel attributeler dışında diğer HTML attributelerini kullanmayın.** alanı eklendi.
-- CSS bölümüne **Inline stil yazmaktan kaçının.** alanı eklendi.
-- CSS bölümüne **CSS Inheritence** alanı eklendi.
-- CSS bölümüne **height propertyini kullanmayın.** alanı eklendi.
-- CSS bölümüne **`<br>` kullanmayın.** alanı eklendi.
-- CSS bölümüne **`&nbsp;` kullanmayın.** alanı eklendi.
-- CSS bölümüne **Açıkta element bırakmayın.** alanı eklendi.
-- CSS bölümüne **Negatif piksel margini çok kullanmayın.** alanı eklendi.
-- CSS bölümüne **Ayraçları HTML ile yazmayın.** alanı eklendi.
-
-**27.08.2014**
-
-- Genel bir imla ve hata denetimi yapıldı.
-
-**09.08.2014**
-
-- Giriş bölümü düzenlendi.
-- Deployment bölümüne **FTP kullanmayın** alanı eklendi.
-- Deployment bölümüne **DeployHQ ve türevi servisler** alanı eklendi.
-- Deployment bölümüne **Capistrano** alanı eklendi.
-- JavaScript bölümüne **Debug için alert kullanmayın, lütfen!** alanı eklendi.
-
-**25.07.2014**
-
-- JavaScript bölümüne **; prefixini kullanın.** alanı eklendi.
-- JavaScript bölümündeki **Assetleri yüklerden http veya https kullanmayın.** alanı geliştirildi.
-- JavaScript bölümüne **Daima 'use strict'; kullanın.** alanı eklendi.
-- JavaScript bölümüne **JavaScript hataları izlenebilir. İzleyin.** alanı eklendi.
-- JavaScript bölümüne **Asenkron, deferred ve DOM eventlerinden bağımsız yüklemeler yapın.** alanı eklendi.
-
----
 # Back end (Arka yüz) #
 ---
 
@@ -240,7 +202,7 @@ class Calculator
 
     public function setRatio(float $ratio)
     {
-        if( $ratio > 0.20) // 0.20'den fazla veri olamasın
+        if ($ratio > 0.20) // 0.20'den fazla veri olamasın
         {
             throw new \RatioException(sprintf("Ratio cannot be higher than 0.20, %s given.", $ratio))
         }
@@ -264,7 +226,7 @@ Eğer `0.20`'den fazla bir oran girilirse, yazdığımız sınıf exception fır
 
 > Biliyor musunuz?
 
-`C#` dilinde `getter` ve `setter` methodlar kolayca oluşturulabilmektedir.
+`C#` dilinde `getter` ve `setter` get set keywordleri kullanılarak kolayca oluşturulabilmektedir.
 
 ```php
 public class Database
@@ -279,17 +241,15 @@ public class Database
 
 ```php
 class Database
-    attr_accessor :info //getter ve setter oluşturuldu
+    attr_accessor :info // getter ve setter oluşturuldu
 end
 ```
 
-`attr_accessor`, Ruby dilinde `info` değişkeninin getter ve setter fonksiyonlarını otomatik olarak oluşturur. Maalesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz getter ve setter fonksiyonlarımızı çoğu zaman elle yazmak zorundayız.
+`attr_accessor`, Ruby dilinde `info` değişkeninin getter ve setter fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz getter ve setter fonksiyonlarımızı çoğu zaman elle yazmak zorundayız.
 
-Bilmeniz gereken bir başka konu daha var. `PHP`'de eğer `getter` ve `setter` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler.
+Getter ve Setter methodlara, bazen Accessor ve Mutator de denilebilmektedir. `PHP`'de eğer `getter` ve `setter` methodlar bulunamazsa, `PHP`'nin `sihirli method`larından olan `__get()` ve `__set()` devreye girerler. Bu methodlar, erişilmeye çalışılan property sınıfta tanımlı değilse çağırılırlar. Detaylı bilgi: http://php.net/manual/tr/language.oop5.overloading.php#object.get
 
-// Buraya `__get` ve `__set()` hakkında örnekler gelecek.
-
-> Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlara denir. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlara denir.
+> Önemli: Fonksiyonlar global scope içerisinde tanımlanan fonksiyonlara denir. Methodlar ise sınıf scope içerisinde tanımlanan fonksiyonlara denir. Bu yazılımcılar arasında tartışmalı bir konu olsa da, genel kanı bu yöndedir.
 
 ### - Methodlarınızı ve sınıflarınızı küçük tutun. ###
 
@@ -315,11 +275,11 @@ class HomeController
 {
     private $database, $imageResizer, $logger;
 
-    /* 
+    /*
     | Constructor enjeksiyonu
     | Ayrıca bu bağımlılık enjeksiyonudur ve bunu bilmek
     | unit testler yazmak için mecburdur.
-    */ 
+    */
     public function __construct(DatabaseInterface $database) //bağımlılık
     {
         $this->database = $database;
@@ -449,7 +409,7 @@ new Deneme(new Mailer);
 
 ```
 
-`Dependency Injection` işte bu kadar basit! Sınıfımız `Mailer` sınıfını kendisi oluşturmaktansa, dışarıda oluşturulan `Mailer` sınıfının `constructor injection` (Enjeksiyonu constructor üzerinden yapmak) aracılığıyla sınıfımıza enjekte edilmesi yoluyla `Mailer` sınıfına sahip oluyor. Böylece sınıfımız `Mailer` sınıfına sıkı sıkıya bağlı olmaktan çıkıyor ve test edilebilirliğimiz muazzam düzeyde artıyor. Artık `unit testlerimizi` yazarken, `Mailer` sınıfını kolayca taklit edebiliriz (taklit etme olayına `Mocking` denmektedir).
+`Dependency Injection` işte bu kadar basit! Sınıfımız `Mailer` sınıfını kendisi oluşturmaktansa, dışarıda oluşturulan `Mailer` sınıfının `constructor injection` (Enjeksiyonu constructor üzerinden yapmak) aracılığıyla sınıfımıza enjekte edilmesi yoluyla `Mailer` sınıfına sahip oluyor. Böylece sınıfımız `Mailer` sınıfına sıkı sıkıya bağlı olmaktan çıkıyor ve test edilebilirliğimiz muazzam düzeyde artıyor. Artık `unit testlerimizi` yazarken, `Mailer` sınıfını kolayca taklit edebiliriz. (taklit etme olayına `Mocking` denmektedir).
 
 **b. Liskov's Substitution Principle**
 
@@ -600,7 +560,7 @@ Peki bu bize ne avantaj sağlayacak? Artık işyerindeki patronunuz mail gönder
      $mailer = new Mailer(new canimizNeIsterse());
 ```
 
-**c. Dependency Injection konteynerleri**
+**c. Dependency Injection Konteynerleri**
 
 `Dependency Injection` kavramını öğrendik. `Liskov'un İkame İlkesi`'ni öğrendik. Birçok şey öğrendik ama hala öğrenmemiz gereken konular var.
 
@@ -653,6 +613,41 @@ Dependency Injection konteynerlerinin, genel olarak aşağıdaki gibi bir kullan
 Bu örnekte, `return new MandrillMailer` bölümünü değiştirmemiz yeterli olacaktır.
 
 Bazı konteyner sınıflar, `Singleton` kullanımı gibi diğer kullanımları da destekler (`Singleton` kullanılan sınıflar sadece tek bir instance'a sahip olabilirler, başka bir instance'ları oluşturulamaz). Dependency Injection Konteynerlerinin avantajları bunlarla sınırlı olmamakla beraber, detaylı bilgiye sahip olmak isteyen arkadaşlar daha fazla araştırma yapabilirler.
+
+Laravel gibi popüler frameworklerin çekirdeğini son derece güçlü Dependency Injection konteynerleri oluşturur. Laravel, bu konteynere IoC adını vermiştir. PHP'nin reflection özelliğini kullanarak, sınıflara, ne istiyorlarsa otomatik olarak o sınıfı enjekte eden yapıyı destekler. Ama nasıl?
+
+PHP'de reflectionlar (ayna sınıflar) size o sınıf hakkında bilgi verirler. Kaç tane propertysi var, kaç tane methodu var, methodları hangi parametreleri istiyor vb. Laravel ise, IoC konteyneri içinde şu işi yapmaktadır.
+
+1. Bir sınıf IoC konteynerine eklendiğinde, o sınıfın reflectionuna (aynadaki görüntüsüne) bak ve __construct() methodu hangi parametreleri ve tür dayatmaları istiyor onlara bak.
+
+2. İstenen türdeki tür dayatma, konteyner içinde varsa onu otomatik olarak enjekte et.
+
+Çok mantıklı değilmi?
+
+```php
+<?php
+
+    $container = new IoC;
+
+    $container->bind('MailerInterface', function() {
+        return new MandrillMailer;
+    });
+
+    class Mailer
+    {
+        public function __construct(MailerInterface $mailer)
+        {
+            # code...
+        }
+    }
+
+    // Yeni bir MandrillMailer instancesi
+    $mailer = IoC::make('Mailer');
+    // IoC otomatik olarak MailerInterface'yi reflectionda görüp onu enjekte edip
+    bize o sınıfı döndürecektir.
+```
+
+Dependency Injection Konteyneri ile yapabilecekleriniz çok fazla. Dilerseniz, projelerinizde https://github.com/rdlowrey/auryn gibi bir DI konteynerini kullanabilirsiniz.
 
 **d. Inversion of Control**
 
