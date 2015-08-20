@@ -14,14 +14,6 @@ share: true
 # Giriş #
 ---
 
-### Çıkış noktası ###
-
-Neredeyse her gün sosyal platformlarda aynı hataların ve yanlış düşüncelerin tekrarlandığını gördüğüm ve hep aynı şeyleri söylemekten sıkıldığım için bu yazıyı yazmaya karar verdim.
-
-### Amaç ###
-
-Bu yazıyı yazmaktaki amacım yazılım konusunda insanlara farklı bir bakış açısı kazandırmaktır.
-
 ### Kapsam ###
 
 Bu yazımda web geliştiricilerin bilmesi gereken konuları, yapılan yanlışları, bu yanlışların nasıl düzeltebileceğini ve genel olarak yazılım dünyasında kabul görmüş `good practice` (İyi kullanım) durumlardan bahsedeceğim.
@@ -917,7 +909,7 @@ Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonks
 
 ### - Uygulamanızda mümkün olduğunca Türkçe kullanmamaya çalışın. ###
 
-İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir. 
+İngilizce bilmek ve İngilizce kullanmak yazılımcıların hayatını kolaylaştıran en önemli faktörlerdendir.
 
 İngilizce yazılım dünyasında hemen hemen her yerde karşınıza çıkacaktır. Örneğin, kullandığımız programlama dillerindeki methodlar İngilizce'dir. Takip edebileceğiniz ünlü yazılımcılar hep İngilizce konuşmaktadır. Takip edebileceğiniz bloglar ve websiteleri İngilizce'dir. GitHub üzerindeki açık kaynaklı projelerin dökümantasyonu İngilizce olarak yazılmıştır. Projelerin kaynak kodlarında kullanılan değişken isimleri, sınıflar, yorum satırları vb. hep İngilizce'dir.
 
@@ -960,15 +952,13 @@ Buna ek olarak, Türkçe karakterleri kullanmak son derece sakıncalıdır. Bunu
 
 Birinin size Ankara-İstanbul arası kaç `mil` diye sormasını ister misiniz? Veya trafiğin sağdan aktığı ülkelerde ben soldan gideceğim diye inat eder misiniz? Her iyi yazılımcı gibi kendinizi İngilizce kullanmaya alıştırın. Bilmiyorsanız da öğrenmeye çalışın; çünkü İngilizce öğrenmek bile sizi İngilizce bilmeyen yazılımcıların birkaç ışık yılı ötesine taşıyacaktır.
 
-> Not: Tartıştığım yazılımcıların karşı argümanı bazen İngilizce bilmeyen yazılımcılarla çalıştıkları, bu yüzden Türkçe kullanmayı tercih ettikleriydi. Ben şahsen İngilizce bilmeyen yazılımcılara pek güvenemesem de, bu durumda projenin geleceğini düşünmek katı kurallara uymaktan daha önemli olabilir.
-
 ### - Kimin yazdığını bilmediğiniz bloglardan ve eğitim setlerinden uzak durun. ###
 
 Kötü eğitim, yarar sağlamaktan çok zarar verir. Özellikle Google aramalarında bazen üstlerde çıkan Türkçe bloglar ve bu bloglardaki makaleler ve eğitim setleri çoğu zaman eksik, demode ve yanlış bilgiler içermektedir. Bu tür bloglardaki içeriklerin çok büyük bir kısmı kaynak belirtilmemiş çeviri, kalanların da birçoğu 2-3 aylık tecrübesiz yazılımcıların `ilk heyecanlarıyla` bloglarına yazdıkları eksik ve yanlış makelelerden oluşmaktadır. İstisnaları ayrı tutuyorum; ancak ayrı tutacak istisnalar yok denecek kadar az malesef.
 
 Ben genellikle birinin blog sitesine girdiğim zaman, yazdıkları makelelerin başlıklara bir göz gezdiririm. Bilmiyorum siz de böyle misiniz? Yazdıkları makelelerin kalitesi, bana blogun kalitesi hakkında ipucu verir; ancak bazı bloglar var ki gerçekten bir çöp yığınından fazlası değil. Örneğin, bloglarına girip yazdıkları makaleleri okuyunca önce şaşırırsınız. Adam scalability'den girmiş Nginx konfigürasyonlarına kadar, PHP 6 ile gelecek özelliklerden bahsetmiş, yazılım mimarileri falan havada uçuşuyor. Sanırsınız Google'da baş mühendis. Sonra bir kaç blog yazısı daha yazmış: "PHP'de echo kullanarak ekrana yazı bastırmak", "mysql_query() ile veritabanından veri çekmek".
 
-Sihirli kürem yok, bu yüzden gerçekte neler olup bittiğini kanıtlayamıyorum; ancak bu tür bloglardaki makaleler bana bir yerden alınmış ve çevirilmeye çalışılmış gibi geliyor. Kaynak belirterek çeviri yapmalarında bir sorun yok; ama çeviri yaparken birçok konsept ve terim çoğu zaman yanlış çevriliyor. Böylece insanlar yanlış bilgilendiriliyor. Öğrendiğiniz şeylerin yanlış veya yalan olduğunun bir gün farkına varsanız tepikiniz ne olurdu?
+Sihirli kürem yok, bu yüzden gerçekte neler olup bittiğini kanıtlayamıyorum; ancak bu tür bloglardaki makaleler bana bir yerden alınmış ve çevirilmeye çalışılmış gibi geliyor. Kaynak belirterek çeviri yapmalarında bir sorun yok; ama çeviri yaparken birçok konsept ve terim çoğu zaman yanlış çevriliyor. Böylece insanlar yanlış bilgilendiriliyor. Öğrendiğiniz şeylerin yanlış veya yalan olduğunun bir gün farkına varsanız tepkiniz ne olurdu?
 
 Bu durum, özellikle `PHP blogları` için, artık son derece vahim bir hale geldi. WordPress ile websitesi kurup kendine web geliştirici diyenler, Dreamweaver'da form oluşturup kendini web tasarımcı sananlar, `PHP`'nin temelini bile almadan bu işi ticarete dökmek için eğitim seti hazırlayanlar... Bu işin ucu gerçekten kaçtı.
 
@@ -985,7 +975,7 @@ Mesela bir `Scala` veya `Haskell` blog yazısında makelenin yanlış olma ihtim
 
 Bunların dışında, bir de özellikle Türkçe bloglarda göze çarpan genel eksikliklerden bahsetmek istiyorum.
 
-1. Öncelikle bloglar açık kaynaklı değiller. Neredeyse hepsi `WordPress` üzerine kurulmuş, bu yüzden başkaları düzeltmede bulunamıyor. Buna çok bilinen `w3schools.com` dahil - Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler ve bunlar sertifika veren bir eğitim kurumu.
+1. Öncelikle bloglar açık kaynaklı değiller. Neredeyse hepsi `WordPress` üzerine kurulmuş, bu yüzden başkaları düzeltmede bulunamıyor. Buna çok bilinen `w3schools.com` dahil. Adamlar verdikleri örnekteki SQL Injection açığını tam 6 yıl sonra düzelttiler ve bunlar sertifika veren bir eğitim kurumu.
 2. Yanlış bir bilgi olduğunu söylediğin zaman yorumların siliniyor. Çok az kişi eleştiriyi kabullenebiliyor.
 3. Çevirilerde terimler genellikle yanlış çeviriliyor, bu yüzden son derece alakasız sonuçlar çıkabiliyor (İngilizce öğrenin dememin sebebi bu).
 4. Üst düzey PHP diye yazdıkları makaleler aslında `PHP`'nin temel bilgileri. Ben bunun bir marketing stratejisi olduğunu düşünüyorum, ama emin olun o bloglarda yazanlar hiç birşey değil.
@@ -994,7 +984,7 @@ Gecekondu dikip üst düzey inşaat mühendisliği, geleceğin mimarisi diye anl
 
 Bir `ASP.NET`'ci veya `C#`'cı, bankalarda veya kurumsal bir firmada çalışırken baş mühendis tarafından ağzının payını alır. Tecrübe kazanana kadar biraz sessiz kalayım der.
 
-Bir `Ruby`'ci, starbucksta elinde kahve kod yazarken bu tür işlere zaten bulaşmaz. Yolunu bulmuştur.
+Bir `Ruby`'ci, starbucksta elinde kahve kod yazarken bu tür işlere zaten bulaşmaz.
 
 Bir `Haskell`'ci veya `Lisp`'çi zaten blog yazmaz; çünkü ne yazdıklarını kimse anlamaz.
 
@@ -1006,7 +996,7 @@ Bir `Assembly`'cinin zaten blog yazacak bir interneti olmaz.
 
 Bir `NodeJS`'ci, genellikle daha önceden `JavaScript`'i tecrübe ettiği için biraz bilgilidir. Yeni başlayan "Soket, asenkron falan bişey diyorlar anlamadım ben." der bırakır.
 
-Ama... `PHP` dünyası böyle mi? Bir ev yaparlar, evin pencereleri olmaz, çatısı aşağıda olur, kapıyı açtığında bütün bina çöker ve kapıyı açtığınızda binayı yıktınız diye size kızarlar. Adam bir köpek kulübesi yapar, öyle bir havalara girer ki sanırsın Burj Dubai'yi yapmış (ama o köpek kulübesini almak isteyen birçok insan çıkar, böyle de bir avantajı var).
+Ama... `PHP` dünyası böyle mi? Bir ev yaparlar, evin pencereleri olmaz, çatısı aşağıda olur, kapıyı açtığında bütün bina çöker ve kapıyı açtığınızda binayı yıktınız diye size kızarlar. Adam bir köpek kulübesi yapar, öyle bir havalara girer ki sanırsın Burj Dubai'yi yapmış. (ama o köpek kulübesini almak isteyen birçok insan çıkar, böyle de bir avantajı var!)
 
 `PHP`'nin böyle garip bir komünitesi var. Bu yüzden konuyu çok dağıtmadan toparlayalım: Kısacası böyle bir durumda olduğumuz için, kendinizi eğitirken yanlış bilgi alıp kafanızı karıştırmayın. Doğru bilgiyi doğru insanlardan, doğru makalelerden, doğru bloglardan ve doğru kitaplardan alın. Bir eğitim setindeki videoları izliyorsanız, o eğitim setini kim yazmış, ne zaman yazmış, PHP'nin hangi sürümü kullanılmış, yorumları nasıl gibi konuları araştırın, yoksa bunlar size hiçbir şey kazandırmaz. YouTube'dan 10 yıl öncesinin videolarını izleyip PHP öğrenmeye çalışmayın. "Bu dosyayı al, her projenin başında include et. Ne SQL Injection kalır ne bir şey, güven sen bana." diyen insanlara gözü kapalı güvenmeyin. Bu konuda son derece dikkatli olmalısınız.
 
@@ -1041,8 +1031,6 @@ Terk etmeniz gereken projeler varsa, vakit kaybetmeden terk edin.
 `DRY (Don't Repeat Yourself)`, Türkçe'siyle `Kendinizi Tekrar Etmeyin` kuralını hem PHP'in temelinde, hem de gerçekten üst düzey konularda kullanabilirsiniz (aslında bu bir kural değil, bir tavsiyedir).
 
 Temel bilgiye sahip bir yazılımcı, aynı şeyleri tekrar etmekten bıkıp o işlem için fonksiyon oluşturuyorsa `DRY` için bir adım atmış olur. Üst düzey bir yazılımcı her projesinde kullanabileceği bir komponent yazmış ve bunu package managerlar tarafından yönetiyorsa `DRY` için bir adım atmış olur.
-
-// Salt PHP ve L4 konusunda DRY örnekleri gelecek buraya.
 
 `DRY`ın sonu yoktur ve sadece programlama dilleriyle ilgili değildir. Proje geliştirirken sık sık yaptığınız işlemleri bilgisayara yaptırmakta bu kural için atılmış adımlar olacaktır. Örneğin, veritabanı yedeği mi alınacak? Veritabanı yönetici paneline gir, veritabanını seç, tabloları seç, exporta tıkla, yol olarak bir path belirle, çıktıyı oluştur, o klasöre gir, çıktıyı zip içerisine koy, sonra ismini "x dbsi yedeği" yap... Bu tür işlemlerle kaybettiğiniz zamanı hesaplayın ve o kaybolan zaman içerisinde kaç tane proje geliştirebileceğinizi düşünün.
 
@@ -1109,7 +1097,25 @@ Eğer PHP'de `Ruby` ve `JavaScript` gibi dillerdeki `reverse()` methodunu kullan
     echo $ornek->reverse(); // Çıktı: "!abahreM"
 ```
 
-İleride `PHP` çekirdeğine eklenir mi bilinmez, ama ben şahsen bu özelliğin eklenmesini çok isterdim.
+Ama PHP çekirdeğindeki limitasyonlardan dolayı, şunu yapamıyoruz:
+
+```
+<?php
+
+    "birşey"->reverse();
+```
+
+İleride `PHP` çekirdeğine bu tür kullanımlar eklenir mi bilinmez (hiç sanmıyorum çünkü bunu yapmak için strict typing özelliği gerekiyor) ve bu da çekirdeğin refactor edilmesi demek. Strict typing olmadığında şu sorunla karşılaşıyoruz:
+
+```
+<?php
+
+    "155"->çarp(10); // PHP (string) 155'i, (integer) 155'e çevirir ve integerin çarp methodunu kullanır.
+    // Çünkğ çarp, sayısal bir objenin methodu olmalıdır, yani integerin.
+    "Merhaba"->çarp(10); // Sizce?
+```
+
+Bu yüzden PHP'ye bu özelliğin gelmesi imkansıza yakın.
 
 ### - Gerekmedikçe else ve uzun if blokları kullanmayın. Daima kıvırcık parantez kullanın. Yazdığınız kodları sağa yaklaştırmayın. ###
 
@@ -1152,7 +1158,7 @@ Yazdığımız kodlar, bazen sağa doğru yaklaşırlar. Bu genellikle iç içe 
      }
 ```
 
-Bu örnekte gördüğünüz gibi iç içe `3` tane `if bloğu` açılmış. Dikkat ettiyseniz her `if` bloğu sağ tarafa biraz daha yaklaşmış. Eğer böyle yaparsanız yazdığınız kodlar okunaklı olmaktan çıkar. Bunun içine `else` blokları da girdiğinde hangi kıvırcık parantezin hangi bloğu kapattığını veya açtığını anlamanız güç olur. Fonksiyon içerisinde genellikle `1` veya `2` seviye if bloğu oluşturmalısınız. `3` ve üzeri çok fazla iş yapıldığına ve kodun okunamaz olacağına işarettir.
+Bu örnekte gördüğünüz gibi iç içe `3` tane `if bloğu` açılmış. Dikkat ettiyseniz her `if` bloğu sağ tarafa biraz daha yaklaşmış. Eğer böyle yaparsanız yazdığınız kodlar okunaklı olmaktan çıkar. Bunun içine `else` blokları da girdiğinde hangi parantezin hangi bloğu kapattığını veya açtığını anlamanız güç olur. Fonksiyon içerisinde genellikle `1` veya `2` seviye if bloğu oluşturmalısınız. `3` ve üzeri çok fazla iş yapıldığına ve kodun okunamaz olacağına işarettir.
 
 İyi bir kod, bakıldığında aşağıya doğru düz bir çizgiyi andırmalı ve dalgalanmalar az olmalıdır. Burada bizim oluşturduğumuz fonksiyon düz bir çizgi yerine, yassı bir `C` harfini (tersten) andırıyor. Oluşturduğunuz sınıfta bu fonksiyon gibi 10 fonksiyon daha olduğunu hayal ederseniz, dalgalı bir çizgi görüntüsü gözünüzde canlanacaktır.
 
@@ -1195,7 +1201,7 @@ Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya g
 
 Şuanki hali üsttekinden çok daha güzel. Gereksiz `else` bloğunu kaldırmış olduk. Gereksiz `else` bloklarını kaldırmak bize çok büyük avantaj sağlıyor. Hem fonksiyonunuz sağ tarafa doğru uzamamış oluyor, hem de gereksiz kod yükünden kurtuluyoruz (`return`'un sadece fonksiyon içerisinde kullanılabileceğini unutmayın).
 
-Devam edelim: `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde sayılacağı için, kıvırcık parantezleri de silebiliriz.
+Devam edelim: `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde sayılacağı için, parantezleri de silebiliriz.
 
 ```php
 <?php
@@ -1426,10 +1432,6 @@ class Controller
 }
 ```
 
-**c. Zayıf controller sınıfları, şişman modeller.**
-
-// Yakında
-
 ### - Notice ve Warning'ler birer bugdur ve düzeltilmeleri gerekir. ###
 
 PHP çok katı kurallara sahip değildir. Bu yüzden ufak çaplı, basit hatalar bazen görmezden gelinir. Bu tür hatalar `E_DEPRECATED`, `E_STRICT`, `E_NOTICE` ve `E_WARNING` olarak kayıtlara eklenir (hepsine [http://php.net/manual/en/errorfunc.constants.php](http://php.net/manual/en/errorfunc.constants.php) adresinden bakabilirsiniz).
@@ -1494,7 +1496,7 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 // Yakında
 
-### - Akıllı objeler. ###
+### - Değer objeleri. ###
 
 // Yakında
 
@@ -1520,92 +1522,11 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 ### - PSR standartlarına uyun. ###
 
-`PSR` standartları, `PHP-FIG` ekibinin, `framework`ler (Çatılar) arası kod düzenini ve uyumluluğu sağlamak için oluşturduğu yazılım geliştirme standartlardır. `PHP-FIG`'in açılımı, `Framework Interop Group` olmakla beraber, frameworkler arasında birlikte çalışabilirliği desteklemek için kurulmuş bir oluşumdur. Bu oluşum sonrasında birçok popüler PHP projesi `PSR` standartlarına uyma kararı almıştır. Günümüzde son derece popüler olan `PSR` standartlarına uymak sizin için büyük avantaj sağlayacaktır.
-
-`PSR` standartları [https://github.com/php-fig/fig-standards](https://github.com/php-fig/fig-standards) reposu üzerinde tutulmaktadır. Kabul edilen standartlar `accepted` klasörü içerisinde bulunabilir.
-
-Bu yazıyı yazdığım sırada kabul edilmiş `5` tane `PSR standardı` bulunmaktadır. Bunlar `PSR-0`, `PSR-1`, `PSR-2`, `PSR-3` ve `PSR-4`'tür.
-
-**PSR'a girmeden...**
-
-`PSR` standartları oluşturulurken bazı terimler kullanılmıştır. Standartları Türkçe'ye çevirirken kuralların yanına parantez içerisinde terimlerini yazacağım için önce bu terimlerin ne anlama geldiğini inceleyelim.
-
-* "MUST", "SHALL" ve "REQUIRED": Mutlaka yapılması gereken maddeleri belirten kurallardır.
-* "MUST NOT" ve "SHALL NOT": Asla yapılmaması gereken maddeleri belirten kurallardır.
-* "SHOULD" ve "RECOMMENDED": Yapılması tavsiye edilen, ama bazı durumlarda şart koşulmayan kurallardır.
-* "SHOULD NOT": Yapılması tavsiye edilmeyen, ama bazı durumlarda göz yumulabileceği belirtilen kurallardır.
-* "OPTIONAL" ve "MAY": Tamamen geliştiricinin opsiyonuna sunulan kurallardır.
-
-Örneğin, bir kuralın başında `(MUST)` yazıyorsa, o kurala uyma mecburiyetiniz bulunmaktadır. `(MAY)` yazıyorsa, o kurala uyup uymama seçimi size bırakılmıştır. Diğerlerini yukarıda bulabilirsiniz.
-
-**PSR-0 - Autoloading (Otomatik Yükleme) Standardı**
-
-Bu standart, sınıflardan otomatik yüklenmesi amacıyla oluşturulmuştur.
-
-Maddelerimiz:
-
-- `(MUST)`: Her sınıf ve namespace `\<Sağlayıcı Adı>\(<Namespace>\)*<Sınıf Adı>` yapısına uymalıdır.
-- `(MUST)`: En üst seviye namespace daima `Sağlayıcı Adı` olmalıdır.
-- `(OPTIONAL)`: Her namespace istediği kadar alt namespace'e sahip olabilir.
-- `(Bilgi)`: Her namespace ayırıcı (`\`), `DIRECTORY_SEPARATOR` (Klasör Ayırıcı) anlamına gelmektedir.
-- `(Bilgi)`: Sınıf adındaki her `_` karakteri, `DIRECTORY_SEPARATOR` (Klasör Ayırıcı) anlamına gelmektedir. `_` karakterinin namespace içerisinde bir anlamı yoktur.
-- `(Bilgi)`: Tam namespace ve sınıf yapısı, yükleme esnasında sonuna `.php` eklenerek yüklenmektedir.
-- `(OPTIONAL)`: Sağlayıcı adı, namespace ve sınıflardaki alfabetik karakterler, istenilen her türlü küçük veya büyük harf kombinasyonuyla yazılabilir.
-
-Örnekler:
-
-* \Doctrine\Common\IsolatedClassLoader => /proje/klasoru/lib/vendor/Doctrine/Common/IsolatedClassLoader.php
-* \Symfony\Core\Request =>/proje/klasoru/lib/vendor/Symfony/Core/Request.php
-* \Zend\Acl => /proje/klasoru/lib/vendor/Zend/Acl.php
-* \Zend\Mail\Message => /proje/klasoru/lib/vendor/Zend/Mail/Message.php
-* \namespace\package\Class_Name => /path/to/project/lib/vendor/namespace/package/Class/Name.php
-* \namespace\package_name\Class_Name => /path/to/project/lib/vendor/namespace/package_name/Class/Name.php
-
-**PSR-1 - Basic Coding (Temel Kodlama) Standardı**
-
-**a. Genel bakış**
-
-* `(MUST)`: Dosyalar sadece `<?php` ve `<?=` taglarını kullanabilir.
-* `(MUST)`: Dosyalar, PHP kodu için sadece `UTF-8 (BOMSUZ)` seçeneğini kullanabilir.
-* `(SHOULD)`: Dosyalar, ya sembol oluşturabilir (örn. sınıflar, fonksiyonlar, constantlar vb.) veya yan etki yaratabilirler (örn. çıktı vermek, .ini ayarlarını değiştirmek, vb.) ancak ikisini birden YAPAMAZLAR.
-* `(MUST)`: Namespaceler ve sınıflar mutlaka bir autoloading standardına uymak zorundadır. (Örn. PSR-0 veya PSR-4).
-* `(MUST)`: Sınıf isimleri mutlaka `StudlyCaps` şeklinde yazılmak zorundadır. (örn. KdvHesaplayici)
-* `(MUST)`: Sınıf constantları mutlaka büyük harflerle ve ayraç olarak `_` şeklinde yazlmak zorundadır. (örn. const BIR_CONSTANT)
-* `(MUST)`: Method isimleri mutlaka `camelCase` şeklinde yazılmak zorundadır. (örn birFonksiyonAdi())
-
-**b. Dosyalar**
-
-* `(MUST)`: PHP kodları ya uzun olan `<?php ?>` yapısını, ya da `<?= ?>` olan kısa echo yapısını kullanabilir. Başka her türlü varyasyon yasaklanmıştır.
-
-**c. Karakter encoding**
-
-* `(MUST)`: Dosyalar, PHP kodu için sadece `UTF-8 (BOMSUZ)` seçeneğini kullanabilir.
-
-**d. Yan Etkiler**
-
-// Yakında
-
-**e. Constantlar**
-
-// Yakında
-
-**f. Propertyler**
-
-// Yakında
-
-**g. Methodlar**
-
-// Yakında
-
-**PSR-2 - Coding style (Kodlama Stilleri) Standardı**
-
-`PSR-2`, `PSR-1`'in devamı niteliğindedir.
-
-// Yakında
+// Yakında, şimdilik internette bolca Türkçe makale var. Onlara bakabilirsiniz.
 
 ## API Geliştirme ##
 
-// API geliştirme hakkında kısa bir yazı, niye kullanıyoruz.
+// API geliştirme hakkında kısa bir yazı, niye kullanıyoruz, nelere dikkat etmeliyiz.
 
 ### Kullanılabilir extensionlar ve araçlar. ###
 
@@ -1619,17 +1540,13 @@ Maddelerimiz:
 
 // Eskiden nasıl yapılıyor, yeni şekilde nasıl yapılmalı.
 
-### URI düzenine uyun. ###
+### Restful URI ve HTTP Verbs düzenine uyun. ###
 
 // Resourceful? type/identifier/subtype/identifier kuralına uyulmalı
 
 ### Doğru status kodları kullanılmalı ve response mesajı 2. planda olmalı. ###
 
 // { message } ek bilgiye sahip olmalı. Hatayı asıl anlatacak kısım header kodudur.
-
-### Hit izinleri ###
-
-// Yakında
 
 ---
 # Frontend #
@@ -2010,6 +1927,8 @@ Linkler yazılırken `www` yazılmamalı ve slash ekli olmalıdır. Örneğin `h
 
 ### Tanımlamaları çoğu zaman JavaScript Object Literals kullanarak yapın. ###
 
+> NOT: Bu yazı yazıldığından bu yana Javascript dünyasında birçok gelişme oldu. Artık ben object literal yerine Ecmascript 6.0 ile gelen Class syntaxını kullanıyorum ve bunun Babel ile transpile ediyorum. Aşağıdaki yöntem yanlış değil, ancak JS dünyası çok hızlı değişiyor.
+
 JavaScript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şey değildir.
 
 Aşağıdaki gibi bir JavaScript object literal tanımlayabiliriz.
@@ -2288,10 +2207,6 @@ JavaScript, dolayısıyla jQuery'de çok az bilinen (sadece uzun süre vakit ge�
 // Sebep?
 
 ## Geliştirici Ortamı ##
-
-### Sublime Text ###
-
-// Kullanmayanlar bu bölümü esgeçsin.
 
 ### GruntJS ###
 
