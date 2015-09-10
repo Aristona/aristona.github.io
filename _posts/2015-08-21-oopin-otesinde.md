@@ -16,9 +16,11 @@ share: true
 
 Bugünlerde birçoğumuz öğrendiği klasik OOP tekniklerini kod yazarken uyguluyor. Methodlar, sınıflar, kalıtımlar, prototipler... Bu güzel birşey! Ancak, yazdığımız kodlarda geliştirebileceğimiz bazı noktalar var.
 
-Bazen kod yazarken aklıma bu tür sorular takılır. "Acaba bunu böyle yapsak nasıl olurdu?" sorusunu sık sık kendime sorarım ve araştırmaya başlarım. Sonuç olarak, genellikle birileri bu soruların cevabını yıllar öncesinden vermiş olur. Bu yazımda bunları toparlayıp, size gerçek dünya örnekleriyle neden önemli olduklarını anlatmaya çalışacağım.
+Bazen kod yazarken aklıma bu tür sorular takılır. "Acaba bunu böyle yapsak nasıl olurdu?" sorusunu sık sık kendime sorarım ve araştırmaya başlarım. Sonuç olarak, genellikle birileri bu soruların cevabını yıllar öncesinden vermiş olur. Bu yazımda, bu tür kullanımların size gerçek dünya örnekleriyle neden önemli olduklarını anlatmaya çalışacağım.
 
 İşin mühendislik kısmını yapmak sıkıcı tarafı, ama yaptığımız şeyi sanatımızla süslemek bizim elimizde.
+
+![](https://cdn.tutsplus.com/net/authors/jeffreyway/1278414923_coraline-vs-puppeteer.gif)
 
 Başlayalım!
 
@@ -28,7 +30,7 @@ Klasik OOP yaklaşımıyla kod yazarken, genellikle bir veri bir methoda gidiyor
 
 > Boolean, integer, string, object, array, null, void gibi değerler genel olarak Primitive adıyla isimlendirilmiştir. Yukarıdaki örnekte, bir methoda string (primitive) gönderip, boolean (primitive) döndürülmesini hayal edebilirsiniz.
 
-Klasik OOP ile, kendi başına bir anlamı olmayan anlamsız (aptal) verileri anlamlı hale getirmek için, akıllı bir sınıf oluşturma ihtiyacı duyuyoruz. Bu bana göre çok mantıklıca bir yöntem değil.
+Kısacası, klasik yaklaşımla kendi başına bir anlamı olmayan anlamsız (aptal) verileri anlamlı hale getirmek için, akıllı bir sınıf oluşturma ihtiyacı duyuyoruz. Bu bana göre çok mantıklıca bir yöntem değil.
 
 Bir düşünün, yolda yürürken yerden bir elma bulduğumuzu farzedelim. Biz o elmayı elimize aldığımızda "Bu bir elmadır." diyebiliyoruz, ancak kod yazdığımızda ise, "Bu [primitiveyi] bir elma analiz fabrikasına (sınıfına) sok. Eğer gerçekten bir "Elma" türünde bir primitive ise, bana doğru veya yanlış değerini döndür. Eğer obje analiz edilemezse "BilinmeyenObje" exceptionu fırlat ve evrenin yok olmasını önle." tarzında kod yazıyoruz.
 
@@ -70,9 +72,10 @@ Bu şekilde para değerlerini de karşılaştırabiliriz.
 
 > Yukarıdaki örnekte __toString() methodu içerisinde, "Para" objesinin değeri döndürülmekte. USD, neredeyse TRY'nin 3 katı an itibariyle, ancak aradaki fark çok fazla olduğu için $try değeri daha yüksek.
 
-    $a = new ValueObjects\URL("http://deneme.com")->value();
-    $b = new ValueObjects\URL("ftp://deneme.com")->value();
-    $a == $b // false
+    $a = new ValueObjects\URL("http://deneme.com");
+    $b = new ValueObjects\URL("ftp://deneme.com");
+    $a->value() === $b->value() // false (urlleri olduğu gibi kontrol ettik)
+    $a->domain() === $b->domain() // true (domainleri kontrol ettik)
 
 Bu yöntemin iyi yanı, uygulamamızın heryerinde aynı objeleri kullanabilmemiz, ve gerektiğinde objelerimizi akıllı hale getirebilmemiz.
 
@@ -103,7 +106,7 @@ Veritabanından veriyi çektiğimizde ise, çektiğimizde o veriyi `Money` tür�
         return $converter->toUSD();
     });
 
-> Single Reponsibility Principle bize sınıfın sadece tek bir işi olması gerektiğini söyler. Bu yüzden, "Para" yı başka bir sınıfta, "Converter" i ise başka bir sınıfta tuttum, ve convert lambdası içerisine apply ettim.
+> Single Reponsibility Principle bize sınıfın sadece tek bir işi olması gerektiğini söyler. Bu yüzden, "Para" yı başka bir sınıfta, "Converter" i ise başka bir sınıfta tuttum, ve convert lambdası içerisine apply ettim. Sınıf oluşturmaktan asla korkmayın.
 
 Daha da ileri gidelim. Paramızı USD'ye çevirdikten sonra biraz TRY ekleyelim.
 
@@ -121,6 +124,7 @@ Bunu yaptığımızda, uygulamamızda akıllı objeleri kullanmaya başlıyoruz,
 
     $money->amount->convert(function ($converter) {
         return $converter->highest();
+        // en çok para kazandıracak para birimini return et
     });
 
 Veya, o anki para biriminin sembolünü aldırabiliriz.
@@ -164,9 +168,9 @@ Uygulamamızın geri kalanında da, bu objeleri typehintler ile kullanabiliriz. 
 
     $price->show(); // $ 15.00
 
-Aynı şekilde, kullanıcımızın da sahip olduğu "Para" değerini tutup, "değerleri" kontrol ettirebiliriz.
+Aynı şekilde, kullanıcımızın da sahip olduğu "Para" değerini tutup, "değerleri" kontrol ettirebiliriz. Hatta ileri gidip, `affords` adında bir method oluşturalım.
 
-    $user    = User::current();
+    $user = User::current();
     $user->funds // (object) ValueObjects\Money
 
     $product = new Product(new Money(new USD(15.00)));
@@ -176,11 +180,13 @@ Aynı şekilde, kullanıcımızın da sahip olduğu "Para" değerini tutup, "de�
         echo sprintf("%s can afford %s!", $user->name, $product->name);
     });
 
+    // Jane can afford Green Shoe.
+
 İşte bu kadar! Artık ürün fiyatını 15.00 gibi hardcoded tutmak yerine, kendi içerisinde bir anlamı olan "Para" değer objesi olarak tutuyoruz. Bu objemiz, başka sınıflara bağlı kalmadan, kendi değerini hesaplayacak kadar akıllı. Başka para türleriyle kendini karşılaştıracak kadar akıllı. Kendini başka türlere çevirecek kadar akıllı.
 
 En başa dönelim. Yerde bir Elma bulmuştuk. Biz onun Elma olduğunu nasıl biliyoruz? Çünkü o bir Elma değil, o bir ValueObjects\Elma. :) Geriye, onu klasik OOP ile dekorate etmek kalıyor.
 
-> ValueObjects konusu bu kadar, ama biz aşağıda biraz çılgınlık yapacağız. Mühendislik burada bitiyor, artık sanat başlayacak. Artık parmaklarımızdan bigli yerine hayalgücümüz akacak!
+> ValueObjects konusu bu kadar, ama biz aşağıda biraz çılgınlık yapacağız. Mühendislik burada bitiyor, artık sanat başlayacak. Artık parmaklarımızdan sıkıcı mühendislik konseptleri yerine hayalgücümüz akacak!
 
 Hey sen, `ValueObjects\Elma`. Çok tatlı görünüyorsun. Seni yemem lazım!
 
