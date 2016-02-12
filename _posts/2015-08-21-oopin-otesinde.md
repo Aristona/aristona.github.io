@@ -3,7 +3,7 @@ layout: post
 title: "OOP'in ötesinde..."
 description: "OOP'in ötesinde..."
 modified: 2015-08-21
-tags: [PHP]
+tags: [PHP, OOP, SOLID]
 image:
   feature: abstract-3.jpg
   credit: dargadgetz

@@ -3,7 +3,7 @@ layout: post
 title: "Redis kullanımı ve incelikleri"
 description: "Redis kullanımı ve incelikleri"
 modified: 2015-08-20
-tags: [PHP]
+tags: [Redis]
 image:
   feature: abstract-3.jpg
   credit: dargadgetz
