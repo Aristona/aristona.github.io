@@ -14,7 +14,7 @@ share: true
 
 #Redis kullanımı ve incelikleri#
 
-Uzun zamandır Redis hakkında bir yazı yazmak istiyordum, çünkü Redis son zamanlarda öğrendiğim en yararlı araçlardan birisi. Fazla Türkçe kaynak bulamadım, bu yüzden Redis'i yine aynı tarzda, yeni başlayanların da anlayabileceği bir şekilde anlatmayı planlıyorum.
+Uzun zamandır Redis hakkında bir yazı yazmak istiyordum çünkü Redis son zamanlarda öğrendiğim en yararlı araçlardan birisi. Fazla Türkçe kaynak bulamadım bu yüzden Redis'i yine aynı tarzda, yeni başlayanların da anlayabileceği bir şekilde anlatmayı planlıyorum.
 
 ###Redis nedir?###
 
@@ -39,11 +39,11 @@ Redis; no-sql veritabanı olarak, önbellekleme için ve mesaj sunucusu amacıyl
 
 ###Ne kadar hızlı?###
 
-İnternette Redis için yapılmış birçok benchmark bulabilirsiniz. Kendi bilgisayarımda denediğimde saniyede 100.000 SET/GET, pipe özelliğini açtığımda saniyede 400.000 SET/GET komutu desteklediğini görmüştüm. Ancak göz önünde bulundurmamız gereken birkaç nokta var. Bu, sadece bir tane Redis instancesinin değerleri. Birden fazla Redis instancesi oluşturup, her birini işlemcinizin bir çekirdeğine ve farklı bir porta atayabilirsiniz. Eğer bu yetmiyorsa, kolayca bir master-slave replikasyonu oluşturabilirsiniz. Bu da yetmiyorsa, bir Redis cluster kullanabilirsiniz. Bu noktaya geleceğinizi hiç sanmıyorum ama, bu da yetmiyorsa consistent hashing özelliklerini kullanarak verilerinizi birden fazla parçaya bölüp, shardlar veya partitionlar üzerinde tutabilirsiniz.
+İnternette Redis için yapılmış birçok benchmark bulabilirsiniz. Kendi bilgisayarımda denediğimde saniyede 100.000 SET/GET, pipe özelliğini açtığımda saniyede 400.000 SET/GET komutu desteklediğini görmüştüm. Ancak göz önünde bulundurmamız gereken birkaç nokta var. Bu sadece bir tane Redis instancesinin değerleri. Birden fazla Redis instancesi oluşturup her birini işlemcinizin bir çekirdeğine ve farklı bir porta atayabilirsiniz. Eğer bu yetmiyorsa kolayca bir master-slave replikasyonu oluşturabilirsiniz. Bu da yetmiyorsa bir Redis cluster kullanabilirsiniz. Bu noktaya geleceğinizi hiç sanmıyorum ama bu da yetmiyorsa, consistent hashing özelliklerini kullanarak verilerinizi birden fazla parçaya bölüp shardlar veya partitionlar üzerinde tutabilirsiniz.
 
 ###Kısaca: Desteklenen veri türleri###
 
-Redis string, hash, set, sorted set ve list gibi veri türlerini destekler.
+Redis `STRING`, `HASH`, `SET`, `SORTED SET` ve `LIST` gibi veri türlerini destekler.
 
 ###Özellikler###
 
@@ -51,7 +51,7 @@ Yukarıda yazdıklarım benim için çok sıkıcıydı. Eminim sizin için de s�
 
 **Pipelining**
 
-Bir restorantta olduğunuzu hayal edin, garsonluk yapıyorsunuz. Kocaman bir masanız var ve 1000 kişi aynı masaya rezervasyon yaptırmış. Müşterilerinizin herbirini siparişini veriyor. "Ben tavuk sote istiyorum." "Ben köfte istiyorum." Hepsini bir kağıda not edip mutfağın yolunu tutuyorsunuz. Redis asenkron çalışmadığı için tek garson var o da sizsiniz.
+Bir restorantta olduğunuzu hayal edin. Garsonluk yapıyorsunuz. Kocaman bir masanız var ve 1000 kişi aynı masaya rezervasyon yaptırmış. Müşterilerinizin herbirini siparişini veriyor. "Ben tavuk sote istiyorum." "Ben köfte istiyorum." Hepsini bir kağıda not edip mutfağın yolunu tutuyorsunuz. Redis asenkron çalışmadığı için tek garson var o da sizsiniz.
 
 1000 kişiye yemeklerini en hızlı nasıl servis edersiniz? Mutfakta bir tane yemek servis arabasına koyabildiğiniz kadar yemek koyar, onu masaya iterek götürür, hepsini dağıtır ve geri gelirsiniz. Her defasında bir tane tabağı elinizde taşıyıp, masaya bırakıp, yenisini almak için mutfağa geri dönmezsiniz. Değil mi?
 
@@ -71,9 +71,9 @@ Aşağıdaki örneği ele alalım.
     Redis'e bağlan -> 2. siparişin değerini al -> PHP'ye geri dön ->
     ...
 
-Redis'e bağlanmak ve PHP'ye dönmek arasında geçen süreye round trip deniyor. Yani garsonumuz, yemeği eline hemen alabiliyor, masaya da bırakabiliyor, ama mutfaktan masaya kadar gitmek her defasında biraz vakit alıyor. Pipeline kullansak garsona bütün yemekleri tek seferde yükler ve öyle gönderirdik. Mutfak ve masa arasındaki mesafe sadece bir defa kat edilirdi. Buradan çok büyük bir performans artışı sağlardık.
+Redis'e bağlanmak ve PHP'ye dönmek arasında geçen süreye round trip deniyor. Yani garsonumuz, yemeği eline hemen alabiliyor, masaya da bırakabiliyor, ama mutfaktan masaya kadar gitmek ve geri dönmek her defasında biraz vakit alıyor. Pipeline kullansak garsona bütün yemekleri tek seferde yükler ve öyle gönderirdik. Masaya vardığında yemekleri dağıtırdı. Böylece mutfak ve masa arasındaki mesafe sadece bir defa kat edilirdi. Buradan çok büyük bir performans artışı sağlardık.
 
-Yazacağımız kod aşağı yukarı şuna benzerdi. (Örnek hangi Redis client kütüphanesini kullandığınıza göre farklılık gösterebilir, ama PHP için en kapsamlı kütüphane Predis ve ben örneklerimi onun üzerinden vereceğim.)
+Yazacağımız kod aşağı yukarı şuna benzerdi. (Örnek hangi Redis client kütüphanesini kullandığınıza göre farklılık gösterebilir ama PHP için en kapsamlı kütüphane Predis ve ben örneklerimi onun üzerinden vereceğim.)
 
     $siparisler = ["Köfte", "Tavuk Sote", ...];
 
@@ -83,38 +83,38 @@ Yazacağımız kod aşağı yukarı şuna benzerdi. (Örnek hangi Redis client k
         }
     });
 
-Bu örnek, komutları pipeline içine doldurur, Redis'e bunu tek seferde işlettirir ve hepsinin cevabını tek seferde döndürürdü. İlk başta, pipeline 400.000 IOPS (saniye başına istek) desteklerken, pipeline olmadığında bu sayının 100.000 IOPS'a düştüğünü belirtmiştim. Uygulamanızı geliştirirken bazı kod parçalarının birden fazla Redis komutu çalıştırdığını görüyorsanız, kendinize "Bunu pipeline içerisinde kullanabilir miyim?" diye sorun.
+Bu örnek komutları pipeline içine doldurur, Redis'e bunu tek seferde işlettirir ve hepsinin cevabını tek seferde döndürürdü. İlk başta pipeline 400.000 IOPS (saniye başına istek) desteklerken, pipeline olmadığında bu sayının 100.000 IOPS'a düştüğünü belirtmiştim. Uygulamanızı geliştirirken bazı kod parçalarının birden fazla Redis komutu çalıştırdığını görüyorsanız kendinize "Bunu pipeline içerisinde kullanabilir miyim?" diye sorun.
 
 **LUA Desteği**
 
-Redis çok akıllı değil. Ona relational veritabanlarında olduğu gibi, "Mutfağa git. Müşterilerin 3 gün önce, saat 08:00 ile 12:00 arasında verdikleri siparişler arasından çorba türünde olanları grupla ve bana çorba başına ne kadar kazanç sağladığımı göster." gibi komplex sorgular veremezsiniz. Ona diyebilecekleriniz hep basit olmak zorundadır.
+Redis çok akıllı değil. Ona relational veritabanlarında olduğu gibi, "Mutfağa git. Müşterilerin 3 gün önce, saat 08:00 ile 12:00 arasında verdikleri siparişler arasından çorba türünde olanları grupla ve bana çorba başına ne kadar kazanç sağladığımı göster." gibi komplex sorgular soramazsınız. Ona sorabileceğiniz şeyler hep basit olmak zorundadır.
 
 - Bana müşterileri ver.
 - Bana bu müşterilerin verdiği siparişleri ver.
 - Bana bu siparişler arasından çorba olanları ver.
 - Bana bu çorbalardan edindiğim kazanç bilgilerini ver.
 
-Bu tür basit scriptleri LUA ile yapabilirsiniz. Bu, genellikle verileri alıp kullandığınız programlama diliyle yapmaktan daha hızlı olmaktadır ancak LUA bilmiyorsanız, verileri çekip kendi programlama dilinizde oynayabilirsiniz.
+Bu tür basit scriptleri LUA ile yapabilirsiniz. Bu genellikle verileri alıp kullandığınız programlama diliyle yapmaktan daha hızlı olmaktadır ancak LUA bilmiyorsanız verileri çekip kendi programlama dilinizde oynayabilirsiniz.
 
 ***Son derece önemli bir complexity notu...***
 
 Bunu üstüne basarak, altını çizerek, görebileceğiniz en parlak renk ve en büyük puntolarla yazdığımı farzedin.
 
-> Redis'i, içine koyduğunuz verileri "en düşük time complexity" ile nasıl okurum diye düşünerek kurgulamalısınız.
+> Redis'i içine koyduğunuz verileri "en düşük time complexity" ile nasıl okurum diye düşünerek kurgulamalısınız.
 
-Bu son derece önemlidir. Yoksa verileriniz büyüdükçe time complexity artar ve Redis çok daha zorlanarak/uzun sürelerle çalışır.
+Bu son derece önemlidir. Yoksa verileriniz büyüdükçe time complexity artar ve Redis çok daha uzun sürelerle çalışır.
 
 Öncelikle size time complexitynin ne olduğundan bahsedeyim. Bilgisayar Bilimi (ülkemizde var mı bilmiyorum, Bilgisayar Mühendisliği veri yapıları dersinde işleniyordur belki) eğitimi alanlar bunları ders olarak görüyorlar ama kendi kendine programlamayı öğrenen insanlar genellikle bunu bilmiyor.
 
 Restorant örneğimize geri dönelim. Farzedelim ki müşterilerimizin hepsi diyet yapıyor ama hepsinin canı specialimiz olan en ağır kalorili yemeği denemek istiyor. Ancak, masadaki diğer müşterilerden çekindikleri için bunu garsona sesli olarak söyleyemiyorlar. Bir karar alıyorlar: herkes yemek istediği yemeği oturduğu sandalyenin numarasıyla beraber bir kağıda yazacak ve bunu kapatıp bir sepetin içine atacak. (Oy kullanır gibi.) Hemen herkes kağıtlarını sepete atıyor ve garson sepeti alıp mutfağa gidiyor.
 
-Aşçımız önce garsona kızıyor çünkü şimdi tek tek bütün kağıtları sepetten çıkarıp okumak zorunda ancak garsonun yapabileceği birşey yok. Sistem bu şekilde `kurgulandı`. Ama iş keşke bununla bitse. Aşçı'ya yardım eden bir mutfak görevlisi, 500 numaralı sandalyede oturan kadını tanıdığını, onun rahatsızlığı olduğunu ve eğer şekerli bir yemek sipariş etmişse şeker yerine tatlandırıcı kullanması gerektiğini söylüyor. Garsonumuzun onun ne istediğini bilmiyor. Elinde kağıtların olduğu bir sepet var...
+Aşçımız önce garsona kızıyor çünkü şimdi tek tek bütün kağıtları sepetten çıkarıp okumak zorunda ancak garsonun yapabileceği birşey yok. Sistem bu şekilde `kurgulandı`. Ama iş keşke bununla bitse. Aşçı'ya yardım eden bir mutfak görevlisi, 500 numaralı sandalyede oturan kadını tanıdığını, onun rahatsızlığı olduğunu ve eğer şekerli bir yemek sipariş etmişse şeker yerine tatlandırıcı kullanması gerektiğini söylüyor. Garsonumuzun onun kim olduğunu ve ne istediğini bilmiyor. Elinde kağıtların olduğu bir sepet var...
 
 Bu durumda yapabileceğimiz tek şey sepetten kağıtları tek tek çekip 500. sandalyenin kağıdı bulunana kadar hepsini tek tek okumak olacaktır.
 
-Sepetten çektiğimiz kaçıncı kağıt 500. sandalyeye ait olabilir? Birinci - olabilir. Sonuncu - olabilir. Peki müşteri sayısı kadar çekim yaparsak kesinlikle o kadınının kağıdınıda çekmiş oluruz diyebilir miyiz? Evet.
+Sepetten çektiğimiz kaçıncı kağıt 500. sandalyeye ait olabilir? Birinci - olabilir. Sonuncu - olabilir. Peki müşteri sayısı kadar çekim yaparsak kesinlikle o kadınının kağıdını da çekmiş oluruz diyebilir miyiz? Evet.
 
-Buna bilgisayar biliminde time complexity denmektedir. Burada müşteri numarası dinamik bir sayı olduğu için buna genelde `N` denir ve complexitysi `o(N)` olarak gösterilir. Peki `N` değeri nedir? Müşteri sayısı. 2 tane müşterimiz olsa, 2 tane kağıt olacak ve 2 tane çekim yapsak bütün bilgilere ulaşmış olacağız. Çok zor değil. Peki, 100.000.000 tane müşterimiz olsa? O zaman 100.000.000 tane çekim yapmamız gerekebilir. Muhtemelen garson çekimleri bitirene kadar restorant iflas etmiş olur.
+Buna bilgisayar biliminde time complexity denmektedir. Burada müşteri numarası dinamik bir sayı olduğu için buna genelde `n` denir ve complexitysi `o(n)` olarak gösterilir. Peki `n` değeri nedir? Müşteri sayısı. 2 tane müşterimiz olsa, 2 tane kağıt olacak ve 2 tane çekim yapsak bütün bilgilere ulaşmış olacağız. Çok zor değil. Peki, 100.000.000 tane müşterimiz olsa? O zaman 100.000.000 tane çekim yapmamız gerekebilir. Muhtemelen garson çekimleri bitirene kadar restorant iflas etmiş olur.
 
 > Bu durumda Redis'e kızamazsınız! Oraya o kağıtları siz gelişigüzel attınız. Kurgunuz bu. 1-100 arasını bir sepete, 101-200 arasını diğer sepete, 201-300 arasını başka bir sepete atabilirdiniz. Bu durumda sadece 401-500 sepetini baktığınızda 500. sandalyede oturan kadının yemek bilgilerine daha çabuk ulaşabilirdiniz çünkü 100 tane kağıt var. "Verileri nasıl okuyacaksanız Redis'i ona göre kurgulayın" diyerek kastettiğim şey bu.
 
@@ -138,7 +138,7 @@ Kaç farklı kombinasyon var? 100.000.000 tane müşterimiz olduğunu varsayarsa
 
     o(n * n)
     = o(yemek sepetindeki kağıt sayısı ^ tatlı sepetindeki kağıt sayısı)
-    = (100.000.000 ^ 100.000.000)
+    = (100.000.000 * 100.000.000)
     = o(100.000.000.000.000.000)
 
 Bu sayının nasıl söylendiğini bile bilmiyorum. Peki biz bunu daha az complexity ile nasıl tutabilirdik? Müşterilere sepete kağıt atmalarını söylemek yerine, 2 dakika izin isteyebilir ve yazıcıdan telefon rehberine benzer ufak bir kağıt çıkartabilirdik. (Veri yapılarında bu `HASH` diye geçer)
@@ -154,9 +154,9 @@ Garson herkesin istediği yemek ve tatlıyı boş alanlara yazdırıp mutfağa �
 
 > o(1) complexity daima en hızlı complexity değeridir.
 
-Bu yapının bize çıkaracağı zorluklar yok mu? Var. Patronumuz bize şunu sorabilirdi: "Bana en çok para kazandıran yemeği göster."
+Bu yapının bize çıkaracağı zorluklar yok mu? Var. Patronumuz mutfağa gelip bize şunu sorabilirdi: "Bana en çok para kazandıran yemeği göster."
 
-Yemekleri gruplayıp hepsinin kaçar defa sipariş edildiğini gruplamak `o(n)` (n = rehberdeki satır sayısı) kadar complexity olurdu çünkü her satırı tek tek okuyup, hangi yemeğin sipariş edildiğini bir artıracağız. Daha sonra yemeklerin fiyatını çektirecektik. Bunun da complexitysi `o(n)` (n = sipariş edilen yemek türü sayısı) olacaktı, çünkü herkes aynı yemeği söylemiş olabilir. Herkes farklı yemeği de söylemiş olabilir. Biz her zaman en kötü ihtimalle gideceğiz. Son complexity şuna benzeyecekti.
+Yemekleri gruplayıp hepsinin kaçar defa sipariş edildiğini bulduğumuzda `o(n)` (n = rehberdeki satır sayısı) kadar complexity olurdu çünkü her satırı tek tek okuyup, hangi yemeğin sipariş edildiğini bir artıracağız. Daha sonra yemeklerin fiyatını çektirecektik. Bunun da complexitysi `o(n)` (n = sipariş edilen yemek türü sayısı) olacaktı çünkü herkes aynı yemeği sipariş etmiş olabilir. Herkes farklı yemeği de sipariş etmiş olabilir. Biz her zaman en kötü ihtimalle gideceğiz. Son complexity şuna benzeyecekti.
 
     o(N + S)
     N = Müşteri sayısı
@@ -185,7 +185,7 @@ Kadınlar siparişlerini yazdıklarında istedikleri yemeği başka bir kağıta
     [Çorba             ]     [2           ]     [3        ]
     ...
 
-Patronumuz bize "Bana en çok para kazandıran yemeği göster." bunu `o(n)` n = sipariş edilen yemek türü sayısı değerine indirebilirdik. Yazarken biraz yorulurduk ama Redis kurgusunu daima `okurken nasıl hızlı okurum` sorusunu düşünerek yapmalısınız?
+Patronumuz bize "Bana en çok para kazandıran yemeği göster." bunu `o(n)` n = sipariş edilen yemek türü sayısı değerine indirebilirdik. Yazarken biraz yorulurduk ama Redis kurgusunu daima `okurken nasıl hızlı okurum` sorusunu düşünerek yapmalısınız.
 
 Peki bu complexityi daha da indiremez miyiz? İndiririz! Redis'in desteklediği `SORTED SET` (sıralanmış küme) veri türünü kullanabiliriz. Bunlar bir skora göre (skor, yemeğin birim fiyatı olabilir) sıralanacağı için; Redis'e "Bana sıraladığın kümenin 1. elemanını döndür" dediğimizde daha düşük bir complexity ile bu sonuca ulaşabilirdik.
 
@@ -253,3 +253,5 @@ Redis son derece güzel ve aktif bir proje. Büyük küçük birçok firma kulla
 Merak ettiğiniz soruları yorum yaparak sorabilirsiniz.
 
 Bir sonraki yazımda görüşmek üzere!
+
+Ps. Yazımda hatalar veya devrik cümleler olabilir. Üzerinden geçtiğim zamanlarda gözüme çarpan hataları düzeltiyorum. Hata görürseniz yorum olarak bana bildirebilir veya yazılarım açık kaynaklı olduğu için Github üzerinden Pull Request gönderebilirsiniz.
