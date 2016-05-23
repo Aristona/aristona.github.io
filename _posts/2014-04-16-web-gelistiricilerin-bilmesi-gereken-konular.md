@@ -1264,7 +1264,7 @@ Kıvırcık parantezler olmadığında, yanlışlıkla `if` bloğu sonrasına 2.
 
 Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `kosul` şartı sağlanıyorsa, sadece `return "If";` çalışacak ve fonksiyon `If` değerini döndürecektir. Diğer her türlü durumda `return "Hata";` çalışacaktır ve fonksiyon `Hata` değerini döndürecektir. Kıvırcık parantez olmadığında 2. satır `if bloğu` içerisinde sayılmaz.
 
-> Önemli Not: Normal şartlarda if-elseif-else bloklarının arasına başka bir statement ekleyemezsiniz. Bu durumda PHP size `unexpected 'else'` şeklinde bir syntax hatası döndürür. if olmayan bir yerde else if ya da else bloğundan söz edilemez. Arka arkada yazılan iki if bloğu için bu durum geçerli değildir; çünkü ikisi birbirinden bağımsız işlenir.
+> Önemli Not: Normal şartlarda if-elseif-else bloklarının arasına başka bir statement ekleyemezsiniz. Bu durumda PHP size `unexpected 'else'` şeklinde bir syntax hatası döndürür. if olmayan bir yerde else if ya da else bloğundan söz edilemez. Arka arkaya yazılan iki if bloğu için bu durum geçerli değildir; çünkü ikisi birbirinden bağımsız işlenir.
 
 Siz uygulamamızı `else` bloğunun çalışacağı durumlarda `Else` değeri dönecek diye programladıysanız; ama bu durum gözden kaçmışsa ve fonksiyonunuz `Hata` değerini döndürüyorsa, birçok `bug` oluşmasına davetiye çıkarmışsınız demektir.
 
