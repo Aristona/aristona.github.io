@@ -12,15 +12,15 @@ comments: true
 share: true
 ---
 
-#Redis kullanımı ve incelikleri#
+# Redis kullanımı ve incelikleri #
 
 Uzun zamandır Redis hakkında bir yazı yazmak istiyordum çünkü Redis son zamanlarda öğrendiğim en yararlı araçlardan birisi. Fazla Türkçe kaynak bulamadım bu yüzden Redis'i yine aynı tarzda, yeni başlayanların da anlayabileceği bir şekilde anlatmayı planlıyorum.
 
-###Redis nedir?###
+### Redis nedir? ###
 
 Redis; no-sql veritabanı olarak, önbellekleme için ve mesaj sunucusu amacıyla kullanılan, in-memory bir veri-yapıları deposudur. Redis'in kendisini veri-yapıları deposu olarak adlandırmasındaki sebep diğer alternatiflerine göre daha fazla veri türünü desteklemesidir.
 
-###Avantajları###
+### Avantajları ###
 
 - Senkron çalıştığı için son derece hızlıdır.
 - Birçok veri türünü destekler.
@@ -29,7 +29,7 @@ Redis; no-sql veritabanı olarak, önbellekleme için ve mesaj sunucusu amacıyl
 - Son derece aktif bir kullanıcı kitlesine sahiptir.
 - Sharding, Cluster, Sentinel, Replication gibi birçok enterprise özelliklere sahiptir.
 
-###Dezavantajları###
+### Dezavantajları ###
 
 - Asenkron çalışmadığı için tek instance üzerinde, asenkron alternatiflerin eriştiği performansa erişemeyebilirsiniz.
 - Veri boyutunuza göre RAM'e ihtiyacınız olur.
@@ -37,15 +37,15 @@ Redis; no-sql veritabanı olarak, önbellekleme için ve mesaj sunucusu amacıyl
 - Komplex sorgular için sorgu yapacaksanız, Redis yapısını düzgün kurgulamalısınız.
 - Bir transaction hata alırsa geri dönüşü yoktur.
 
-###Ne kadar hızlı?###
+### Ne kadar hızlı? ###
 
 İnternette Redis için yapılmış birçok benchmark bulabilirsiniz. Kendi bilgisayarımda denediğimde saniyede 100.000 SET/GET, pipe özelliğini açtığımda saniyede 400.000 SET/GET komutu desteklediğini görmüştüm. Ancak göz önünde bulundurmamız gereken birkaç nokta var. Bu sadece bir tane Redis instancesinin değerleri. Birden fazla Redis instancesi oluşturup her birini işlemcinizin bir çekirdeğine ve farklı bir porta atayabilirsiniz. Eğer bu yetmiyorsa kolayca bir master-slave replikasyonu oluşturabilirsiniz. Bu da yetmiyorsa bir Redis cluster kullanabilirsiniz. Bu noktaya geleceğinizi hiç sanmıyorum ama bu da yetmiyorsa, consistent hashing özelliklerini kullanarak verilerinizi birden fazla parçaya bölüp shardlar veya partitionlar üzerinde tutabilirsiniz.
 
-###Kısaca: Desteklenen veri türleri###
+### Kısaca: Desteklenen veri türleri ###
 
 Redis `STRING`, `HASH`, `SET`, `SORTED SET` ve `LIST` gibi veri türlerini destekler.
 
-###Özellikler###
+### Özellikler ###
 
 Yukarıda yazdıklarım benim için çok sıkıcıydı. Eminim sizin için de sıkıcı gelmiştir. Gereksiz terimler, anlaması güç kelimeler... Merak etmeyin, bundan sonra herşeyi "Anneye anlatır gibi", basit, kısa ve anlaşılabilir şekilde tutmaya çalışacağım.
 

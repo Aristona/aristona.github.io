@@ -12,7 +12,7 @@ comments: true
 share: true
 ---
 
-#OOP'in ötesinde...#
+# OOP'in ötesinde... #
 
 Bugünlerde birçoğumuz öğrendiği klasik OOP tekniklerini kod yazarken uyguluyor. Methodlar, sınıflar, kalıtımlar, prototipler... Bu güzel birşey! Ancak, yazdığımız kodlarda geliştirebileceğimiz bazı noktalar var.
 
@@ -24,7 +24,7 @@ Bazen kod yazarken aklıma bu tür sorular takılır. "Acaba bunu böyle yapsak 
 
 Başlayalım!
 
-###Value Objects (Değer Objeleri)###
+### Value Objects (Değer Objeleri) ###
 
 Klasik OOP yaklaşımıyla kod yazarken, genellikle bir veri bir methoda gidiyor, o methodda işlenip bir primitive olarak geri dönüyor, dönen primitive kontrollerden geçiyor ve başka bir sınıfa gidiyor, o sınıf o primitive değerini tekrar işliyor ve başka bir primitive döndürüyor.
 

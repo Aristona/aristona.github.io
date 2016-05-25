@@ -14,16 +14,16 @@ share: true
 
 PHP'de `Closure` objelerinin scopelerini `bind` methodunu kullanarak değiştirebiliriz.
 
-```php
+~~~php
 <?php
 
 class ClosureDispatcher
 {
 
     public function call(Closure $closure, $scope = NULL) {
-        if(!is_null($scope)) 
+        if(!is_null($scope))
             $closure = Closure::bind($closure, $scope, $scope);
-        
+
         return $closure();
     }
 }
@@ -40,7 +40,7 @@ $ret = $dispatcher->call(function () {
         return $this->name; // Aristona
 }, $person);
 
-```
+~~~
 
 Kafa karıştırıcı bir konu gibi görünüyor ancak hiçte öyle değil!
 
