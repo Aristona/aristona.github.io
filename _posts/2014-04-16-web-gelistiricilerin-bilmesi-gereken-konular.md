@@ -8,6 +8,8 @@ image:
   feature: abstract-12.jpg
 comments: true
 share: true
+disqus:
+    url: "http://aristona.github.io/web-gelistiricilerin-bilmesi-gereken-konular/"
 ---
 
 # Giriş #
