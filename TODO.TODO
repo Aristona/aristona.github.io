@@ -1,2 +1,0 @@
- ☐ Windowstaki UTF-8 sorununu çöz. Şimdilik konsolda "chcp 65001" yapıp UTF 8 sorununa çözüm bulabiliyorsun. (Git Bash kullanırken olmuyor btw)
- ☐ Git Bash üzerinde: export LANG=en_US.UTF-8

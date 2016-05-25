@@ -10,9 +10,7 @@ comments: true
 share: true
 ---
 
----
 # Giriş #
----
 
 ### Kapsam ###
 
@@ -38,9 +36,7 @@ Bu yazı, [https://github.com/Aristona/aristona.github.io](https://github.com/Ar
 
 Bu yazıdan hiçbir ticari beklentim yoktur. Kendiniz bir yazı göndermek isterseniz (web geliştirme ile ilgili olmalı ve mutlaka kabul görmüş bir good practice olmalı) `pull request` atarak yazınızı gönderebilirsiniz.
 
----
 # Back end (Arka yüz) #
----
 
 Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, birçok örnek direkt olarak `yazılım mimarileri` ile ilgili olduğu için diğer programlama dillerinde de kullanılabilir.
 
@@ -54,7 +50,7 @@ Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, bir
 
 İsterseniz başlamadan önce `scope` kavramının ne olduğundan ve `PHP`'de nasıl kullanıldığından kısaca bahsedelim.
 
-```php
+~~~ php
 <?php
     $global = "Global scope içerisindeki değişken";
 
@@ -66,7 +62,7 @@ Back end için kullanacağımız ana programlama dili `PHP` olmakla beraber, bir
 
     echo $global; // Çıktı: Global scope içerisindeki değişken
     echo $fonksiyon; // Çıktı: Undefined variable (tanımlanmamış değişken) hatası
-```
+~~~
 
 Yukarıdaki örnekte `$global` değişkeni `global scope` içerisinde tanımlanmıştır. Bu yüzden uygulamanın her yerinden erişilebilir olur. Buna karşın, `$fonksiyon` değişkeni `function scope` içerisinde tanımlanmıştır ve sadece o fonksiyon içerisinden erişilebilir olur.
 
@@ -74,17 +70,17 @@ Bunu belirttiğimize göre, değişkenlerin `global` olarak tanımlanması neden
 
 Bir `$veritabani` değişkeninde `MySQL` bağlantısını tuttuğumuzu varsayalım;
 
-```php
+~~~ php
 <?php
 	$veritabani = //bir mysql bağlantısı;
-```
+~~~
 
 Görüldüğü gibi, `$veritabani` değişkeni `global scope` içerisinde `global` olarak tanımlanmıştır. Ancak, uygulamanın herhangi bir yerinde bir başkası;
 
-```php
+~~~ php
 <?php
 	$veritabani = null;
-```
+~~~
 
 yazdığı zaman, artık `$veritabani` değişkeni `NULL` değerine sahip olacağı için, hiçbir veritabanı işlemi yapılamaz hale gelecektir. Bu durumda uygulamanız `runtime esnasında` bozulacaktır.
 
@@ -102,7 +98,7 @@ Sınıf yapısı bu sorunu biraz olsun çözüyor. Sınıf içerisinde oluşturu
 
 Bildiğiniz gibi `PHP`'de `class scope` içerisindeyken `public`, `private` ve `protected` keywordlerini kullanarak değişkenlerin ve/veya fonksiyonların dışarıdan erişilip erişilemeyeceğini belirtebiliyoruz. `Kapsülleme` yapmak için erişimine izin vermek istemediğiniz bir değişkeni `private` veya `protected` keywordlerini kullanarak oluşturduktan sonra, sınıf içerisinde `public` bir fonksiyon oluşturup, oluşturulan fonksiyon üzerinden gizli değişkeni döndürebiliriz. Örnek olarak basit bir KDV hesaplayıcı sınıf yazalım. 1500 liralık bir ürün ve 0.18 KDV değeri olsun.
 
-```php
+~~~ php
 <?php namespace KDV;
 
 class Calculator
@@ -116,22 +112,22 @@ class Calculator
        return $this->price + ($this->price * $this->ratio);
     }
 }
-```
+~~~
 
 Şimdi, bu sınıfımızın bir instancesini oluşturup hesaplamayı yaptıralım.
 
-```
+~~~
 $calculator = new KDV\Calculator;
 $calculator->calculate(); // Çıktı 1770
-```
+~~~
 
 Güzel. İstediğimiz sonucu alabiliyoruz. Ama farzedelim, bir şekilde `$ratio` değişkenine erişim sağlandı ve değer değiştirildi. Bu haliyle erişim sağlanacaktır, çünkü `$ratio` değişkeni `public`, yani herkesin erişebileceği şekilde tanımlanmıştır.
 
-```
+~~~
 $calculator = new KDV\Calculator;
 $calculator->ratio = 10; // değere erişim yetkimiz var
 $calculator->calculate(); // Çıktı 16500
-```
+~~~
 
 Tebrikler. 1500 liralık ürün için müşteriye fiyatı 16500 lira olarak gösterdiniz. Her zaman bu olay bu kadar açık şekilde olmayacak, ama sorunu görebiliyor musunuz? Belki yanınıza yeni katılan yazılımcıya "haftasonları kdv değerini düşüren" bir sınıf yaz dediniz. O da haftasonları `$ratio` değerini değiştiren bir sınıf yazdı.
 
@@ -139,21 +135,21 @@ Kendimize soralım. Buradaki `$ratio` değişkeni bizim için önemli mi? Evet! 
 
 Şimdi `$ratio` değişkeninin görünebilirlik değerini `public` yerine `private`, yani sadece kendi sınıfımızdan erişilebilecek şekilde düzenleyelim.
 
-```
+~~~
 private $ratio = 0.18;
-```
+~~~
 
 Bu durumda
 
-```
+~~~
 $calculator = new KDV\Calculator;
 $calculator->ratio = 10; // Exception fırlatacaktır çünkü erişilemez bir veriye ulaşmaya çalışıyoruz
 $calculator->calculate();
-```
+~~~
 
 yazılımcı arkadaşımız bu değere ulaşmak isterken hata alacaktır. Siz böyle yaparak onun bu değere ulaşmasını engellemiş oldunuz. Bunun bir çözümü olmalı. Şansızlıyız ki var! Şöyle yapsak... değişkeni gizli tutsak, ama o değişkenin içeriğine erişebilen bir `public` fonksiyon oluştursak?
 
-```php
+~~~ php
 <?php namespace KDV;
 
 class Calculator
@@ -167,15 +163,15 @@ class Calculator
     }
 
 }
-```
+~~~
 
 Şimdi, public olan fonksiyon üzerinden private olan değişkene erişmeyi deneyelim.
 
-```
+~~~
 $calculator = new KDV\Calculator;
 $calculator->ratio = 10; // Erişemez
 $calculator->getRatio(); // 0.18
-```
+~~~
 
 Method üzerinden erişebiliyoruz! Bu tür methodlara `getter` methodlar denmektedir. Daha iyi anlamak adına bu durumu inceleyelim:
 
@@ -184,7 +180,7 @@ Method üzerinden erişebiliyoruz! Bu tür methodlara `getter` methodlar denmekt
 
 Peki, yazılımcı arkadaşımız bu veriyi değiştirmek isterse ne yapacak? Tekrar bir `public` oluşturacağız ve bu kez, veriyi döndürmek yerine, verinin içeriğini değiştireceğiz.
 
-```php
+~~~ php
 <?php namespace KDV;
 
 class Calculator
@@ -203,16 +199,16 @@ class Calculator
     }
 
 }
-```
+~~~
 
 Artık bu method üzerinden istediğimiz değişiklikleri yapabileceğiz. Bu tür fonksiyonlara `setter` fonksiyonlar denmektedir.
 
-```
+~~~
 $calculator = new KDV\Calculator;
 $calculator->setRatio(0.20); // Erişemez
 $calculator->getRatio(); // 0.20
 $calculator->calculate(); // 15800
-```
+~~~
 
 Eğer `0.20`'den fazla bir oran girilirse, yazdığımız sınıf exception fırlatıp muhtemel hataların önüne geçecektir. Buna `Encapsulation` (Kapsülleme) denmektedir ve `Nesne Yönelimli Programlama`'nın 4 temel ilkelerinden biridir.
 
@@ -220,22 +216,22 @@ Eğer `0.20`'den fazla bir oran girilirse, yazdığımız sınıf exception fır
 
 `C#` dilinde `getter` ve `setter` get set keywordleri kullanılarak kolayca oluşturulabilmektedir.
 
-```php
+~~~ php
 public class Database
 {
     public string info { get; set; } //getter ve setter oluşturuldu
 }
-```
+~~~
 
 > Biliyor musunuz?
 
 `Ruby` dilinde `getter` ve `setter` oluşturmak çok basittir.
 
-```php
+~~~ php
 class Database
     attr_accessor :info // getter ve setter oluşturuldu
 end
-```
+~~~
 
 `attr_accessor`, Ruby dilinde `info` değişkeninin getter ve setter fonksiyonlarını otomatik olarak oluşturur. Malesef `PHP`'de böyle bir kullanım bulunmamaktadır. Biz getter ve setter fonksiyonlarımızı çoğu zaman elle yazmak zorundayız.
 
@@ -258,7 +254,7 @@ Bağımlılık, oluşturduğumuz sınıfın çalışabilmesi için gerekli olan 
 
 Aşağıdaki örneği ele alalım;
 
-```php
+~~~ php
 <?php namespace Controllers;
 
 use Baska\Bir\Uzaydaki\ImageSinifi as Image;
@@ -278,7 +274,7 @@ class HomeController
         $this->imageResizer = new Image; //bağımlılık
         $this->logger = new \Logger; //bağımlılık
     }
-```
+~~~
 
 Burada, `HomeController` sınıfının 3 `bağımlılığı` bulunmaktadır.
 
@@ -312,30 +308,30 @@ Gördüğünüz gibi bu methodun ne iş yaptığını açıklarken 6 defa `VE` k
 
 Bu durum için hemen bir örnek verelim;
 
-```php
+~~~ php
 <?php
     strpos('abcde', 'ab');
-```
+~~~
 
 `strpos` fonksiyonu, ikinci parametredeki stringin, 1. parametredeki string içerisinde kaçıncı sırada geçtiğini bulur. Bu örnekte `strpos` fonksiyonu sayı olan `0` değerini döndürecektir. Çünkü, `ab` yazısı, `abcde` yazısının ilk sırasında geçmektedir.
 
 Siz bu fonksiyondan dönen değeri `==` ile kontrol etmeye çalışırsanız, aslında bir sayı olan `0` değeri `false` olarak algılanacağı için farkında olmadan `bug` çıkarmış olacaksınız.
 
-```php
+~~~ php
 <?php
     if ( strpos('abcde', 'ab') == false)
         return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
-```
+~~~
 
 Yukarıdaki örnek hatalıdır. `strpos` fonksiyonu `0` döndürmüş, ama bu `0` değeri if koşulu esnasında yanlışlıkla `false` olarak algılanmıştır.
 
 Bu koşul için mutlaka `===` kullanmamız gerekmekteydi. Böylece `0` değeri `false` olarak algılanmamış olacaktı.
 
-```php
+~~~ php
 <?php
     if ( strpos('abcde', 'ab') === false)
          return "ab kelimesi abcde içerisinde geçmiyor. Gerçekten."; //doğru
-```
+~~~
 
 Artık `0` değeri `false` olmadığı için, yazdığımız ufak scriptimiz doğru çalışacaktır.
 
@@ -365,7 +361,7 @@ Kendisine üst düzey bir `PHP Geliştirici` diyen herkesin mutlaka bilgi sahibi
 
 Aşağıdaki örneği ele alalım;
 
-```php
+~~~ php
 <?php
 
 class Deneme
@@ -377,13 +373,13 @@ class Deneme
          $this->mailer = new Mailer;
      }
 }
-```
+~~~
 
 Bu örnekte `Dependency Injection` kullanmadık. Bu aslında büyük bir hata. Bağımlı olduğumuz sınıfları (Mailer sınıfı) bu şekilde oluşturursak, `Deneme` sınıfımız `Mailer` sınıfıyla `tightly coupled` (Sıkı Sıkıya Bağlanmış) olur ve `unit testlerimizi` yazmak çok zor, hatta imkansız bir hale gelir. Ayrıca `Decoupling` (Bağlaşımı koparma) ilkesinden uzaklaşmış oluruz.
 
 Ne demiştik? Sınıf içerisinde `new` kullanmayacağız ve `Dependency Injection` yöntemini kullanarak bağımlılıkları dışarıda oluşturup sınıfımıza enjekte edeceğiz. Aşağıdaki örnekte bunun nasıl yaptıldığını görebilirsiniz;
 
-```php
+~~~ php
 <?php
 
 class Deneme
@@ -399,7 +395,7 @@ class Deneme
 // class scope'un dışında, uzaklarda bir yerlerde
 new Deneme(new Mailer);
 
-```
+~~~
 
 `Dependency Injection` işte bu kadar basit! Sınıfımız `Mailer` sınıfını kendisi oluşturmaktansa, dışarıda oluşturulan `Mailer` sınıfının `constructor injection` (Enjeksiyonu constructor üzerinden yapmak) aracılığıyla sınıfımıza enjekte edilmesi yoluyla `Mailer` sınıfına sahip oluyor. Böylece sınıfımız `Mailer` sınıfına sıkı sıkıya bağlı olmaktan çıkıyor ve test edilebilirliğimiz muazzam düzeyde artıyor. Artık `unit testlerimizi` yazarken, `Mailer` sınıfını kolayca taklit edebiliriz. (taklit etme olayına `Mocking` denmektedir).
 
@@ -411,19 +407,19 @@ Bu kural `PHP`'de şu anlama geliyor. Örnekte kullandığımız `Mailer` sını
 
 Hatırlarsanız yukarıdaki örneğimizde tür dayatmayı şu şekilde yapmıştık;
 
-```php
+~~~ php
 <?php
      public function __construct(Mailer $mailer) // Mailer tür dayatmadır
      {
          $this->mailer = $mailer;
      }
-```
+~~~
 
 Burada tür dayatma `Mailer` olduğu için, sadece `Mailer` sınıfı enjekte edilebilir olacaktır. Ancak, biz `Mailer` sınıfı yerine, belli bir `Interface`'e sadık kalan her sınıfı kullanabilmeliyiz.
 
 Bu konuyu bir örnekle açıklayalım. Öncelikle `Interface`'mizi oluşturalım ve bu `interface`'e uyacak her sınıfta hangi methodların bulunması gerektiğini belirleyelim.
 
-```php
+~~~ php
 <?php
 
 interface MailerInterface {
@@ -433,11 +429,11 @@ interface MailerInterface {
     public function setTo($to);
 }
 
-```
+~~~
 
 Daha sonra `Mailer` sınıfımızın bu `interface`'e uymasını sağlayalım.
 
-```php
+~~~ php
 <?php
 
 class Mailer implements MailerInterface // Dikkat ettiyseniz implements MailerInterface dedik
@@ -459,13 +455,13 @@ class Mailer implements MailerInterface // Dikkat ettiyseniz implements MailerIn
         // setTo fonksiyonu
     }
 }
-```
+~~~
 
 Şu an bu `Mailer` sınıfı, `MailerInterface` `interface`'ine sadık kaldığı için çalışabilecektir. Ancak, örneğin `Mailer` sınıfında `setTo()` methodu olmasaydı, sınıfımız `MailerInterface` içerisinde şart koşulan `setTo()` methoduna sahip olmadığı için çalışamayacaktı. Kısacası, kullandığımız `interface`, sınıfımızın sahip olması gereken methodları şart koşmaktadır. `Interface` içerisinde belirtilen 4 methodun hepsi bulunmayan sınıflar bu `interface`'e sadık kalamazlar.
 
 `Liskov'un İkame Kuralı`'na uymak istediğimiz için, öncelikle tür dayatmamızı `interface` olarak değiştirelim `interface`'ler de birer soyutlama katmanı sayılırlar).
 
-```php
+~~~ php
 <?php
 
 class Deneme
@@ -477,7 +473,7 @@ class Deneme
          $this->mailer = $mailer;
      }
 }
-```
+~~~
 
 Artık `Deneme` sınıfımız, `MailerInterface` `interface`'ine sadık kalan herhangi bir sınıfı kabul edecektir.
 
@@ -498,7 +494,7 @@ Peki bu bize ne avantaj sağlar? Belki çalıştığımız işyeri artık maille
 
 Örneğin:
 
-```php
+~~~ php
 <?php
 
 interface MailerInterface {
@@ -534,7 +530,7 @@ $mailer = new Mailer(new SwiftMailer); // çalışır
 $mailer = new Mailer(new MandrillMailer); // çalışır
 $mailer = new Mailer(new AWSMailer); // çalışır
 $mailer = new Mailer(new BenzinPompasi); // çalışmaz!!
-```
+~~~
 
 Yukarıdaki örneği inceleyelim.
 
@@ -547,10 +543,10 @@ Sonuç olarak, `Liskov'un İkame İlkesi`'ne artık uyabiliyoruz. Artık bir sı
 
 Peki bu bize ne avantaj sağlayacak? Artık işyerindeki patronunuz mail göndermek için `Mandrill` kullanalım derse, `MandrillMailer`'i enjekte edebiliriz. `AWSMailer`'e dönelim derse, tek satırı değiştirerek `AWSMailer`'e dönebiliriz.
 
-```php
+~~~ php
 <?php
      $mailer = new Mailer(new canimizNeIsterse());
-```
+~~~
 
 **c. Dependency Injection Konteynerleri**
 
@@ -558,7 +554,7 @@ Peki bu bize ne avantaj sağlayacak? Artık işyerindeki patronunuz mail gönder
 
 Şuana kadar her şey güzel, ama yüzlerce `Deneme` sınıfımız varsa ne yapacağız?
 
-```php
+~~~ php
 <?php
      new Deneme1(new Mandrill());
      new Deneme2(new Mandrill());
@@ -567,7 +563,7 @@ Peki bu bize ne avantaj sağlayacak? Artık işyerindeki patronunuz mail gönder
      new Deneme5(new Mandrill());
      new Deneme6(new Mandrill());
      ...
-```
+~~~
 
 Hepsine tek tek `new Mandrill();` mi diyeceğiz? Hayır. Daha önce ne anlatmıştık? "DRY kuralına uyacağız ve kendimizi tekrar etmeyeceğiz."
 
@@ -581,7 +577,7 @@ Hepsine tek tek `new Mandrill();` mi diyeceğiz? Hayır. Daha önce ne anlatmı�
 
 Dependency Injection konteynerlerinin, genel olarak aşağıdaki gibi bir kullanımları bulunmaktadır:
 
-```php
+~~~ php
 <?php
 
     $container = new DependencyInjectionContainer;
@@ -600,7 +596,7 @@ Dependency Injection konteynerlerinin, genel olarak aşağıdaki gibi bir kullan
     $deneme3 = new Deneme($container->resolve('MailerInterface'));
 
     ...
-```
+~~~
 
 Bu örnekte, `return new MandrillMailer` bölümünü değiştirmemiz yeterli olacaktır.
 
@@ -616,7 +612,7 @@ PHP'de reflectionlar (ayna sınıflar) size o sınıf hakkında bilgi verirler. 
 
 Çok mantıklı değilmi?
 
-```php
+~~~ php
 <?php
 
     $container = new IoC;
@@ -637,7 +633,7 @@ PHP'de reflectionlar (ayna sınıflar) size o sınıf hakkında bilgi verirler. 
     $mailer = IoC::make('Mailer');
     // IoC otomatik olarak MailerInterface'yi reflectionda görüp onu enjekte edip
     bize o sınıfı döndürecektir.
-```
+~~~
 
 Dependency Injection Konteyneri ile yapabilecekleriniz çok fazla. Dilerseniz, projelerinizde https://github.com/rdlowrey/auryn gibi bir DI konteynerini kullanabilirsiniz.
 
@@ -657,7 +653,7 @@ Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek
 
 `SQL Injection`'dan korunmak için, veritabanı `driver`larının `prepared statements` özelliği kullanılmalıdır. `Prepared statements` özelliği `Mysqli` ve `PDO`'da bulunabilir. `Prepared statements`, escaping işlemini sizin yerinize yapar, bu yüzden kullanımı son derece kolaydır.
 
-```php
+~~~ php
 <?php
 
     $sth = $dbh->prepare('SELECT isim, renk, kalori_degeri
@@ -665,7 +661,7 @@ Birçok PHP geliştirici, gelen inputu `mysql_real_escape_string()` ile süzerek
     WHERE kalori_degeri < ? AND renk = ?');
 
     $sth->execute(array($_POST['kalori_degeri'], 'Kırmızı'));
-```
+~~~
 
 Artık herhangi bir süzmeye gerek kalmadan, `$_POST['kalori_degeri']` değerini sorgu içerisinde kullanabilmekteyiz. Ancak dikkat ettiyseniz sorguda `?` kullandık ve `POST` değerini daha sonra sırasıyla `?` olan yerlere bind ettik.
 
@@ -677,7 +673,7 @@ Bir önceki örnekte `SQL Injection`'un nasıl önleneceğini öğrenmiştik. Bi
 
 Örneğin, bir veritabanı sınıfı yazalım:
 
-```php
+~~~ php
 <?php
 
 class Database
@@ -722,7 +718,7 @@ $database->query('SELECT * FROM users WHERE username = ?', array($_POST['kullani
 $database->getResult(); // Kullanıcının bilgilerini aldık
 $database->getQueryCount(); // 1
 
-```
+~~~
 
 Buradaki `Database` sınıfı, `PDO` driverinin üzerine çekilmiş bir soyutlama katmanıdır. Biz `Database` sınıfı içerisinde hem kendi methodlarımızı oluşturup, hem de `PDO`'yu kullanabilmekteyiz. Dikkat ettiyseniz `$queryCount` adında bir değişken oluşturduk ve `query methodu` her çağırıldığında bu sayıyı `1` artırdık. Bu tür özellikleri `PDO` size sağlamasa bile, siz bu özellikleri kendiniz ekleyip kullanabilirsiniz.
 
@@ -740,18 +736,18 @@ Veritabanı driverları üzerine çekilen soyutlama katmanları, `Database Abstr
 
 `Eloquent ORM` için, veritabanımızdaki `users` tablosunu temsil eden bir sınıf oluşturalım.
 
-```php
+~~~ php
 <?php
 class User extends Eloquent
 {
 
 }
-```
+~~~
 Laravel frameworkü, otomatik olarak veritabanındaki `users` tablosunu referans ettiğimizi anlayacaktır, çünkü `user` (kullanıcı) kelimesinin çoğul şekli `users` (kullanıcılar) olacaktır. Siz de veritabanı oluştururken tablo isimlerinizi çoğul oluşturabilirsiniz (örneğin kullanıcılar, kategoriler, yorumlar, vb.). Tablo isimlerini çoğul olarak kullanmak `good practice` (iyi kullanım) sayılmaktadır. Ancak, biz Eloquent örneğimize geri dönelim.
 
 Artık, `User` sınıfını uygulamamızda kullanabiliriz! Hepsi bu kadardı, gerçekten.
 
-```php
+~~~ php
 <?php
 
     $user->find(1); // ID'si 1 olan kullanıcıyı al
@@ -765,7 +761,7 @@ Artık, `User` sınıfını uygulamamızda kullanabiliriz! Hepsi bu kadardı, ge
 
     $user->where('yetki', 'admin')->take(5)->get();
     // Yetkisi admin olan kullanıcılardan 5 tane çek
-```
+~~~
 
 Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz tüm veritabanı işlemlerini gerçekleştirebiliyoruz. `Eloquent` neredeyse bizimle konuşuyor.
 
@@ -840,12 +836,12 @@ Bunun her saldırı için farklı olacağını söylemiştik, ancak bu bölümde
 
 Bu yüzden, makalelerde bolca gördüğünüz şunun gibi örnekler son derece yanlıştır.
 
-```php
+~~~ php
 <?php
 
     $username = mysql_real_escape_string(trim(strip_tags(htmlspecialchars($_POST['username'])));
 
-```
+~~~
 
 Bunun adı, bana göre `paranoyak`lıktır, ve evin arka kapısı ağzına kadar açık kalmışken, ön kapının tankla, tüfekle, bir yığın askerle korunmasına benzer.
 
@@ -855,7 +851,7 @@ Bunun adı, bana göre `paranoyak`lıktır, ve evin arka kapısı ağzına kadar
 2. Eğer her şeye cevabımız evet ise, `prepared statements` kullanarak veritabanını güncelleyelim. Daha önce ne demiştik? `prepared statements`, escape işlemini bizim yerimize yapıyor. Ama kullanıcıdan gelen verileri veritabanına eklemeseydik ve örneğin shell sorgusunda kullansaydık, `escapeshellcmd` kullanarak escape edecektik
 3. Kullanıcının verisini veritabanına ekledik. Şimdi, başarı sayfasında bu verilerin bazılarını çekeceğiz ve kullanıcıya "Aristona, üyeliğiniz başarıyla alındı." gibi bir cevap yazdıracağız. Burada, `XSS` saldırısı yapılabileceği için, veriyi ekrana bastırırken escape edip bastıracağız. Örneğin;
 
-```php
+~~~ php
 <?php
 
      // Kullanıcının doğrulama ve kayıt işlemleri
@@ -864,7 +860,7 @@ Bunun adı, bana göre `paranoyak`lıktır, ve evin arka kapısı ağzına kadar
 
      echo 'Başarıyla kayıt oldun, ' . $username; // Yanlış
      echo 'Başarıyla kayıt oldun, ' . strip_tags($username); // Doğru
-```
+~~~
 
 Bu kurallara uyduğunuz zaman;
 
@@ -893,7 +889,7 @@ Eğer kullanıcınızın isminin görünmesini istiyorsanız (örneğin yorumlar
 
 Kara liste oluşturan neredeyse tüm fonksiyonlar çöptür. Örneğin, `XSS`'i engellemek için aşağıdaki fonksiyonun kullanılması size hiçbir yarar sağlamaz.
 
-```php
+~~~ php
 <?php
 
     function xss_cleaner($input_str) {
@@ -901,7 +897,7 @@ Kara liste oluşturan neredeyse tüm fonksiyonlar çöptür. Örneğin, `XSS`'i 
         $return_str = str_ireplace( '%3Cscript', '', $return_str );
         return $return_str;
     }
-```
+~~~
 
 Siz burada `script` kelimesini engellediğini düşünebilirsiniz, ama saldırgan `s/**/cript` gibi bir yöntem kullanarak bunu aşabilir. Bu yüzden kara liste oluşturan fonksiyonlar çoğu zaman işe yaramazlar.
 
@@ -917,7 +913,7 @@ Bu yüzden, özellikle konu güvenliğinizse kara liste oluşturan hiçbir fonks
 
 Örneğin, aşağıdaki sınıf Türkçe olarak geliştirilmeye çalışılmıştır.
 
-```php
+~~~ php
 <?php
 
 class AssetYukleyici
@@ -942,7 +938,7 @@ class AssetYukleyici
             });
         );
     }
-```
+~~~
 
 Bu sınıf son derece çirkin ve amatörce duruyor. Türkçe desen tam olarak Türkçe değil, İngilizce Türkçe karışımı, ne olduğu belirsiz bir şey. Zira PHP unicode desteklemediği için Türkçe karakterleri de kullanamıyoruz, bu yüzden ortaya Türkçe karakterlerin kullanılmadığı bir garip Türkçe çıkıyor.
 
@@ -1082,7 +1078,7 @@ Eğer PHP'de `Ruby` ve `JavaScript` gibi dillerdeki `reverse()` methodunu kullan
 
 Örneğin:
 
-```
+~~~
 <?php
 
     class StringHandler {
@@ -1095,25 +1091,25 @@ Eğer PHP'de `Ruby` ve `JavaScript` gibi dillerdeki `reverse()` methodunu kullan
 
     $ornek = "Merhaba!";
     echo $ornek->reverse(); // Çıktı: "!abahreM"
-```
+~~~
 
 Ama PHP çekirdeğindeki limitasyonlardan dolayı, şunu yapamıyoruz:
 
-```
+~~~
 <?php
 
     "birşey"->reverse();
-```
+~~~
 
 İleride `PHP` çekirdeğine bu tür kullanımlar eklenir mi bilinmez (hiç sanmıyorum çünkü bunu yapmak için strict typing özelliği gerekiyor) ve bu da çekirdeğin refactor edilmesi demek. Strict typing olmadığında şu sorunla karşılaşıyoruz:
 
-```
+~~~
 <?php
 
     "155"->çarp(10); // PHP (string) 155'i, (integer) 155'e çevirir ve integerin çarp methodunu kullanır.
     // Çünkğ çarp, sayısal bir objenin methodu olmalıdır, yani integerin.
     "Merhaba"->çarp(10); // Sizce?
-```
+~~~
 
 Bu yüzden PHP'ye bu özelliğin gelmesi imkansıza yakın.
 
@@ -1125,7 +1121,7 @@ Yazdığımız kodlar, bazen sağa doğru yaklaşırlar. Bu genellikle iç içe 
 
 Öncelikle, kodların sağa yaklaşması ne demek önce hemen bunu açıklayalım.
 
-```php
+~~~ php
 <?php
 
      public function deneme()
@@ -1156,7 +1152,7 @@ Yazdığımız kodlar, bazen sağa doğru yaklaşırlar. Bu genellikle iç içe 
 
           }
      }
-```
+~~~
 
 Bu örnekte gördüğünüz gibi iç içe `3` tane `if bloğu` açılmış. Dikkat ettiyseniz her `if` bloğu sağ tarafa biraz daha yaklaşmış. Eğer böyle yaparsanız yazdığınız kodlar okunaklı olmaktan çıkar. Bunun içine `else` blokları da girdiğinde hangi parantezin hangi bloğu kapattığını veya açtığını anlamanız güç olur. Fonksiyon içerisinde genellikle `1` veya `2` seviye if bloğu oluşturmalısınız. `3` ve üzeri çok fazla iş yapıldığına ve kodun okunamaz olacağına işarettir.
 
@@ -1168,7 +1164,7 @@ Kodun okunabilir olması için bir bilgiyi öğrendik, ancak daha geliştirilebi
 
 Bu fonksiyon aşağıdaki şekilde yazılabilir:
 
-```php
+~~~ php
 <?php
 
     function isArray($input)
@@ -1179,11 +1175,11 @@ Bu fonksiyon aşağıdaki şekilde yazılabilir:
             return false;
         }
     }
-```
+~~~
 
 Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya gerek kalmadan şu şekilde yazılabilir.
 
-```php
+~~~ php
 <?php
 
     function isArray($input)
@@ -1193,13 +1189,13 @@ Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya g
         }
         return false;
     }
-```
+~~~
 
 Şuanki hali üsttekinden çok daha güzel. Gereksiz `else` bloğunu kaldırmış olduk. Gereksiz `else` bloklarını kaldırmak bize çok büyük avantaj sağlıyor. Hem fonksiyonunuz sağ tarafa doğru uzamamış oluyor, hem de gereksiz kod yükünden kurtuluyoruz (`return`'un sadece fonksiyon içerisinde kullanılabileceğini unutmayın).
 
 Devam edelim: `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde sayılacağı için, parantezleri de silebiliriz.
 
-```php
+~~~ php
 <?php
 
     function isArray($input)
@@ -1208,48 +1204,48 @@ Devam edelim: `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde
             return true;
         return false;
     }
-```
+~~~
 
 Bu örnek düzgün çalışır; ama son derece `tehlikelidir.` Neden tehlikeli olduğunu birazdan `Apple`'ın meşhur `goto fail;` exploiti ile açıklayacağım, biz şimdilik devam edelim.
 
 Biz bunu biraz daha geliştirip, `ternary` operatörünü de kullanabiliriz.
 
-```php
+~~~ php
 <?php
 
     function isArray($input)
     {
         return is_array($input) ? true : false;
     }
-```
+~~~
 
 Dilerseniz, `ternary` operatörünün ilk parametresi olan `true`'yu bile silebilirsiniz; ancak bu da `tehlikelidir`.
 
-```php
+~~~ php
 <?php
 
     function isArray($input)
     {
         return is_array($input) ?: false;
     }
-```
+~~~
 
 Son olarak, `is_array()` fonksiyonu `true` veya `false` döndüreceği için, fonksiyondan dönen değeri siz de direkt olarak döndürebilirsiniz.
 
-```php
+~~~ php
 <?php
 
     function isArray($input)
     {
         return is_array($input);
     }
-```
+~~~
 
 Bu ufacık fonksiyon bile birçok şekilde yazılabilmekte; ancak herşeyi kısa yazmak her zaman doğru değildir. Özellikle kıvırcık parantezleri kaldırmak, farkında olmadan birçok hatanın çıkmasına sebep olabilir.
 
 Kıvırcık parantezler olmadığında, yanlışlıkla `if` bloğu sonrasına 2. bir satır eklenirse, 2. satır daima çalışacağı için scriptimiz yanlış çalışmaya başlayacaktır.
 
-```php
+~~~ php
 <?php
 
     function test()
@@ -1260,7 +1256,7 @@ Kıvırcık parantezler olmadığında, yanlışlıkla `if` bloğu sonrasına 2.
         else
           return "Else";
     }
-```
+~~~
 
 Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `kosul` şartı sağlanıyorsa, sadece `return "If";` çalışacak ve fonksiyon `If` değerini döndürecektir. Diğer her türlü durumda `return "Hata";` çalışacaktır ve fonksiyon `Hata` değerini döndürecektir. Kıvırcık parantez olmadığında 2. satır `if bloğu` içerisinde sayılmaz.
 
@@ -1270,9 +1266,8 @@ Siz uygulamamızı `else` bloğunun çalışacağı durumlarda `Else` değeri d�
 
 Bu durumdan kurtulmak için kıvırcık parantez kullansaydınız, bu durum sorun olmaktan kendiliğinden çıkacaktı.
 
-```php
+~~~ php
 <?php
-
     function test()
     {
         if (kosul)
@@ -1285,13 +1280,13 @@ Bu durumdan kurtulmak için kıvırcık parantez kullansaydınız, bu durum soru
             return "Else";
         }
     }
-```
+~~~
 
 Bu örnekte, `kosul` koşulu sağlanıyorsa `if` bloğunun ilk `return` ifadesini çalışacaktır, koşul sağlanmıyorsa fonksiyon `else` bloğunu çalıştıracak ve oradaki `return` ifadesini çalıştıracaktır. `return "Hata";` ifadesi asla ve hiçbir koşulda çalışmayacaktır.
 
 Kıvırcık parantez kullanmak bu yüzden son derece önemlidir. `Apple`'ın `SSL`'de çıkardığı meşhur `goto fail;` güvenlik açığının sebebi budur.
 
-```c
+~~~c
     err = true; // ilk başta err true oluyor
     hashOut.data = hashes + SSL_MD5_DIGEST_LEN;
     hashOut.length = SSL_SHA1_DIGEST_LEN;
@@ -1310,16 +1305,16 @@ Kıvırcık parantez kullanmak bu yüzden son derece önemlidir. `Apple`'ın `SS
         goto fail;
 
     fail: return err;
-```
+~~~
 
 Sorunu görmediniz mi? Tekrar bakın:
 
-```c
+~~~c
     goto fail;
     goto fail; // Bunun burada ne işi var?
     if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
         goto fail;
-```
+~~~
 
 Yanlışlıkla 2 tane `goto fail;` yazıldığı için `if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)` if bloğuna hiçbir zaman zaman erişilemiyor. 2. sıradaki `goto fail;` daima çalışacağı için script `fail`'e düşüyor ancak burada hatanın dönmesi yerine `true` değeri dönüyor. Yani en alttaki `if` kontrolü yok sayılıyor ve bu kontrol yok sayıldığı için bu bölüm üzerinden bir exploit ortaya çıkmış oluyor.
 
@@ -1385,7 +1380,7 @@ Bu yüzden sizin, tarayıcıların, arama motorlarının ve diğer araçların a
 
 Örnek olarak aşağıdaki scripti ele alabiliriz.
 
-```php
+~~~ php
 <?php
 
 class Controller
@@ -1403,13 +1398,13 @@ class Controller
         return $test; // doğru, dönen veri mutlaka view katmanına ulaşacaksa.
     }
 }
-```
+~~~
 
 **b. View'lar, Controller'dan gelen mümkün olan en az bilgiyle çalışmalıdır.**
 
 Bazen `Controller` sınıfları `View`'a gereğinden fazla veri gönderir ve bu sıkıntı çıkarabilir. Genel olarak bir `Controller`, `View` katmanına mümkün olan en az veriyi göndermelidir.
 
-```php
+~~~ php
 <?php
 
 class Controller
@@ -1426,7 +1421,7 @@ class Controller
         $view->bind('link', $link); // aristona.github.io adresi, View katmanında tutulmalıydı
     }
 }
-```
+~~~
 
 ### - Notice ve Warning'ler birer bugdur ve düzeltilmeleri gerekir. ###
 
@@ -1558,15 +1553,15 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 Bildiğiniz gibi HTML inline attibuteleri destekler, örneğin:
 
-```html
+~~~html
 <div height="100" width="100"></div>
-```
+~~~
 
 yazarak `100x100 pixel` boyutunda bir div oluşturabiliriz, ancak HTML attributeleri yerine CSS propertylerini kullanmak daha sağlıklıdır.
 
-```html
+~~~html
 <div style="height: 100px; width: 100px;"></div>
-```
+~~~
 
 HTML sadece markup için kullanılmalı ve CSS ile şekillendirilmelidir. Kullanmanız gereken HTML attributeleri class, id ve style olmalıdır. Ancak, class harici tüm attributeler, eninde sonunda bir kötü kullanıma denk gelecektir. Aşağıda bunları detaylıca inceleyeceğiz.
 
@@ -1578,11 +1573,11 @@ Yukarıdaki örnekte kullandığımız CSS `inline CSS` (yani bir CSS dosyasına
 
 Birincisiyle başlayalım. Örneğin, 50x50 boyutunda 3 tane div oluşturalım ve bunlara arkaplan olarak transparan bir renk verelim.
 
-```html
+~~~html
 <div style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
 <div style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
 <div style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
-```
+~~~
 
 Şuana kadar bu yazıyı okuduysanız sorunu anında anlamışsınızdır. DRY kuralını bozmuş oluyoruz! Arkaplanı yeşil yapmak istesek ne olacaktı? 3 farklı yeri tek tek değiştirmemiz gerekecekti.
 
@@ -1592,49 +1587,49 @@ Birincisiyle başlayalım. Örneğin, 50x50 boyutunda 3 tane div oluşturalım v
 
 Bunu örnekle anlatayım. Yukarıda bahsettiğimiz yeşil dive "kutucuk" adını verelim ve onun css'ini yazalım.
 
-```css
+~~~css
 .kutucuk {
     height: 50px;
     width: 50px;
     background: green; //Arkaplanı yeşil yaptık
 }
-```
+~~~
 
 Daha sonra, `class` attributesiyle, oluşturduğumuz divlerin `kutucuk` attributesine sahip olmasını sağlayalım.
 
-```html
+~~~html
 <div class="kutucuk" style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
 <div class="kutucuk" style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
 <div class="kutucuk" style="height: 50px; width: 50px; background-color: rgba(0,0,0,.5);"></div>
-```
+~~~
 
 Şuan, siz arkaplan olarak yeşil bekliyor olabilirsiniz, ancak arkaplan transparan kalmaya devam edecektir. Sebebini 3. maddede söylemiştim. `style` ile eklenen css propertyleri, daha baskındır. Öncelik daima onlarındır.
 
 Bunu önlemek için `!important` kullanabilirsiniz. Örneğin:
 
-```css
+~~~css
 .kutucuk {
     background: green !important; //Arkaplanı yeşil yaptık ve baskın hale getirdik
 }
-```
+~~~
 
 yazsaydık, bu kez öncelik bizde olacaktı ve arkaplan yeşil olacaktı. Ancak, `!important` kullanmak, bazı istisnalar haricinde kötü sayılmaktadır.
 
 Şimdi, doğru olanı yapalım ve inline cssleri silelim.
 
-```css
+~~~css
 .kutucuk {
     height: 50px;
     width: 50px;
     background: green;
 }
-```
+~~~
 
-```html
+~~~html
 <div class="kutucuk"></div>
 <div class="kutucuk"></div>
 <div class="kutucuk"></div>
-```
+~~~
 
 Daha güzel, ancak geliştirebileceğimiz noktalar var.
 
@@ -1644,7 +1639,7 @@ Ben CSS'i ilk öğrendiğim zamanlarda bu konuyu anlamakta güçlük çekmiştim
 
 Aşağıdaki örneği ele alalım.
 
-```css
+~~~css
 /* Height ve width değerlerinin olduğunu varsayın. Yoksa bu kutucuklar 0 boyutunda olduğu için
 tarayıcıda görünmeyecekler. :) */
 div {
@@ -1662,7 +1657,7 @@ div.baba-kutucuk .kutucuk {
 .onemli-kutucuk {
     background: #444 !important;
 }
-```
+~~~
 
 Sırayla aşağıdaki divlerin ne renk alacağına bakalım.
 
@@ -1694,17 +1689,17 @@ Peki, tüm divlere global olarak `!important` ekleseydik, sonra `onemli-kutucuk`
 
 Kutucuk örneğine bir flashback yapalım.
 
-```css
+~~~css
 .kutucuk {
     height: 50px;
     width: 50px;
     background: green;
 }
-```
+~~~
 
 Peki biz başka arkaplana sahip kutucuklar istersek? Mesela, siyah ve beyaz renklerine sahip kutucuklar oluşturalım.
 
-```css
+~~~css
 .kutucuk-yesil {
     height: 50px;
     width: 50px;
@@ -1722,11 +1717,11 @@ Peki biz başka arkaplana sahip kutucuklar istersek? Mesela, siyah ve beyaz renk
     width: 50px;
     background: black;
 }
-```
+~~~
 
 Ding! DRY kuralını yine bozduk. Kutucukları 30x30 boyutuna getirmek istersek ne yapacağız? 3 farklı yeri düzenleyeceğiz. Bunun yerine, `CSS inheritence` kullanıp, ortak kullanılan propertyleri paylaştırsak nasıl olurdu?
 
-```css
+~~~css
 .kutucuk  {
     height: 50px;
     width: 50px;
@@ -1743,7 +1738,7 @@ Ding! DRY kuralını yine bozduk. Kutucukları 30x30 boyutuna getirmek istersek 
 .kutucuk-siyah {
     background: black;
 }
-```
+~~~
 
 Artık `<div class="kutucuk kutucuk-yesil"></div>` yazdığımızda, hem kutucuğun boyutları, hem de arkaplan rengi alınmış olacak.
 
@@ -1769,19 +1764,19 @@ Siz asla `&nbsp;` kullanmayın. Eğer bir elementi kaydırmak istiyorsanız, `ma
 
 Aşağıdaki örneğe bakalım.
 
-```html
+~~~html
 <div class="ornek">
     Merhaba dünya!
 </div>
-```
+~~~
 
 Merhaba dünya yazısını seçmekte zorlanırsınız. En kötü ihtimalle, yazıyı açıkta bırakmaktansa `<span>` içerisine alın.
 
-```html
+~~~html
 <div class="ornek">
     <span>Merhaba dünya!</span>
 </div>
-```
+~~~
 
 ### Negatif piksel margini çok kullanmayın. ###
 
@@ -1793,20 +1788,20 @@ Bu kişinin yaptığı tema şuna benziyordu.
 
 Önce, navigasyon elementine `margin-bottom: 30px` propertysini eklemiş ve içerik elementini biraz aşağıya ittirmiş. (resmini çizmeye çalışırsak, şöyle)
 
-```
+~~~
 | Navigasyon |
 --------------
 --------------
 --------------
 |   İçerik   |
-```
+~~~
 
 Daha sonra, içerik elementine `margin-top: -30px;` vermiş ve geri almış.
 
-```
+~~~
 | Navigasyon |
 |   İçerik   |
-```
+~~~
 
 ...Niye?
 
@@ -1818,25 +1813,25 @@ Daha sonra, içerik elementine `margin-top: -30px;` vermiş ve geri almış.
 
 İnanılmaz derecede sık karşılaşıyorum bu durumla.
 
-```html
+~~~html
 <a href="/anasayfa.html">Anasayfa</a>
 <span class="divider"> | </span>
 <a href="/hakkimizda.html">Hakkımızda</a>
 <span class="divider"> | </span>
 <a href="/iletisim.html">İletişim</a>
-```
+~~~
 
 Yapmaya çalıştığı şey çizersek şu:
 
-```
+~~~
 Anasayfa | Hakkımızda | İletişim
-```
+~~~
 
 1999'a hoşgeldiniz.
 
 Daha düzgün hale getirelim. CSS pseudo selectorleri destekleyeli yıllar oldu.
 
-```html
+~~~html
 <ul>
     <li>
          <a href="/anasayfa.html">Anasayfa</a>
@@ -1848,9 +1843,9 @@ Daha düzgün hale getirelim. CSS pseudo selectorleri destekleyeli yıllar oldu.
          <a href="/iletisim.html">İletişim</a>
     </li>
 </ul>
-```
+~~~
 
-```sass
+~~~sass
 li {
     border-right: 1px solid #fff;
 
@@ -1858,13 +1853,13 @@ li {
         border-right: 0;
     }
 }
-```
+~~~
 
 Alacağın sonuç:
 
-```
+~~~
 Anasayfa | Hakkımızda | İletişim
-```
+~~~
 
 ### Assetleri yüklerden http veya https kullanmayın. ###
 
@@ -1872,28 +1867,28 @@ Uygulamanızda kullanacağınız assetleri yüklerken hangi protokolün kullanı
 
 Bu yüzden belirli bir protokol belirlemek yerine, assetlerinizin hangi protokol üzerinden yüklenmesi gerektiğini tarayıcılara bırakabilirsiniz. Protokol belirtmemek için, sadece `//` yazmanız yeterlidir.
 
-```html
+~~~html
 
 <script type="text/javascript" src="//assets/app.js">
 
-```
+~~~
 
 ### Yazılarınızı BÜYÜK HARFLE yazmayın! ###
 
-```
+~~~
 <p>
     EVET, HERKES YAZILARINI BÜYÜK HARFLERLE YAZMALI.
     ÇOK ŞİRİN GÖRÜNÜYORLAR.
 </p>
-```
+~~~
 
 Asla yazıların HTML'ye yazdığınız şekilde görüneceğini beklemeyin. Ne zaman gerekiyorsa, gerekli CSS attributelerini kullanarak yazılarınızı şekillendirin. Eğer bir yazının büyük harflerle yazılması gerekiyorsa, bunu CSS propertyleri ile belirtin.
 
-```
+~~~
 p {
     text-transform: uppercase;
 }
-```
+~~~
 
 ### Linkleri doğru şekilde yazın. ###
 
@@ -1929,7 +1924,7 @@ JavaScript Object Literalleri PHP'nin sınıf yapısına benzer, ancak aynı şe
 
 Aşağıdaki gibi bir JavaScript object literal tanımlayabiliriz.
 
-```js
+~~~js
 
 //JavaScript object literaller PHP'deki sınıflara benzer, ancak aynı şey değildir.
 var user = {
@@ -1943,7 +1938,7 @@ var user = {
    }
 
 }
-```
+~~~
 
 Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullanabilirsiniz.
 
@@ -1953,10 +1948,10 @@ Uygulamanın herhangi biryerinde `if ( user.isOld() === true )` şeklinde kullan
 
 a. Object literallerin keyleri `attribute`dir, JSON'un `string`dir.
 
-```js
+~~~js
 var user = { name: "Anıl" } // Object literal
 var user = { "name": "Anıl" }  // Object notation (Json)
-```
+~~~
 
 b. Object notation'da method tanımlanamaz, object literal'de tanımlanabilir. Yukarıdaki örnekte `isOld()` bir methoddur.
 
@@ -1970,45 +1965,45 @@ Oluşturduğunuz ilk anonim fonksiyondan önce, `;` prefixini kullanmak daima iy
 
 Bunun neden kaynaklandığını örnek vererek hemen açıklayayım. Örneğin, çok basit bir anonim fonksiyon oluşturdunuz ve bunu `2.js` olarak kaydettiniz.
 
-```js
+~~~js
 // 2.js
 (function() {
     alert("2");
 })();
-```
+~~~
 
 Bunu sayfanıza eklediniz ve test ettiniz:
 
-```html
+~~~html
 <script type="text/JavaScript" src="//2.js"></script>
-```
+~~~
 
 Şuan sayfaya girdiğinizde, ekranda `2` yazısını göreceksiniz. Şimdi, `1.js` dosyanızı oluşturun ve bu dosyada noktalı virgül kullanmayın:
 
-```js
+~~~js
 // 1.js
 (function() {
     alert("1");
 })() // <-- Burada noktalı virgül olmalıydı.
-```
+~~~
 
 Aynı şekilde, `1.js`'yi sayfanıza dahil edin ve çalıştırın:
 
-```html
+~~~html
 <script type="text/JavaScript" src="//1.js"></script>
 <script type="text/JavaScript" src="//2.js"></script>
-```
+~~~
 
 Ekrana sadece `1` yazısı geldi, değil mi? Ancak siz muhtemelen `1 ve 2` bekliyordunuz. Bunun sebebi, anonim fonksiyon düzgün kapanmadığı için, JavaScript'in çalışırken scriptimizi şu şekilde algılamasından kaynaklandı.
 
-```js
+~~~js
 // 1.js
 (function() {
     alert("1");
 })()(function() { // <-- Aslında 1. scope içerisinde sayılırız halen.
     alert("2");
 });
-```
+~~~
 
 Sorun şu ki, daha 1. anonim fonksiyon kapanmadan 2.si başlatılmaya çalışılıyor.
 
@@ -2016,7 +2011,7 @@ Sorun şu ki, daha 1. anonim fonksiyon kapanmadan 2.si başlatılmaya çalışı
 
 Sonuç olarak, ilk başa yazdığınız `;` prefixi, aslında sizden önce gelen bir anonim fonksiyonun düzgün olarak kapatılmasını sağlıyor.
 
-```js
+~~~js
 // 1.js
 (function() {
     alert("1");
@@ -2025,7 +2020,7 @@ Sonuç olarak, ilk başa yazdığınız `;` prefixi, aslında sizden önce gelen
 ;(function() { // <-- Buradaki ;, aslında üstteki anonim fonksiyonu kapatıyor düzgünce.
     alert("2");
 });
-```
+~~~
 
 Ne kadar hoş ve mantıklı bir kullanım, değil mi?
 
@@ -2033,22 +2028,22 @@ Ne kadar hoş ve mantıklı bir kullanım, değil mi?
 
 `'use strict';`, JavaScript dilinde, yazdığınız scope içerisinde sıkı kurallara uyulacağını belirtmektedir. Örneğin, oluşturduğunuz anonim fonksiyon içerisinde yazabilirsiniz:
 
-```js
+~~~js
 ;(function() {
 
     'use strict'; // Artık bu scope içerisinde sıkı kurallara uyuyoruz.
 
 })();
 
-```
+~~~
 
 veya sadece kullandığınız ufak fonksiyonu kapsamasını da sağlayabilirsiniz:
 
-```js
+~~~js
 function merhaba() {
     'use strict'; // Artık bu fonksiyon içerisinde sıkı kurallara uyuyoruz.
 }
-```
+~~~
 
 Peki, nedir bu sıkı kurallar? Sıkı kurallar, `Ecmascript5` ile gelen özelliklerden birisidir. Sizin yapabileceğiniz bazı yanlışlıkları önleyerek sizi uyaran ve bu yüzden daha fazla exception fırlatılmasına sebep olan bir ibaredir. Bu ibare, `güvensiz` sayılabilecek bazı işlemleri engeller (örneğin, global objeye erişim sağlanması) veya yapılabilecek bazı basit kod hatalarını (örneğin, bir değişkeni declare etmeden değer atamaya kalkmak) algılayarak exception fırlatır.
 
@@ -2072,14 +2067,14 @@ Yazıya başlamadan önce, başlıktaki terimlerin ne olduğunu anlatmak istiyor
 
 Farzedelim ki, sayfamızda 10 tane JavaScript plugini olsun.
 
-```html
+~~~html
 <script type="text/JavaScript" src="//jquery.js">
 <script type="text/JavaScript" src="//1.js">
 <script type="text/JavaScript" src="//2.js">
 <script type="text/JavaScript" src="//3.js">
 <!-- ... -->
 <script type="text/JavaScript" src="//10.js">
-```
+~~~
 
 Bu örnekte, tüm dosyalar, blocking/senkron olarak yükleniyor. Blocking dediğimiz olay, bir şey yüklenirken, diğer(ler)inin bekliyor olması Bu programcılıkta daima aynıdır. Bir şey olurken bir şeyin onu beklemesine `blocking` denir. Mesela PHP blocking bir dildir; çünkü bir satırdaki işlem yapılırken alt satır yukarıdaki işlemin bitmesini bekler. Tarayıcı her seferinde tek bir dosyayı yüklüyor. Daha sonra sıradakine geçiyor. Buna CSS ve diğer assetler de dahil, ancak bazı akıllı tarayıcılar resimler gibi önemsiz şeyleri otomatik olarak `asenkron `indirebiliyorlar.
 
@@ -2089,22 +2084,22 @@ Burada, şu avantajımız var. Birincisi, `1.js` ve diğer JavaScript dosyaları
 
 Şöyle bir `pseudo` örnek verebiliriz:
 
-```js
+~~~js
 on('DOMContentLoaded', function() {
     alert("Her şey yüklendi.");
 }
-```
+~~~
 
 Burada bir sorun yok, ancak en çok bilinen, `jQuery`'nin `ready` eventi, direkt olarak `DOM`'a bağlıdır. Yani, aşağıdaki gibi bir kod yazdıysanız: (bahse girerim yazdınız)
 
-```js
+~~~js
 $(document).on('ready', function() {
 
     $('.birsey').html('<span>Merhaba dünya!</span>');
 
 });
 
-```
+~~~
 
 bunun anlamı şudur: "Önce sayfanın yüklenmesini bekle. Sayfa yüklenmesi tamamlandığında Merhaba Dünya yazdır."
 
@@ -2114,14 +2109,14 @@ Bu işlem için sayfa yüklemesini beklemek bence mantıklı değil. İşte bura
 
 Yukarıdaki verdiğimiz örneğe, aşağıdaki gibi `async` ibaresini eklediğimizde, dosyalarımız `asenkron` yüklenmeye başlayacaktır.
 
-```html
+~~~html
 <script async type="text/JavaScript" src="//jquery.js">
 <script async type="text/JavaScript" src="//1.js">
 <script async type="text/JavaScript" src="//2.js">
 <script async type="text/JavaScript" src="//3.js">
 <!-- ... -->
 <script async type="text/JavaScript" src="//10.js">
-```
+~~~
 
 `Asenkron` yükleme ne işe yarar? Artık yüklemelerimiz `non-blocking` olur, yani birini yüklemek için, tarayıcı diğerlerinin yüklenmesini beklemez. Tarayıcı birçok bağlantı açar ve hepsini birden yüklemeye başlar. Dolayısıyla, sayfa açılış süresi muazzam ölçüde artar.
 
@@ -2137,7 +2132,7 @@ Ancak, ben size Hem asenkron yükleme yapmayı, hem yüklemelerin birbirinden ha
 
 Biz, `DOM` gibi, birşeyler yüklendiğinde kendi `eventlerimizi` ateşleyebiliriz. Daha sonra, ateşlenen `eventlere` göre işlemlerimizi yapabiliriz. Örneğin, `$script.js` ile, aşağıdaki gibi yüklemeler yapabiliriz.
 
-```js
+~~~js
 ;(function() {
 
     // Bir $script.js asenkron yükleme ve event örneği
@@ -2156,7 +2151,7 @@ Biz, `DOM` gibi, birşeyler yüklendiğinde kendi `eventlerimizi` ateşleyebilir
     });
 
 })();
-```
+~~~
 
 Bu durumda, neyin ne zaman yüklendiğinden `eventlar` aracılığıyla haberdar olabildiğimiz için, yükleme sırasını düşünmeden kodlarımızı yazabiliriz. Mesela, pluginleri çalıştırmadan önce, `jQuery`'nin yüklenmiş olduğu olayını bekleyebiliriz. Böylece, `DOM`'un yüklenmesini gerektiren işlemler için onu beklerken, `DOM` ile ilgisi olmayan (örneğin, bir üst makalede yazdığımız Bugsnag izleyicisi) sayfa yüklenmeden çalışmaya başlayabilir.
 
