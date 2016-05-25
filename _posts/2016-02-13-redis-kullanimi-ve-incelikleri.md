@@ -197,7 +197,65 @@ Complexity hesaplama aslında önemli bir konu. Birçok büyük firma yazılımc
 
 **Veritabanı desteği**
 
-@todo
+Redis öntanımlı olarak 16 tane veritabanını destekler. Veritabanı sayısı, Redis konfigürasyonundan değiştirilebilir. Verilerinizi dilerseniz farklı veritabanlarında tutabilirsiniz. Örneğin:
+
+    redis-cli
+    // Şuan 0. veritabanındayız
+    redis> set aristona 1
+    redis> get aristona // 1
+    redis> select 1 // 1. veritabanına geçtik
+    redis[1]> keys * // boş
+    redis[1]> set aristona 2
+    redis[1]> get aristona // 2
+    redis[1]> select 0
+    redis> keys * // 1 tane veri var
+    redis> get aristona // 1
+
+yukarıdaki şekilde birden fazla veritabanına veri ekleyebilirsiniz. `SELECT` komutu ile veritabanları arasında geçiş yapabilirsiniz.
+
+Şahsen ben birden çok veritabanı kullanıyorum. Özellikle istatistikler, sorgu önbellekleri, sessionlar gibi kaybolması çok önemli olmayan verileri `FLUSHDB` komutu ile temizleyebilmek bana çok yarar sağlıyor.
+
+`SELECT` komutunun biraz masraflı olması dışında bir sorunu yok, ama milyonlarca/milyarlarca hitle çalışmıyorsanız ve uygulamanız aşırı komplex değilse, veritabanlarını rahatlıkla kullanabilirsiniz.
+
+Bazı Redis geliştiricileri veritabanı kullanmak yerine, işlemci çekirdeği kadar sayıda farklı Redis instancesi kurulmasının daha iyi ve daha hızlı olacağını söylüyor. Bu görüşe katılmakla beraber, ilk günden birden fazla Redis instancesi kurup, konfigüre etmek yerine, default ayarlarla tek bir Redis instancesi kurup onu kullanmak bana daha kolay geliyor.
+
+Eğer ileride tek Redis instancesi yetersiz gelirse, tüm veritabanlarını farklı Redis instancelerine yönlendirip Redis'i kolayca cluster yapısına getirebilir ve rahatça scale işlemlerini gerçekleştirebilirim.
+
+Kodlarım, genellikle örnekteki gibi oluyor.
+
+    // Yapı
+    abstract class Redis { ... }
+    class Cache extends Redis { /* veritabanı 0'a bağlan */ }
+    class Query extends Redis { /* veritabanı 1'a bağlan */ }
+    class Session extends Redis { /* veritabanı 2'a bağlan */ }
+    class Statistic extends Redis { /* veritabanı 2'a bağlan */ }
+    class User extends Redis { /* veritabanı 3'a bağlan */ }
+
+
+    // Örnek sınıf
+    class User extends Redis
+    {
+        private $database = 3;
+
+        public function __construct() {
+            $this->predis->connect([
+                'database' => $this->database,
+                'host'     => $this->host,
+                'port'     => $this->port
+            ]);
+        }
+    }
+
+    // Örnek kod
+    // Tüm kullanıcıların ismini bastır
+    (new User)->redis->smembers("users")->map(function ($user) {
+        echo $user;
+    });
+
+    // 3 kullanıcının kayıt tarihlerini ekrana bas
+    (new User)->redis->hmget("userDetails", ["111, "222", "333"])->each(function ($user) {
+        echo $user->created_at->format("Y-m-d");
+    });
 
 **Redis Cluster ve Sentinel**
 
@@ -217,17 +275,30 @@ Complexity hesaplama aslında önemli bir konu. Birçok büyük firma yazılımc
 
 **Expiration**
 
-@todo
+Redis ile oluşturduğunuz verilerin belirli bir süre sonra otomatik olarak silinmesini sağlayabilirsiniz.
+
+    redis> SET silinecek "Merhaba"
+    OK
+    redis> EXPIRE silinecek 10 // saniye cinsinden değer
+    (integer) 1
+    redis> TTL silinecek
+    (integer) 10
+    redis> TTL silinecek
+    (integer) 9
+    redis> TTL silinecek
+    (integer) 0
+    redis> TTL silinecek
+    (integer) -1
+    redis> keys *
+    (empty list or set)
+
+Ayrıca, bazı veri türleri için bu işlemi kolaylaştıracak fonksiyonlar da bulunmaktadır. Örneğin, `SET` fonksiyonu 2 parametre alırken (anahtar, değer) `SETEX` fonksiyonunu 3 parametre alır (anahtar, expire süresi, değer) ve ek olarak bir EXPIRE komutun çalıştırmadan bu işlemi sağlar.
 
 **Redundancy & Persistence**
 
 @todo
 
 **Failover, Quorum Anlaşmaları ve Master Seçimleri**
-
-@todo
-
-**Konfigürasyon Desteği**
 
 @todo
 

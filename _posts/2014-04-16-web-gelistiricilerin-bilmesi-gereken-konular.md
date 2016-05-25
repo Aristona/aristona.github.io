@@ -2,7 +2,7 @@
 layout: post
 title: "Web geliştiricilerin bilmesi gereken konular"
 description: "Web geliştiricilerin bilmesi gereken konular"
-modified: 2014-04-16
+modified: 2016-05-26
 tags: [PHP]
 image:
   feature: abstract-12.jpg
@@ -321,8 +321,9 @@ Siz bu fonksiyondan dönen değeri `==` ile kontrol etmeye çalışırsanız, as
 
 ~~~ php
 <?php
-    if ( strpos('abcde', 'ab') == false)
-        return "ab kelimesi abcde içerisinde geçmiyor."; //hatalı
+    if(strpos('abcde', 'ab') == false) {
+        return "ab kelimesi abcde içerisinde geçmiyor."; // hatalı
+    }
 ~~~
 
 Yukarıdaki örnek hatalıdır. `strpos` fonksiyonu `0` döndürmüş, ama bu `0` değeri if koşulu esnasında yanlışlıkla `false` olarak algılanmıştır.
@@ -752,17 +753,17 @@ Artık, `User` sınıfını uygulamamızda kullanabiliriz! Hepsi bu kadardı, ge
 ~~~ php
 <?php
 
-    $user->find(1); // ID'si 1 olan kullanıcıyı al
-    $user->find(1)->delete(); // ID'si 1 olan kullanıcıyı sil
+    User::find(1); // ID'si 1 olan kullanıcıyı al
+    User::find(1)->delete(); // ID'si 1 olan kullanıcıyı sil
 
-    $user->find(15);
-    $user->email = "deneme@ornek.com";
-    $user->save(); // ID'si 15 olan kullanının email adresini güncelle
+    User::find(15);
+    User::email = "deneme@ornek.com";
+    User::save(); // ID'si 15 olan kullanının email adresini güncelle
 
-    $user->all(); // Tüm kullanıcıları çek
+    User::all(); // Tüm kullanıcıları çek
 
-    $user->where('yetki', 'admin')->take(5)->get();
     // Yetkisi admin olan kullanıcılardan 5 tane çek
+    User::where('yetki', 'admin')->take(5)->get();
 ~~~
 
 Ne kadar kolay duruyor değil mi? Tek satır SQL sorgusu yazmadan istediğimiz tüm veritabanı işlemlerini gerçekleştirebiliyoruz. `Eloquent` neredeyse bizimle konuşuyor.
@@ -930,15 +931,17 @@ class AssetYukleyici
     public function style_ekle()
     {
         $stilDosyalari = Klasor::al('*', 'css');
-        if( !empty($stilDosyalari) return $stilDosyalari;
+
+        if (empty($stilDosyalari) === false) {
+            return $stilDosyalari;
+        }
     }
 
     public function css_ciktisi()
     {
-        return array_walk($this->dosyalar, function($value, $key) {
+        return array_walk($this->dosyalar, function ($value, $key) {
             return "<link href=\"assets/admin/css/{$value}.css'\" rel=\"stylesheet\">";
-            });
-        );
+        });
     }
 ~~~
 
@@ -1487,23 +1490,13 @@ Açıkcası kullanacağınızı hiç sanmıyorum ama, siz yine de kimin yazdığ
 
 ### - Composer kullanın. ###
 
-// Yakında
+Composer, PHP'nin Paket Yöneticisi. Aslında bundan önce PEAR falan vardı ama Composer gibi tutmamıştı. Şuana kadar muhtemelen birkaç paket yöneticisi kullanmışsınızdır. Gem, NPM, Bower vb. o yüzden ne olduğunu detaylıca yazmayacağım.
+
+Eğer bilmiyorsanız, bu yazıya ufak bir ara verin ve Composer'in ne olduğunu araştırın.
 
 ### - Değer objeleri. ###
 
-// Yakında
-
-### - Anlaşılabilir method isimleri ###
-
-// is|has|can vb.
-
-### - Tekrarlanan şeylerin refactor edilmesi ###
-
-// get[Date]Reports gibi.
-
-### - Statik fonksiyonları kullanırken dikkatli olun. ###
-
-// Aslında kullanılması gereken durumlar var. Bu yüzden hem neden iyi, hem neden kötü ikisini de anlatalım.
+Bu konu http://aristona.github.io/oopin-otesinde adresinde işlendi.
 
 ### - PHP asenkron çalılabilir. ReactPHP'i tanıyın. ###
 
@@ -1871,17 +1864,14 @@ Bu yüzden belirli bir protokol belirlemek yerine, assetlerinizin hangi protokol
 
 ~~~html
 
-<script type="text/javascript" src="//assets/app.js">
+    <script type="text/javascript" src="//assets/app.js">
 
 ~~~
 
 ### Yazılarınızı BÜYÜK HARFLE yazmayın! ###
 
 ~~~
-<p>
-    EVET, HERKES YAZILARINI BÜYÜK HARFLERLE YAZMALI.
-    ÇOK ŞİRİN GÖRÜNÜYORLAR.
-</p>
+    <p>EVET, HERKES YAZILARINI BÜYÜK HARFLERLE YAZMALI. ÇOK ŞİRİN GÖRÜNÜYORLAR.</p>
 ~~~
 
 Asla yazıların HTML'ye yazdığınız şekilde görüneceğini beklemeyin. Ne zaman gerekiyorsa, gerekli CSS attributelerini kullanarak yazılarınızı şekillendirin. Eğer bir yazının büyük harflerle yazılması gerekiyorsa, bunu CSS propertyleri ile belirtin.
@@ -2070,12 +2060,13 @@ Yazıya başlamadan önce, başlıktaki terimlerin ne olduğunu anlatmak istiyor
 Farzedelim ki, sayfamızda 10 tane JavaScript plugini olsun.
 
 ~~~html
-<script type="text/JavaScript" src="//jquery.js">
-<script type="text/JavaScript" src="//1.js">
-<script type="text/JavaScript" src="//2.js">
-<script type="text/JavaScript" src="//3.js">
-<!-- ... -->
-<script type="text/JavaScript" src="//10.js">
+
+    <script type="text/JavaScript" src="//jquery.js">
+    <script type="text/JavaScript" src="//1.js">
+    <script type="text/JavaScript" src="//2.js">
+    <script type="text/JavaScript" src="//3.js">
+    <script type="text/JavaScript" src="//10.js">
+
 ~~~
 
 Bu örnekte, tüm dosyalar, blocking/senkron olarak yükleniyor. Blocking dediğimiz olay, bir şey yüklenirken, diğer(ler)inin bekliyor olması Bu programcılıkta daima aynıdır. Bir şey olurken bir şeyin onu beklemesine `blocking` denir. Mesela PHP blocking bir dildir; çünkü bir satırdaki işlem yapılırken alt satır yukarıdaki işlemin bitmesini bekler. Tarayıcı her seferinde tek bir dosyayı yüklüyor. Daha sonra sıradakine geçiyor. Buna CSS ve diğer assetler de dahil, ancak bazı akıllı tarayıcılar resimler gibi önemsiz şeyleri otomatik olarak `asenkron `indirebiliyorlar.
@@ -2087,9 +2078,9 @@ Burada, şu avantajımız var. Birincisi, `1.js` ve diğer JavaScript dosyaları
 Şöyle bir `pseudo` örnek verebiliriz:
 
 ~~~js
-on('DOMContentLoaded', function() {
-    alert("Her şey yüklendi.");
-}
+    on('DOMContentLoaded', function() {
+        alert("Her şey yüklendi.");
+    }
 ~~~
 
 Burada bir sorun yok, ancak en çok bilinen, `jQuery`'nin `ready` eventi, direkt olarak `DOM`'a bağlıdır. Yani, aşağıdaki gibi bir kod yazdıysanız: (bahse girerim yazdınız)
@@ -2112,12 +2103,13 @@ Bu işlem için sayfa yüklemesini beklemek bence mantıklı değil. İşte bura
 Yukarıdaki verdiğimiz örneğe, aşağıdaki gibi `async` ibaresini eklediğimizde, dosyalarımız `asenkron` yüklenmeye başlayacaktır.
 
 ~~~html
-<script async type="text/JavaScript" src="//jquery.js">
-<script async type="text/JavaScript" src="//1.js">
-<script async type="text/JavaScript" src="//2.js">
-<script async type="text/JavaScript" src="//3.js">
-<!-- ... -->
-<script async type="text/JavaScript" src="//10.js">
+
+    <script async type="text/JavaScript" src="//jquery.js">
+    <script async type="text/JavaScript" src="//1.js">
+    <script async type="text/JavaScript" src="//2.js">
+    <script async type="text/JavaScript" src="//3.js">
+    <script async type="text/JavaScript" src="//10.js">
+
 ~~~
 
 `Asenkron` yükleme ne işe yarar? Artık yüklemelerimiz `non-blocking` olur, yani birini yüklemek için, tarayıcı diğerlerinin yüklenmesini beklemez. Tarayıcı birçok bağlantı açar ve hepsini birden yüklemeye başlar. Dolayısıyla, sayfa açılış süresi muazzam ölçüde artar.
@@ -2178,10 +2170,6 @@ JavaScript, dolayısıyla jQuery'de çok az bilinen (sadece uzun süre vakit ge�
 // JavaScriptin nasıl çalıştığını anladıysak, o zaman hoistingin gerekliliğini de anlamışızdır.
 
 // Nelere dikkat etmeliyiz, good practice kullanımlar nedir.
-
-### Object.observe ve Obverver pattern. ###
-
-// Ecmascript 7 ile gelen object.observe özelliği ve Observer pattern
 
 ### var x || {} ###
 
