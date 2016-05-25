@@ -288,7 +288,7 @@ Burada, `HomeController` sınıfının 3 `bağımlılığı` bulunmaktadır.
 
 Eğer bu sayı `4`'ün üzerine çıkarsa, sınıfınız gereğinden fazla iş yapıyor olabilir. Dolayısıyla hem bu sınıfı yönetmek zorlaşır, hem de `SOLID ilkeleri`nin birincisi olan `Single Responsibility Principle` (Tek amaç ilkesi) ilkesini ihlal etmiş oluruz.
 
-`Tek Amaç İlkesi`'ne uymak için, sınıfımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız. Ayrıca, sınıfımız ile methodlarımızın ne iş yaptığını anlatırken `ve` kelimesini mümkün olduğunca az kullanmalıyız. 
+`Tek Amaç İlkesi`'ne uymak için, sınıfımızı ve methodlarımızı fazla şişirmemeli ve küçük tutmalıyız. Ayrıca, sınıfımız ile methodlarımızın ne iş yaptığını anlatırken `ve` kelimesini mümkün olduğunca az kullanmalıyız.
 
 Örneğin, kullanıcının kayıt olması için hayali bir method oluşturduğumuzu farzedelim ve bu methodun ne iş yaptığını kendimize konuşur gibi anlatalım:
 
@@ -1173,12 +1173,9 @@ Bu fonksiyon aşağıdaki şekilde yazılabilir:
 
     function isArray($input)
     {
-        if(is_array($input)
-        {
+        if(is_array($input)) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -1191,8 +1188,7 @@ Ama `return` kullanmak fonksiyonu zaten durduracağı için, `else` kullanmaya g
 
     function isArray($input)
     {
-        if(is_array($input)
-        {
+        if(is_array($input)) {
             return true;
         }
         return false;
@@ -1208,7 +1204,7 @@ Devam edelim: `if bloğu` içerisindeki ilk satır daima `if bloğu` içerisinde
 
     function isArray($input)
     {
-        if(is_array($input)
+        if(is_array($input))
             return true;
         return false;
     }
@@ -1268,7 +1264,7 @@ Kıvırcık parantezler olmadığında, yanlışlıkla `if` bloğu sonrasına 2.
 
 Bu örnekte, `else` hiçbir zaman çalışmayacaktır. Çünkü, `kosul` şartı sağlanıyorsa, sadece `return "If";` çalışacak ve fonksiyon `If` değerini döndürecektir. Diğer her türlü durumda `return "Hata";` çalışacaktır ve fonksiyon `Hata` değerini döndürecektir. Kıvırcık parantez olmadığında 2. satır `if bloğu` içerisinde sayılmaz.
 
-> Önemli Not: Normal şartlarda if-elseif-else bloklarının arasına başka bir statement ekleyemezsiniz. Bu durumda PHP size `unexpected 'else'` şeklinde bir syntax hatası döndürür. if olmayan bir yerde else if ya da else bloğundan söz edilemez. Arka arkada yazılan iki if bloğu için bu durum geçerli değildir; çünkü ikisi birbirinden bağımsız işlenir.
+> Önemli Not: Normal şartlarda if-elseif-else bloklarının arasına başka bir statement ekleyemezsiniz. Bu durumda PHP size `unexpected 'else'` şeklinde bir syntax hatası döndürür. if olmayan bir yerde else if ya da else bloğundan söz edilemez. Arka arkaya yazılan iki if bloğu için bu durum geçerli değildir; çünkü ikisi birbirinden bağımsız işlenir.
 
 Siz uygulamamızı `else` bloğunun çalışacağı durumlarda `Else` değeri dönecek diye programladıysanız; ama bu durum gözden kaçmışsa ve fonksiyonunuz `Hata` değerini döndürüyorsa, birçok `bug` oluşmasına davetiye çıkarmışsınız demektir.
 
@@ -1377,7 +1373,7 @@ Bu yüzden testlerinizi yazarken mümkün olduğunda string kullanmaktan kaçın
 
 HTTP Response kodları önemlidir. Örneğin, response kodu `404` olmayan bir `404 `sayfası, gerçek bir `404` sayfası değildir. Google gibi arama motorları bu sayfayı 404 sayfası olarak saymazlar; çünkü bu sayfanın aslında 404 ID'sine sahip  bir kullanıcının profili olup olmadığını bilemezler. Daha sonra arama sonuçlarında bu sayfa ekrana yansır ve sizin için hoş olmaz.
 
-Bu yüzden sizin, tarayıcıların, arama motorlarının ve diğer araçların anlayabileceği response kodlarını kullanın. 
+Bu yüzden sizin, tarayıcıların, arama motorlarının ve diğer araçların anlayabileceği response kodlarını kullanın.
 
 > Not: Tüm HTTP Response kodlarına http://en.wikipedia.org/wiki/List_of_HTTP_status_codes adresinden ulaşabilirsiniz.
 
