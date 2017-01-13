@@ -5,7 +5,7 @@ description: "Web geliştiricilerin bilmesi gereken konular"
 modified: 2016-05-26
 tags: [PHP]
 image:
-  feature: abstract-12.jpg
+  feature: abstract-7.jpg
 comments: true
 share: true
 disqus:
