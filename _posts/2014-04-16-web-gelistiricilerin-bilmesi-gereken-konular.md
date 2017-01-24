@@ -1331,6 +1331,25 @@ Toparlarsak, bu bölümde şu konulara değindik:
 2. Kıvırcık parantezleri doğru kullanmalıyız.
 3. Gereksiz `else` ifadelerini silebiliriz.
 
+### - İç içe for blokları çok zararlıdır ###
+
+Diyelim ki elinizde bir dizi var. Bu dizide işlemler yapacaksınız. `for`, `foreach` ve `while` gibi döngülerle işlem yapmak en kötü senaryoya göre bütün dizinin taranmasını gerektirir. Dizinin 1000 elemanı varsa ve siz aynı dizi içinde 3 kere döngü çalıştırırsanız. Taramanız gereken eleman sayısı (n^3) olur. yani 1000 eleman için sisteme 1 milyar işlem yaptırmak zorunda kalırsınız ki, bunun performansı ne kadar zorlayacağını bir düşünün. 
+
+```
+foreach($thousandArray as $thousandElement)
+{
+	foreach($thousandArray as $thousandElement2)
+	{
+		foreach($thousandArray as $thousandArray)
+		{
+			echo $thousandElement*$thousandElement2*$thousandElement3;
+		}
+	}	
+}
+```
+
+Peki ya bir milyonluk bir diziniz varsa? Döngüleri iç içe kullanırken cimri olun.
+
 ### - Kod yaz, tarayıcıya dön, F5'e bas, hata var mı? Yok, devam et. ###
 
 `DRY` (Kendinizi Tekrar Etmeyin) bölümünde anlattığım konuya bir örnekte bu konu. PHP geliştiricilerinin %99'u bu şekilde çalışıyor (ve bu normal) ama yanlış. Neden yanlış olduğunu `DRY` bölümünde anlatmıştım: "Bilgisayarın yapması gereken şeyleri siz yapmamalısınız."
